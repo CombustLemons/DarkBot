@@ -2,17 +2,23 @@ package org.darkstorm.darkbot.mcspambot;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.darkstorm.darkbot.DarkBot;
-import org.darkstorm.darkbot.mcspambot.commands.*;
-import org.darkstorm.darkbot.minecraftbot.*;
+import org.darkstorm.darkbot.mcspambot.commands.BasicCommandManager;
+import org.darkstorm.darkbot.mcspambot.commands.CommandManager;
+import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
+import org.darkstorm.darkbot.minecraftbot.MinecraftBotData;
 import org.darkstorm.darkbot.minecraftbot.ai.TaskManager;
 import org.darkstorm.darkbot.minecraftbot.auth.AuthenticationException;
-import org.darkstorm.darkbot.minecraftbot.events.*;
+import org.darkstorm.darkbot.minecraftbot.events.EventHandler;
+import org.darkstorm.darkbot.minecraftbot.events.EventListener;
 import org.darkstorm.darkbot.minecraftbot.events.general.DisconnectEvent;
 import org.darkstorm.darkbot.minecraftbot.events.protocol.client.RequestRespawnEvent;
-import org.darkstorm.darkbot.minecraftbot.events.protocol.server.*;
+import org.darkstorm.darkbot.minecraftbot.events.protocol.server.ChatReceivedEvent;
+import org.darkstorm.darkbot.minecraftbot.events.protocol.server.HealthUpdateEvent;
+import org.darkstorm.darkbot.minecraftbot.events.protocol.server.RespawnEvent;
 import org.darkstorm.darkbot.minecraftbot.events.world.SpawnEvent;
 import org.darkstorm.darkbot.minecraftbot.protocol.UnsupportedProtocolException;
 import org.darkstorm.darkbot.minecraftbot.util.Util;
@@ -24,7 +30,7 @@ public abstract class MinecraftBotWrapper implements EventListener {
 
 	protected final MinecraftBot bot;
 	protected final CommandManager commandManager;
-
+	
 	private final List<Backend> backends = new CopyOnWriteArrayList<>();
 	private final List<String> owners = new CopyOnWriteArrayList<>();
 
@@ -93,7 +99,7 @@ public abstract class MinecraftBotWrapper implements EventListener {
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
-
+	
 	public String[] getOwners() {
 		return owners.toArray(new String[0]);
 	}

@@ -72,6 +72,7 @@ public class Connection {
 		};
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void connect() throws IOException {
 		if(isConnected())
 			return;

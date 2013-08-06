@@ -40,6 +40,7 @@ public class WalkActivity implements Activity {
 				ticksSinceStepChange = walkActivity.ticksSinceStepChange;
 			}
 		}
+		System.out.println("About to service.submit!");
 		thread = service.submit(new Callable<PathNode>() {
 			@Override
 			public PathNode call() throws Exception {

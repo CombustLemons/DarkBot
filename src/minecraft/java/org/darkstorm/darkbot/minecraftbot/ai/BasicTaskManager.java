@@ -1,7 +1,10 @@
 package org.darkstorm.darkbot.minecraftbot.ai;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
 

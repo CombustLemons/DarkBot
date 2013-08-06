@@ -3,12 +3,15 @@ package org.darkstorm.darkbot.mcspambot;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.net.*;
 import java.util.*;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.*;
 
 import javax.swing.*;
@@ -58,6 +61,7 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 	private Random random = new Random();
 	private int nextSkill, nextBot, nextMsgChar, nextSpamList, tickDelay = 100, nextMessage;
 
+	@SuppressWarnings("resource")
 	private DarkBotMCSpambot(MinecraftBotData data, String owner) throws AuthenticationException, UnsupportedProtocolException {
 		super(data);
 		synchronized(bots) {
@@ -67,33 +71,41 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		addBackend(new ChatBackend(this));
 
 		TaskManager taskManager = bot.getTaskManager();
-		taskManager.registerTask(new FallTask(bot));
-		taskManager.registerTask(new FollowTask(bot));
-		taskManager.registerTask(new DefendTask(bot));
-		taskManager.registerTask(new AttackTask(bot));
-		taskManager.registerTask(new HostileTask(bot));
-		taskManager.registerTask(new EatTask(bot));
-
-		commandManager.register(new AttackAllCommand(this));
-		commandManager.register(new AttackCommand(this));
-		commandManager.register(new CalcCommand(this));
-		commandManager.register(new ChatDelayCommand(this));
-		commandManager.register(new DropAllCommand(this));
-		commandManager.register(new DropCommand(this));
-		commandManager.register(new DropIdCommand(this));
-		commandManager.register(new EquipCommand(this));
-		commandManager.register(new FollowCommand(this));
-		commandManager.register(new InteractCommand(this));
-		commandManager.register(new OwnerCommand(this));
-		commandManager.register(new QuitCommand(this));
-		commandManager.register(new SayCommand(this));
-		commandManager.register(new SetWalkCommand(this));
-		commandManager.register(new SpamCommand(this));
-		commandManager.register(new StatusCommand(this));
-		commandManager.register(new StopCommand(this));
-		commandManager.register(new SwitchCommand(this));
-		commandManager.register(new ToolCommand(this));
-		commandManager.register(new WalkCommand(this));
+		try {
+			File externalDir = new File("external");
+			if(!externalDir.exists())
+				externalDir.mkdir();
+			for(File f : externalDir.listFiles()){
+				if(!f.getName().endsWith(".jar"))
+					continue;
+				Enumeration<JarEntry> e = new JarFile(f).entries();
+		        ClassLoader cl = URLClassLoader.newInstance(new URL[]{f.toURI().toURL()});
+		        while (e.hasMoreElements()) {
+		            JarEntry je = e.nextElement();
+		            if(je.isDirectory() || !je.getName().endsWith(".class"))
+		                continue;
+		            Class<?> c = cl.loadClass(je.getName().substring(0, je.getName().length() - ".class".length()).replace('/', '.'));
+		            if(!Command.class.isAssignableFrom(c)){
+		            	if(!Task.class.isAssignableFrom(c))
+		                	continue;
+		                Constructor<?> con = c.getDeclaredConstructor(MinecraftBot.class);
+		    	            if(con == null)
+		    	                throw new IllegalStateException("Constructor 'Object(MinecraftBot arg)' not found in task '" + f.getName() + "'\n");
+		    	        con.setAccessible(true);
+		    	        taskManager.registerTask((Task)con.newInstance(bot));
+		    	        continue;
+		            }
+		            Constructor<?> con = c.getDeclaredConstructor(MinecraftBotWrapper.class);
+	            	if(con == null)
+		                throw new IllegalStateException("Constructor 'Object(MinecraftBotWrapper arg)' not found in command '" + c.getName() + "'\n");
+	            	con.setAccessible(true);
+	            	commandManager.register((Command)con.newInstance(this));
+		        }
+			}
+		} catch (Exception e) {
+			System.out.println("An error occured loading the tasks/commands from the 'external' directory:\n");
+			e.printStackTrace();
+		}
 
 		connectionHandler = bot.getConnectionHandler();
 		Session session = bot.getSession();

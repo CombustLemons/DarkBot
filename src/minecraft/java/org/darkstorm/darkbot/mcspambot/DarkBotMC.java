@@ -1,68 +1,85 @@
 package org.darkstorm.darkbot.mcspambot;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Random;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import joptsimple.*;
+import joptsimple.OptionException;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 
-import org.darkstorm.darkbot.mcspambot.commands.*;
-import org.darkstorm.darkbot.minecraftbot.*;
-import org.darkstorm.darkbot.minecraftbot.ai.*;
-import org.darkstorm.darkbot.minecraftbot.auth.*;
-import org.darkstorm.darkbot.minecraftbot.protocol.*;
-import org.darkstorm.darkbot.minecraftbot.util.*;
+import org.darkstorm.darkbot.mcspambot.commands.Command;
+import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
+import org.darkstorm.darkbot.minecraftbot.MinecraftBotData;
+import org.darkstorm.darkbot.minecraftbot.ai.Task;
+import org.darkstorm.darkbot.minecraftbot.ai.TaskManager;
+import org.darkstorm.darkbot.minecraftbot.auth.AuthService;
+import org.darkstorm.darkbot.minecraftbot.auth.AuthenticationException;
+import org.darkstorm.darkbot.minecraftbot.auth.LegacyAuthService;
+import org.darkstorm.darkbot.minecraftbot.auth.Session;
+import org.darkstorm.darkbot.minecraftbot.protocol.ProtocolProvider;
+import org.darkstorm.darkbot.minecraftbot.protocol.UnsupportedProtocolException;
+import org.darkstorm.darkbot.minecraftbot.util.ProxyData;
 import org.darkstorm.darkbot.minecraftbot.util.ProxyData.ProxyType;
+import org.darkstorm.darkbot.minecraftbot.util.Util;
 
 public class DarkBotMC extends MinecraftBotWrapper {
+	@SuppressWarnings("resource")
 	private DarkBotMC(MinecraftBotData data, String owner) throws AuthenticationException, UnsupportedProtocolException {
 		super(data);
 		addOwner(owner);
 		addBackend(new ChatBackend(this));
-
 		TaskManager taskManager = bot.getTaskManager();
-		taskManager.registerTask(new FallTask(bot));
-		taskManager.registerTask(new ChopTreesTask(bot));
-		taskManager.registerTask(new FollowTask(bot));
-		taskManager.registerTask(new DefendTask(bot));
-		taskManager.registerTask(new AttackTask(bot));
-		taskManager.registerTask(new HostileTask(bot));
-		taskManager.registerTask(new EatTask(bot));
-		taskManager.registerTask(new MiningTask(bot));
-		taskManager.registerTask(new FishingTask(bot));
-		taskManager.registerTask(new FarmingTask(bot));
-		taskManager.registerTask(new BuildingTask(bot));
-		taskManager.registerTask(new AvoidDeathTask(bot));
-		taskManager.registerTask(new DestroyingTask(bot));
-
-		commandManager.register(new AttackAllCommand(this));
-		commandManager.register(new AttackCommand(this));
-		commandManager.register(new BuildCommand(this));
-		commandManager.register(new CalcCommand(this));
-		commandManager.register(new ChatDelayCommand(this));
-		commandManager.register(new ChopCommand(this));
-		commandManager.register(new DestroyCommand(this));
-		commandManager.register(new DropAllCommand(this));
-		commandManager.register(new DropCommand(this));
-		commandManager.register(new DropIdCommand(this));
-		commandManager.register(new EquipCommand(this));
-		commandManager.register(new FarmCommand(this));
-		commandManager.register(new FishCommand(this));
-		commandManager.register(new FollowCommand(this));
-		commandManager.register(new HelpCommand(this));
-		commandManager.register(new InteractCommand(this));
-		commandManager.register(new MineCommand(this));
-		commandManager.register(new OwnerCommand(this));
-		commandManager.register(new PlayersCommand(this));
-		commandManager.register(new QuitCommand(this));
-		commandManager.register(new SayCommand(this));
-		commandManager.register(new SetWalkCommand(this));
-		commandManager.register(new StatusCommand(this));
-		commandManager.register(new StopCommand(this));
-		commandManager.register(new SwitchCommand(this));
-		commandManager.register(new ToolCommand(this));
-		commandManager.register(new WalkCommand(this));
+		try {
+			File externalDir = new File("external");
+			if(!externalDir.exists())
+				externalDir.mkdir();
+			for(File f : externalDir.listFiles()){
+				if(!f.getName().endsWith(".jar"))
+					continue;
+				Enumeration<JarEntry> e = new JarFile(f).entries();
+		        ClassLoader cl = URLClassLoader.newInstance(new URL[]{f.toURI().toURL()});
+		        while (e.hasMoreElements()) {
+		            JarEntry je = e.nextElement();
+		            if(je.isDirectory() || !je.getName().endsWith(".class"))
+		                continue;
+		            Class<?> c = cl.loadClass(je.getName().substring(0, je.getName().length() - ".class".length()).replace('/', '.'));
+		            if(!Command.class.isAssignableFrom(c)){
+		            	if(!Task.class.isAssignableFrom(c))
+		                	continue;
+		                Constructor<?> con = c.getDeclaredConstructor(MinecraftBot.class);
+		    	        con.setAccessible(true);
+		    	        System.out.println("Registering Task: " + c.getName());
+		    	        taskManager.registerTask((Task)con.newInstance(bot));
+		    	        continue;
+		            }
+		            Constructor<?> con = c.getDeclaredConstructor(MinecraftBotWrapper.class);
+	            	con.setAccessible(true);
+	            	System.out.println("Registering Command: " + c.getName());
+	            	commandManager.register((Command)con.newInstance(this));
+		        }
+			}
+		} catch (Exception e) {
+			System.out.println("An error occured loading the tasks/commands from the 'external' directory:\n");
+			e.printStackTrace();
+		}
+		//bot.getEventManager().registerListener(new PacketDebug());
 	}
 
 	public static void main(String[] args) {
@@ -283,7 +300,7 @@ public class DarkBotMC extends MinecraftBotWrapper {
 		}
 		System.exit(0);
 	}
-
+	
 	private static void printHelp(OptionParser parser) {
 		try {
 			parser.printHelpOn(System.out);
