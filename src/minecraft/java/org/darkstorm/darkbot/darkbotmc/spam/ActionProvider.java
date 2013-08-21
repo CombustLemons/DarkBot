@@ -2,7 +2,8 @@ package org.darkstorm.darkbot.darkbotmc.spam;
 
 import javax.swing.JPanel;
 
-public abstract class ActionProvider {
+public abstract class ActionProvider
+{
 	public abstract String getName();
 
 	public abstract String getDescription();
@@ -10,16 +11,19 @@ public abstract class ActionProvider {
 	public abstract Action provideAction();
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return getName();
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return getName().hashCode();
 	}
 
-	public interface Action {
+	public interface Action
+	{
 		public ActionProvider getProvider();
 
 		public JPanel getOptions();

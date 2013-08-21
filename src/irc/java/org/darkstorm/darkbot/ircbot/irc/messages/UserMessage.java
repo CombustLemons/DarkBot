@@ -3,16 +3,18 @@ package org.darkstorm.darkbot.ircbot.irc.messages;
 import org.darkstorm.darkbot.ircbot.irc.parsing.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class UserMessage extends Message {
+public class UserMessage extends Message
+{
 	private final UserInfo sender;
 	private String receiverNickname;
 	private String message;
 	private boolean ctcp;
 
 	public UserMessage(MessageType type, String raw, UserInfo sender,
-			String receiverNickname, String message, boolean ctcp) {
+			String receiverNickname, String message, boolean ctcp)
+	{
 		super(type, raw);
-		if(!type.equals(MessageType.MESSAGE)
+		if (!type.equals(MessageType.MESSAGE)
 				&& !type.equals(MessageType.NOTICE))
 			throw new IllegalArgumentException("type is not MESSAGE or NOTICE");
 		this.sender = sender;
@@ -22,19 +24,23 @@ public class UserMessage extends Message {
 
 	}
 
-	public UserInfo getSender() {
+	public UserInfo getSender()
+	{
 		return sender;
 	}
 
-	public String getReceiver() {
+	public String getReceiver()
+	{
 		return receiverNickname;
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return message;
 	}
 
-	public boolean isCTCP() {
+	public boolean isCTCP()
+	{
 		return ctcp;
 	}
 }

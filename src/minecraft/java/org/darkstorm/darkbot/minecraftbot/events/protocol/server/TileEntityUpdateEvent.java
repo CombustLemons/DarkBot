@@ -3,14 +3,17 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 import org.darkstorm.darkbot.minecraftbot.nbt.NBTTagCompound;
 
-public class TileEntityUpdateEvent extends ProtocolEvent {
+public class TileEntityUpdateEvent extends ProtocolEvent
+{
 	private final int x;
 	private final int y;
 	private final int z;
 	private final int type;
 	private final NBTTagCompound compound;
 
-	public TileEntityUpdateEvent(int x, int y, int z, int type, NBTTagCompound compound) {
+	public TileEntityUpdateEvent(int x, int y, int z, int type,
+			NBTTagCompound compound)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -18,23 +21,28 @@ public class TileEntityUpdateEvent extends ProtocolEvent {
 		this.compound = compound;
 	}
 
-	public int getX() {
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getZ() {
+	public int getZ()
+	{
 		return z;
 	}
 
-	public int getType() {
+	public int getType()
+	{
 		return type;
 	}
 
-	public NBTTagCompound getCompound() {
+	public NBTTagCompound getCompound()
+	{
 		return compound;
 	}
 }

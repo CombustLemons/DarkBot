@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet53BlockChange extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int xPosition;
 	public int yPosition;
 	public int zPosition;
@@ -13,10 +14,12 @@ public class Packet53BlockChange extends AbstractPacket implements
 	public int type;
 	public int metadata;
 
-	public Packet53BlockChange() {
+	public Packet53BlockChange()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		xPosition = in.readInt();
 		yPosition = in.read();
 		zPosition = in.readInt();
@@ -24,7 +27,8 @@ public class Packet53BlockChange extends AbstractPacket implements
 		metadata = in.read();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 53;
 	}
 }

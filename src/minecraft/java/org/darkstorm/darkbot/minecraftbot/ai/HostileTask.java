@@ -5,77 +5,92 @@ import org.darkstorm.darkbot.minecraftbot.world.World;
 import org.darkstorm.darkbot.minecraftbot.world.block.*;
 import org.darkstorm.darkbot.minecraftbot.world.entity.*;
 
-public class HostileTask implements Task {
+public class HostileTask implements Task
+{
 	private final MinecraftBot bot;
 
 	private boolean active = false;
 
 	private int attackCooldown = 0;
 
-	public HostileTask(MinecraftBot bot) {
+	public HostileTask(MinecraftBot bot)
+	{
 		this.bot = bot;
 	}
 
 	@Override
-	public synchronized boolean isPreconditionMet() {
+	public synchronized boolean isPreconditionMet()
+	{
 		return false;
 	}
 
 	@Override
-	public synchronized boolean start(String... options) {
+	public synchronized boolean start(String... options)
+	{
 		active = true;
 		attackCooldown = 5;
 		return true;
 	}
 
 	@Override
-	public synchronized void stop() {
+	public synchronized void stop()
+	{
 		active = false;
 	}
 
 	@Override
-	public synchronized void run() {
+	public synchronized void run()
+	{
 		MainPlayerEntity player = bot.getPlayer();
 		World world = bot.getWorld();
-		if(world == null || player == null)
+		if (world == null || player == null)
 			return;
-		if(attackCooldown > 0)
+		if (attackCooldown > 0)
 			attackCooldown--;
 		Entity entity = null;
 		int closestDistance = Integer.MAX_VALUE;
-		for(Entity e : world.getEntities()) {
-			if(!(e instanceof LivingEntity) || e.equals(bot.getPlayer()))
+		for (Entity e : world.getEntities())
+		{
+			if (!(e instanceof LivingEntity) || e.equals(bot.getPlayer()))
 				continue;
 			int distance = player.getDistanceToSquared(e);
-			if(distance < closestDistance) {
+			if (distance < closestDistance)
+			{
 				entity = e;
 				closestDistance = distance;
 			}
 		}
-		if(closestDistance > 500)
+		if (closestDistance > 500)
 			return;
 		player.face(entity.getX(), entity.getY() + 1, entity.getZ());
-		if(closestDistance > 16) {
+		if (closestDistance > 16)
+		{
 			BlockLocation location = new BlockLocation(entity.getLocation());
 			BlockLocation original = location;
 			BlockLocation below = location.offset(0, -1, 0);
-			while(!BlockType.getById(world.getBlockIdAt(below)).isSolid() && !world.getPathFinder().getHeuristic().isClimbableBlock(below)) {
+			while (!BlockType.getById(world.getBlockIdAt(below)).isSolid()
+					&& !world.getPathFinder().getHeuristic()
+							.isClimbableBlock(below))
+			{
 				location = below;
 				below = below.offset(0, -1, 0);
-				if(original.getY() - location.getY() >= 5)
+				if (original.getY() - location.getY() >= 5)
 					return;
 			}
-			if(bot.hasActivity() && bot.getActivity() instanceof WalkActivity) {
+			if (bot.hasActivity() && bot.getActivity() instanceof WalkActivity)
+			{
 				WalkActivity activity = (WalkActivity) bot.getActivity();
-				if(location.getDistanceTo(activity.getTarget()) <= 3)
+				if (location.getDistanceTo(activity.getTarget()) <= 3)
 					return;
 			}
 			bot.setActivity(new WalkActivity(bot, location, true));
 			return;
-		} else {
-			if(closestDistance < 9 && bot.hasActivity() && bot.getActivity() instanceof WalkActivity)
+		} else
+		{
+			if (closestDistance < 9 && bot.hasActivity()
+					&& bot.getActivity() instanceof WalkActivity)
 				bot.setActivity(null);
-			if(attackCooldown > 0)
+			if (attackCooldown > 0)
 				return;
 			player.hit(entity);
 			attackCooldown = 5;
@@ -83,32 +98,38 @@ public class HostileTask implements Task {
 	}
 
 	@Override
-	public synchronized boolean isActive() {
+	public synchronized boolean isActive()
+	{
 		return active;
 	}
 
 	@Override
-	public TaskPriority getPriority() {
+	public TaskPriority getPriority()
+	{
 		return TaskPriority.NORMAL;
 	}
 
 	@Override
-	public boolean isExclusive() {
+	public boolean isExclusive()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean ignoresExclusive() {
+	public boolean ignoresExclusive()
+	{
 		return true;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "AttackAll";
 	}
 
 	@Override
-	public String getOptionDescription() {
+	public String getOptionDescription()
+	{
 		return "";
 	}
 }

@@ -3,16 +3,18 @@ package org.darkstorm.darkbot.ircbot.irc.messages;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 import org.darkstorm.darkbot.ircbot.irc.parsing.*;
 
-public class ModeMessage extends Message {
+public class ModeMessage extends Message
+{
 	private final UserInfo sender;
 	private String receiverNickname;
 	private String[] targets;
 	private String mode;
 
 	public ModeMessage(MessageType type, String raw, UserInfo sender,
-			String receiverNickname, String[] targets, String mode) {
+			String receiverNickname, String[] targets, String mode)
+	{
 		super(type, raw);
-		if(!type.equals(MessageType.USER_MODE)
+		if (!type.equals(MessageType.USER_MODE)
 				&& !type.equals(MessageType.CHANNEL_MODE)
 				&& !type.equals(MessageType.CHANNEL_USER_MODE))
 			throw new IllegalArgumentException("type is not USER_MODE, "
@@ -23,11 +25,13 @@ public class ModeMessage extends Message {
 		this.mode = mode;
 	}
 
-	public UserInfo getSender() {
+	public UserInfo getSender()
+	{
 		return sender;
 	}
 
-	public String getReceiverNickname() {
+	public String getReceiverNickname()
+	{
 		return receiverNickname;
 	}
 
@@ -35,11 +39,13 @@ public class ModeMessage extends Message {
 	 * This is only for setting a user mode within a channel, and will be the
 	 * targeted user of the mode change
 	 */
-	public String[] getTargets() {
+	public String[] getTargets()
+	{
 		return targets;
 	}
 
-	public String getMode() {
+	public String getMode()
+	{
 		return mode;
 	}
 }

@@ -4,7 +4,8 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet30Entity extends AbstractPacket implements ReadablePacket {
+public class Packet30Entity extends AbstractPacket implements ReadablePacket
+{
 	public int entityId;
 
 	public byte xPosition;
@@ -13,14 +14,17 @@ public class Packet30Entity extends AbstractPacket implements ReadablePacket {
 	public byte yaw;
 	public byte pitch;
 
-	public Packet30Entity() {
+	public Packet30Entity()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 30;
 	}
 }

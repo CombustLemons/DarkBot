@@ -5,7 +5,9 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.item.ItemStack;
 
-public class Packet102WindowClick extends AbstractPacket implements WriteablePacket {
+public class Packet102WindowClick extends AbstractPacket implements
+		WriteablePacket
+{
 	public int windowId;
 	public int slot;
 	public int button;
@@ -14,7 +16,8 @@ public class Packet102WindowClick extends AbstractPacket implements WriteablePac
 	public boolean shift;
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeByte(windowId);
 		out.writeShort(slot);
 		out.writeByte(button);
@@ -24,7 +27,8 @@ public class Packet102WindowClick extends AbstractPacket implements WriteablePac
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 102;
 	}
 }

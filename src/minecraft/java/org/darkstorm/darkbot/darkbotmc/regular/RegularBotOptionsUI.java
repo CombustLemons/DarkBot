@@ -15,7 +15,8 @@ import org.darkstorm.darkbot.darkbotmc.regular.RegularBot.RegularBotData;
 import org.darkstorm.darkbot.minecraftbot.ai.Task;
 
 @SuppressWarnings("serial")
-public class RegularBotOptionsUI extends BotOptionsUI {
+public class RegularBotOptionsUI extends BotOptionsUI
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	private JTextField usernameField;
@@ -35,20 +36,26 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 
 	private Map<String, Class<? extends Task>> tasks;
 
-	public RegularBotOptionsUI() {
+	public RegularBotOptionsUI()
+	{
 		initComponents();
 		tasks = new HashMap<String, Class<? extends Task>>();
-		try {
-			for(Class<?> c : org.darkstorm.darkbot.minecraftbot.util.Util
-					.getClassesInPackage(Task.class.getPackage().getName())) {
-				try {
-					if(Task.class.isAssignableFrom(c) && !Task.class.equals(c))
+		try
+		{
+			for (Class<?> c : org.darkstorm.darkbot.minecraftbot.util.Util
+					.getClassesInPackage(Task.class.getPackage().getName()))
+			{
+				try
+				{
+					if (Task.class.isAssignableFrom(c) && !Task.class.equals(c))
 						tasks.put(c.getSimpleName(), c.asSubclass(Task.class));
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					exception.printStackTrace();
 				}
 			}
-		} catch(IOException exception) {
+		} catch (IOException exception)
+		{
 			exception.printStackTrace();
 		}
 		// tasks.put("Mob Defence", DefendTask.class);
@@ -61,31 +68,36 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 		// tasks.put("Hostile", HostileTask.class);
 		// tasks.put("Mining", MiningTask.class);
 		DefaultListModel model = new DefaultListModel();
-		for(String taskName : tasks.keySet())
+		for (String taskName : tasks.keySet())
 			model.addElement(taskName);
 		availableTasksList.setModel(model);
 		selectedTasksList.setModel(new DefaultListModel());
 	}
 
 	@Override
-	public boolean areOptionsValid() {
+	public boolean areOptionsValid()
+	{
 		boolean valid = true;
-		if(usernameField.getText().length() == 0) {
+		if (usernameField.getText().length() == 0)
+		{
 			Util.flashRed(usernameField);
 			valid = false;
 		}
-		if(passwordCheckBox.isSelected()
-				&& passwordField.getPassword().length == 0) {
+		if (passwordCheckBox.isSelected()
+				&& passwordField.getPassword().length == 0)
+		{
 			Util.flashRed(passwordField);
 			valid = false;
 		}
-		if(serverField.getText().length() == 0) {
+		if (serverField.getText().length() == 0)
+		{
 			Util.flashRed(serverField);
 			valid = false;
 		}
-		if(proxyCheckBox.isSelected()
+		if (proxyCheckBox.isSelected()
 				&& (proxyField.getText().length() == 0 || !proxyField.getText()
-						.contains(":"))) {
+						.contains(":")))
+		{
 			Util.flashRed(proxyField);
 			valid = false;
 		}
@@ -93,7 +105,8 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 	}
 
 	@Override
-	public BotControlsUI createBot() {
+	public BotControlsUI createBot()
+	{
 		RegularBotData data = new RegularBotData();
 		data.setUsername(usernameField.getText());
 		data.setPassword(passwordCheckBox.isSelected() ? new String(
@@ -101,26 +114,29 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 		data.setServer(serverField.getText());
 		data.setProxy(proxyCheckBox.isSelected() ? proxyField.getText() : null);
 		List<Class<? extends Task>> tasks = new ArrayList<Class<? extends Task>>();
-		for(int i = 0; i < selectedTasksList.getModel().getSize(); i++)
+		for (int i = 0; i < selectedTasksList.getModel().getSize(); i++)
 			tasks.add(this.tasks.get(selectedTasksList.getModel().getElementAt(
 					i)));
 		data.setTasks(tasks);
 		return new RegularBotControlsUI(data);
 	}
 
-	private void passwordCheckBoxItemStateChanged(ItemEvent e) {
+	private void passwordCheckBoxItemStateChanged(ItemEvent e)
+	{
 		passwordField.setEnabled(passwordCheckBox.isSelected());
 
 	}
 
-	private void proxyCheckBoxItemStateChanged(ItemEvent e) {
+	private void proxyCheckBoxItemStateChanged(ItemEvent e)
+	{
 		proxyField.setEnabled(proxyCheckBox.isSelected());
 	}
 
-	private void addButtonActionPerformed(ActionEvent e) {
+	private void addButtonActionPerformed(ActionEvent e)
+	{
 		String selectedAvailableTask = (String) availableTasksList
 				.getSelectedValue();
-		if(selectedAvailableTask == null)
+		if (selectedAvailableTask == null)
 			return;
 		int selectedIndex = availableTasksList.getSelectedIndex();
 		((DefaultListModel) availableTasksList.getModel())
@@ -131,10 +147,11 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 				availableTasksList.getModel().getSize() - 1));
 	}
 
-	private void removeButtonActionPerformed(ActionEvent e) {
+	private void removeButtonActionPerformed(ActionEvent e)
+	{
 		String selectedAvailableTask = (String) selectedTasksList
 				.getSelectedValue();
-		if(selectedAvailableTask == null)
+		if (selectedAvailableTask == null)
 			return;
 		int selectedIndex = selectedTasksList.getSelectedIndex();
 		((DefaultListModel) selectedTasksList.getModel())
@@ -145,25 +162,30 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 				selectedTasksList.getModel().getSize() - 1));
 	}
 
-	private void addAllButtonActionPerformed(ActionEvent e) {
+	private void addAllButtonActionPerformed(ActionEvent e)
+	{
 		int size = availableTasksList.getModel().getSize();
-		for(int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++)
+		{
 			((DefaultListModel) selectedTasksList.getModel())
 					.addElement(((DefaultListModel) availableTasksList
 							.getModel()).remove(0));
 		}
 	}
 
-	private void removeAllButtonActionPerformed(ActionEvent e) {
+	private void removeAllButtonActionPerformed(ActionEvent e)
+	{
 		int size = selectedTasksList.getModel().getSize();
-		for(int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++)
+		{
 			((DefaultListModel) availableTasksList.getModel())
 					.addElement(((DefaultListModel) selectedTasksList
 							.getModel()).remove(0));
 		}
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		ResourceBundle bundle = ResourceBundle
@@ -211,8 +233,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 		passwordCheckBox.setText(bundle
 				.getString("regularbotoptions.passwordCheckBox.text"));
 		passwordCheckBox.setSelected(true);
-		passwordCheckBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+		passwordCheckBox.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e)
+			{
 				passwordCheckBoxItemStateChanged(e);
 			}
 		});
@@ -236,8 +260,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 		// ---- proxyCheckBox ----
 		proxyCheckBox.setText(bundle
 				.getString("regularbotoptions.proxyCheckBox.text"));
-		proxyCheckBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+		proxyCheckBox.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e)
+			{
 				proxyCheckBoxItemStateChanged(e);
 			}
 		});
@@ -294,8 +320,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 			// ---- addButton ----
 			addButton.setIcon(new ImageIcon(getClass().getResource(
 					"/icons/forward.png")));
-			addButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			addButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
 					addButtonActionPerformed(e);
 				}
 			});
@@ -318,8 +346,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 			// ---- removeButton ----
 			removeButton.setIcon(new ImageIcon(getClass().getResource(
 					"/icons/backward.png")));
-			removeButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			removeButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
 					removeButtonActionPerformed(e);
 				}
 			});
@@ -330,8 +360,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 			// ---- addAllButton ----
 			addAllButton.setIcon(new ImageIcon(getClass().getResource(
 					"/icons/next.png")));
-			addAllButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			addAllButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
 					addAllButtonActionPerformed(e);
 				}
 			});
@@ -342,8 +374,10 @@ public class RegularBotOptionsUI extends BotOptionsUI {
 			// ---- removeAllButton ----
 			removeAllButton.setIcon(new ImageIcon(getClass().getResource(
 					"/icons/previous.png")));
-			removeAllButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			removeAllButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
 					removeAllButtonActionPerformed(e);
 				}
 			});

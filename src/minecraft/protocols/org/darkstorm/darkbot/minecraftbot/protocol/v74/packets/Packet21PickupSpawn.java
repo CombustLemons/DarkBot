@@ -6,7 +6,8 @@ import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.item.ItemStack;
 
 public class Packet21PickupSpawn extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 
 	public int xPosition;
@@ -18,10 +19,12 @@ public class Packet21PickupSpawn extends AbstractPacket implements
 	public byte roll;
 	public ItemStack item;
 
-	public Packet21PickupSpawn() {
+	public Packet21PickupSpawn()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		item = readItemStack(in);
 		xPosition = in.readInt();
@@ -32,7 +35,8 @@ public class Packet21PickupSpawn extends AbstractPacket implements
 		roll = in.readByte();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 21;
 	}
 }

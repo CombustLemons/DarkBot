@@ -6,7 +6,8 @@ import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.util.IntHashMap;
 import org.darkstorm.darkbot.minecraftbot.world.entity.*;
 
-public class Packet24MobSpawn extends AbstractPacket implements ReadablePacket {
+public class Packet24MobSpawn extends AbstractPacket implements ReadablePacket
+{
 	public int entityId;
 
 	public int xPosition, yPosition, zPosition;
@@ -16,11 +17,13 @@ public class Packet24MobSpawn extends AbstractPacket implements ReadablePacket {
 	public int type;
 	public IntHashMap<WatchableObject> metadata;
 
-	public Packet24MobSpawn() {
+	public Packet24MobSpawn()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		type = in.readByte() & 0xff;
 		xPosition = in.readInt();
@@ -37,7 +40,8 @@ public class Packet24MobSpawn extends AbstractPacket implements ReadablePacket {
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 24;
 	}
 }

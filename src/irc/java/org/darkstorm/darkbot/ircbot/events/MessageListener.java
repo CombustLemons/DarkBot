@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.ircbot.events;
 
-public interface MessageListener {
+public interface MessageListener
+{
 	public void onRawSent(MessageEvent event);
 
 	public void onMessageSent(MessageEvent event);

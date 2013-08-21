@@ -4,7 +4,9 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet202PlayerAbilities extends AbstractPacket implements ReadablePacket, WriteablePacket {
+public class Packet202PlayerAbilities extends AbstractPacket implements
+		ReadablePacket, WriteablePacket
+{
 	public boolean disableDamage;
 	public boolean flying;
 	public boolean allowFlying;
@@ -12,7 +14,8 @@ public class Packet202PlayerAbilities extends AbstractPacket implements Readable
 
 	private float flySpeed, walkSpeed;
 
-	public Packet202PlayerAbilities() {
+	public Packet202PlayerAbilities()
+	{
 		disableDamage = false;
 		flying = false;
 		allowFlying = false;
@@ -32,7 +35,8 @@ public class Packet202PlayerAbilities extends AbstractPacket implements Readable
 	// }
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		byte flags = in.readByte();
 		disableDamage = (flags & 1) > 0;
 		flying = (flags & 2) > 0;
@@ -44,15 +48,16 @@ public class Packet202PlayerAbilities extends AbstractPacket implements Readable
 	}
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		byte flags = 0;
-		if(disableDamage)
+		if (disableDamage)
 			flags |= 1;
-		if(flying)
+		if (flying)
 			flags |= 2;
-		if(allowFlying)
+		if (allowFlying)
 			flags |= 4;
-		if(creativeMode)
+		if (creativeMode)
 			flags |= 8;
 		out.writeByte(flags);
 
@@ -61,7 +66,8 @@ public class Packet202PlayerAbilities extends AbstractPacket implements Readable
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 202;
 	}
 }

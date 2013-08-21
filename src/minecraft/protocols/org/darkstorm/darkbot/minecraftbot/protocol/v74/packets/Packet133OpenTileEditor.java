@@ -4,15 +4,19 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet133OpenTileEditor extends AbstractPacket implements ReadablePacket {
+public class Packet133OpenTileEditor extends AbstractPacket implements
+		ReadablePacket
+{
 	public byte type;
 	public int x, y, z;
 
-	public Packet133OpenTileEditor() {
+	public Packet133OpenTileEditor()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		type = in.readByte();
 		x = in.readInt();
 		y = in.readInt();
@@ -20,7 +24,8 @@ public class Packet133OpenTileEditor extends AbstractPacket implements ReadableP
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 133;
 	}
 }

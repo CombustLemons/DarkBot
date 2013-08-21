@@ -13,7 +13,8 @@ import org.darkstorm.darkbot.minecraftbot.events.general.DisconnectEvent;
 import org.darkstorm.darkbot.minecraftbot.events.protocol.client.RequestRespawnEvent;
 import org.darkstorm.darkbot.minecraftbot.events.protocol.server.*;
 
-public class SpamBot implements EventListener {
+public class SpamBot implements EventListener
+{
 	private final SpamBotControlsUI ui;
 	private final SpamBotData data;
 	private MinecraftBot bot;
@@ -22,56 +23,60 @@ public class SpamBot implements EventListener {
 
 	private int loadingState = 0;
 
-	public SpamBot(SpamBotControlsUI ui, SpamBotData data) {
+	public SpamBot(SpamBotControlsUI ui, SpamBotData data)
+	{
 		this.ui = ui;
 		this.data = data;
 		data.lock();
 		manager = new BasicActionManager(bot);
-		manager.setActions(data.getActions().toArray(new Action[data.getActions().size()]));
+		manager.setActions(data.getActions().toArray(
+				new Action[data.getActions().size()]));
 		status("Waiting.");
 		progress(0, false);
 		connect();
 	}
 
-	public void connect() {
+	public void connect()
+	{
 		MinecraftBotData.Builder builder = MinecraftBotData.builder();
 		builder.username(data.username).password(data.password);
 
 		String server = data.server;
 		int port = 25565;
-		if(server.contains(":")) {
+		if (server.contains(":"))
+		{
 			String[] parts = server.split(":");
 			server = parts[0];
 			port = Integer.parseInt(parts[1]);
 		}
 		builder.server(server).port(port);
 
-		/*if(data.proxy != null) {
-			String proxy = data.proxy;
-			int proxyPort;
-			if(proxy.contains(":")) {
-				String[] parts = proxy.split(":");
-				proxy = parts[0];
-				proxyPort = Integer.parseInt(parts[1]);
-			} else
-				throw new IllegalArgumentException("Invalid proxy");
-			botData.proxy = proxy;
-			botData.proxyPort = proxyPort;
-		}*/
+		/*
+		 * if(data.proxy != null) { String proxy = data.proxy; int proxyPort;
+		 * if(proxy.contains(":")) { String[] parts = proxy.split(":"); proxy =
+		 * parts[0]; proxyPort = Integer.parseInt(parts[1]); } else throw new
+		 * IllegalArgumentException("Invalid proxy"); botData.proxy = proxy;
+		 * botData.proxyPort = proxyPort; }
+		 */
 		MinecraftBotData botData = builder.build();
 
 		status("Connecting...");
 		progress(true);
-		try {
-			bot = new MinecraftBot(DarkBotMC.getInstance().getDarkBot(), botData);
-		} catch(Exception exception) {
+		try
+		{
+			bot = new MinecraftBot(DarkBotMC.getInstance().getDarkBot(),
+					botData);
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 
 			Throwable cause = exception.getCause();
-			if(cause != null && cause instanceof AuthenticationException) {
+			if (cause != null && cause instanceof AuthenticationException)
+			{
 				// log("[BOT] Error: Invalid login (" + cause.getMessage() +
 				// ")");
-			} else {
+			} else
+			{
 				status("red", "Unable to connect: " + exception.toString());
 			}
 			status("red", "Error: " + exception.toString());
@@ -81,17 +86,19 @@ public class SpamBot implements EventListener {
 		progress(20, false);
 		status("yellow", "Logging in...");
 		bot.getEventManager().registerListener(SpamBot.this);
-		/*TaskManager taskManager = bot.getTaskManager();
-		for(Class<? extends Task> task : data.tasks) {
-			try {
-				Constructor<? extends Task> constructor = task.getConstructor(MinecraftBot.class);
-				taskManager.registerTask(constructor.newInstance(bot));
-			} catch(Exception exception) {}
-		}*/
+		/*
+		 * TaskManager taskManager = bot.getTaskManager(); for(Class<? extends
+		 * Task> task : data.tasks) { try { Constructor<? extends Task>
+		 * constructor = task.getConstructor(MinecraftBot.class);
+		 * taskManager.registerTask(constructor.newInstance(bot)); }
+		 * catch(Exception exception) {} }
+		 */
 	}
 
-	public void disconnect() {
-		if(bot != null) {
+	public void disconnect()
+	{
+		if (bot != null)
+		{
 			bot.getConnectionHandler().disconnect("");
 			bot.getEventManager().unregisterListener(this);
 			bot = null;
@@ -101,90 +108,109 @@ public class SpamBot implements EventListener {
 		}
 	}
 
-	public void performAction(String action) {
+	public void performAction(String action)
+	{
 
 	}
 
 	@EventHandler
-	public void onDisconnect(DisconnectEvent event) {
+	public void onDisconnect(DisconnectEvent event)
+	{
 		// String reason = event.getReason();
 		// log("[BOT] Disconnected" + (reason != null && reason.length() > 0 ?
 		// ": " + reason : "") + ".");
 	}
 
 	@EventHandler
-	public void onChatReceived(ChatReceivedEvent event) {
+	public void onChatReceived(ChatReceivedEvent event)
+	{
 		// log("[CHAT] " + event.getMessage());
 	}
 
 	@EventHandler
-	public void onLogin(LoginEvent event) {
+	public void onLogin(LoginEvent event)
+	{
 		status("yellow", "Loading...");
 		progress(40);
 		loadingState = 1;
 	}
 
 	@EventHandler
-	public void onTeleport(TeleportEvent event) {
-		if(loadingState == 1) {
+	public void onTeleport(TeleportEvent event)
+	{
+		if (loadingState == 1)
+		{
 			progress(60);
 			loadingState = 2;
 		}
 	}
 
 	@EventHandler
-	public void onWindowUpdate(WindowUpdateEvent event) {
-		if(loadingState == 2 && event.getWindowId() == 0) {
+	public void onWindowUpdate(WindowUpdateEvent event)
+	{
+		if (loadingState == 2 && event.getWindowId() == 0)
+		{
 			loadingState = 3;
 			progress(80);
 		}
 	}
 
 	@EventHandler
-	public void onHealthUpdate(HealthUpdateEvent event) {
+	public void onHealthUpdate(HealthUpdateEvent event)
+	{
 		// ui.updateStatus();
-		if(loadingState == 3) {
+		if (loadingState == 3)
+		{
 			loadingState = 4;
 			status("green", "Connected.");
 			progress(100);
 		}
-		if(event.getHealth() <= 0)
+		if (event.getHealth() <= 0)
 			bot.getEventManager().sendEvent(new RequestRespawnEvent());
 	}
 
-	private void status(String color, String status) {
+	private void status(String color, String status)
+	{
 		status("<font color=\"" + color + "\">" + status + "</font>");
 	}
 
-	private void status(String status) {
+	private void status(String status)
+	{
 		ui.setStatus(this, status);
 	}
 
-	private void progress(int percentage) {
+	private void progress(int percentage)
+	{
 		ui.setProgress(this, percentage);
 	}
 
-	private void progress(boolean indeterminate) {
+	private void progress(boolean indeterminate)
+	{
 		ui.setProgress(this, indeterminate);
 	}
 
-	private void progress(int percentage, boolean indeterminate) {
+	private void progress(int percentage, boolean indeterminate)
+	{
 		ui.setProgress(this, percentage, indeterminate);
 	}
 
-	public void executeCommand(String command) {
+	public void executeCommand(String command)
+	{
 
 	}
 
-	public MinecraftBot getBot() {
+	public MinecraftBot getBot()
+	{
 		return bot;
 	}
 
-	public SpamBotData getData() {
+	public SpamBotData getData()
+	{
 		return data;
 	}
 
-	static class SpamBotData {
+	static class SpamBotData
+	{
 		private String username, password, server;
 		private int botAmount, loginDelay;
 		private List<String> proxies;
@@ -192,81 +218,96 @@ public class SpamBot implements EventListener {
 
 		private boolean locked = false;
 
-		public String getUsername() {
+		public String getUsername()
+		{
 			return username;
 		}
 
-		public String getPassword() {
+		public String getPassword()
+		{
 			return password;
 		}
 
-		public String getServer() {
+		public String getServer()
+		{
 			return server;
 		}
 
-		public int getBotAmount() {
+		public int getBotAmount()
+		{
 			return botAmount;
 		}
 
-		public int getLoginDelay() {
+		public int getLoginDelay()
+		{
 			return loginDelay;
 		}
 
-		public List<String> getProxies() {
+		public List<String> getProxies()
+		{
 			return proxies;
 		}
 
-		public List<Action> getActions() {
+		public List<Action> getActions()
+		{
 			return actions;
 		}
 
-		public synchronized void setUsername(String username) {
-			if(locked)
+		public synchronized void setUsername(String username)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
 			this.username = username;
 		}
 
-		public synchronized void setPassword(String password) {
-			if(locked)
+		public synchronized void setPassword(String password)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
 			this.password = password;
 		}
 
-		public synchronized void setServer(String server) {
-			if(locked)
+		public synchronized void setServer(String server)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
 			this.server = server;
 		}
 
-		public synchronized void setBotAmount(int botAmount) {
-			if(locked)
+		public synchronized void setBotAmount(int botAmount)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
 			this.botAmount = botAmount;
 		}
 
-		public synchronized void setLoginDelay(int loginDelay) {
-			if(locked)
+		public synchronized void setLoginDelay(int loginDelay)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
 			this.loginDelay = loginDelay;
 		}
 
-		public synchronized void setProxies(List<String> proxies) {
-			if(locked)
+		public synchronized void setProxies(List<String> proxies)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
-			if(proxies == null)
+			if (proxies == null)
 				throw new NullPointerException();
 			this.proxies = Collections.unmodifiableList(proxies);
 		}
 
-		public synchronized void setActions(List<Action> actions) {
-			if(locked)
+		public synchronized void setActions(List<Action> actions)
+		{
+			if (locked)
 				throw new UnsupportedOperationException();
-			if(actions == null)
+			if (actions == null)
 				throw new NullPointerException();
 			this.actions = Collections.unmodifiableList(actions);
 		}
 
-		private synchronized void lock() {
+		private synchronized void lock()
+		{
 			locked = true;
 		}
 	}

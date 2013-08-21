@@ -9,40 +9,47 @@ import org.darkstorm.darkbot.minecraftbot.util.IntHashMap;
 import org.darkstorm.darkbot.minecraftbot.world.block.BlockLocation;
 import org.darkstorm.darkbot.minecraftbot.world.item.ItemStack;
 
-public class DataWatcher {
+public class DataWatcher
+{
 	private static final HashMap<Class<?>, Integer> dataTypes;
 	private final Map<Integer, WatchableObject> watchedObjects = new HashMap<Integer, WatchableObject>();
 
 	// /** true if one or more object was changed */
 	// private boolean objectChanged;
 
-	public DataWatcher() {
+	public DataWatcher()
+	{
 	}
 
 	/**
 	 * adds a new object to dataWatcher to watch, to update an already existing
 	 * object see updateObject. Arguments: data Value Id, Object to add
 	 */
-	public void addObject(int par1, Object par2Obj) {
+	public void addObject(int par1, Object par2Obj)
+	{
 		Integer integer = dataTypes.get(par2Obj.getClass());
 
-		if(integer == null) {
+		if (integer == null)
+		{
 			throw new IllegalArgumentException((new StringBuilder())
 					.append("Unknown data type: ").append(par2Obj.getClass())
 					.toString());
 		}
 
-		if(par1 > 31) {
+		if (par1 > 31)
+		{
 			throw new IllegalArgumentException((new StringBuilder())
 					.append("Data value id is too big with ").append(par1)
 					.append("! (Max is ").append(31).append(")").toString());
 		}
 
-		if(watchedObjects.containsKey(Integer.valueOf(par1))) {
+		if (watchedObjects.containsKey(Integer.valueOf(par1)))
+		{
 			throw new IllegalArgumentException((new StringBuilder())
 					.append("Duplicate id value for ").append(par1).append("!")
 					.toString());
-		} else {
+		} else
+		{
 			WatchableObject watchableobject = new WatchableObject(
 					integer.intValue(), par1, par2Obj);
 			watchedObjects.put(Integer.valueOf(par1), watchableobject);
@@ -53,12 +60,14 @@ public class DataWatcher {
 	/**
 	 * gets the bytevalue of a watchable object
 	 */
-	public byte getWatchableObjectByte(int par1) {
+	public byte getWatchableObjectByte(int par1)
+	{
 		return ((Byte) watchedObjects.get(Integer.valueOf(par1)).getObject())
 				.byteValue();
 	}
 
-	public short getWatchableObjectShort(int par1) {
+	public short getWatchableObjectShort(int par1)
+	{
 		return ((Short) watchedObjects.get(Integer.valueOf(par1)).getObject())
 				.shortValue();
 	}
@@ -66,7 +75,8 @@ public class DataWatcher {
 	/**
 	 * gets a watchable object and returns it as a Integer
 	 */
-	public int getWatchableObjectInt(int par1) {
+	public int getWatchableObjectInt(int par1)
+	{
 		return ((Integer) watchedObjects.get(Integer.valueOf(par1)).getObject())
 				.intValue();
 	}
@@ -74,18 +84,21 @@ public class DataWatcher {
 	/**
 	 * gets a watchable object and returns it as a String
 	 */
-	public String getWatchableObjectString(int par1) {
+	public String getWatchableObjectString(int par1)
+	{
 		return (String) watchedObjects.get(Integer.valueOf(par1)).getObject();
 	}
 
 	/**
 	 * updates an already existing object
 	 */
-	public void updateObject(int par1, Object par2Obj) {
+	public void updateObject(int par1, Object par2Obj)
+	{
 		WatchableObject watchableobject = watchedObjects.get(Integer
 				.valueOf(par1));
 
-		if(!par2Obj.equals(watchableobject.getObject())) {
+		if (!par2Obj.equals(watchableobject.getObject()))
+		{
 			watchableobject.setObject(par2Obj);
 			watchableobject.setWatching(true);
 			// objectChanged = true;
@@ -98,13 +111,16 @@ public class DataWatcher {
 	 */
 	public static void writeObjectsInListToStream(
 			List<WatchableObject> par0List,
-			DataOutputStream par1DataOutputStream) throws IOException {
-		if(par0List != null) {
+			DataOutputStream par1DataOutputStream) throws IOException
+	{
+		if (par0List != null)
+		{
 			WatchableObject watchableobject;
 
-			for(Iterator<WatchableObject> iterator = par0List.iterator(); iterator
+			for (Iterator<WatchableObject> iterator = par0List.iterator(); iterator
 					.hasNext(); writeWatchableObject(par1DataOutputStream,
-					watchableobject)) {
+					watchableobject))
+			{
 				watchableobject = iterator.next();
 			}
 		}
@@ -114,13 +130,16 @@ public class DataWatcher {
 
 	public static void writeObjectsInListToStream(
 			IntHashMap<WatchableObject> par0List,
-			DataOutputStream par1DataOutputStream) throws IOException {
-		if(par0List != null) {
+			DataOutputStream par1DataOutputStream) throws IOException
+	{
+		if (par0List != null)
+		{
 			WatchableObject watchableobject;
 
-			for(Iterator<WatchableObject> iterator = par0List.values()
+			for (Iterator<WatchableObject> iterator = par0List.values()
 					.iterator(); iterator.hasNext(); writeWatchableObject(
-					par1DataOutputStream, watchableobject)) {
+					par1DataOutputStream, watchableobject))
+			{
 				watchableobject = iterator.next();
 			}
 		}
@@ -129,12 +148,14 @@ public class DataWatcher {
 	}
 
 	public void writeWatchableObjects(DataOutputStream par1DataOutputStream)
-			throws IOException {
+			throws IOException
+	{
 		WatchableObject watchableobject;
 
-		for(Iterator<WatchableObject> iterator = watchedObjects.values()
+		for (Iterator<WatchableObject> iterator = watchedObjects.values()
 				.iterator(); iterator.hasNext(); writeWatchableObject(
-				par1DataOutputStream, watchableobject)) {
+				par1DataOutputStream, watchableobject))
+		{
 			watchableobject = iterator.next();
 		}
 
@@ -142,12 +163,14 @@ public class DataWatcher {
 	}
 
 	private static void writeWatchableObject(DataOutputStream out,
-			WatchableObject watchableObject) throws IOException {
+			WatchableObject watchableObject) throws IOException
+	{
 		int i = (watchableObject.getObjectType() << 5 | watchableObject
 				.getDataValueId() & 0x1f) & 0xff;
 		out.writeByte(i);
 
-		switch(watchableObject.getObjectType()) {
+		switch (watchableObject.getObjectType())
+		{
 		case 0:
 			out.writeByte(((Byte) watchableObject.getObject()).byteValue());
 			break;
@@ -185,11 +208,14 @@ public class DataWatcher {
 	}
 
 	public static IntHashMap<WatchableObject> readWatchableObjects(
-			DataInputStream in) throws IOException {
+			DataInputStream in) throws IOException
+	{
 		IntHashMap<WatchableObject> map = null;
 
-		for(byte byte0 = in.readByte(); byte0 != 127; byte0 = in.readByte()) {
-			if(map == null) {
+		for (byte byte0 = in.readByte(); byte0 != 127; byte0 = in.readByte())
+		{
+			if (map == null)
+			{
 				map = new IntHashMap<WatchableObject>();
 			}
 
@@ -197,7 +223,8 @@ public class DataWatcher {
 			int j = byte0 & 0x1f;
 			WatchableObject watchableobject = null;
 
-			switch(i) {
+			switch (i)
+			{
 			case 0:
 				watchableobject = new WatchableObject(i, j, Byte.valueOf(in
 						.readByte()));
@@ -243,11 +270,14 @@ public class DataWatcher {
 		return map;
 	}
 
-	public void updateWatchedObjectsFromList(List<WatchableObject> par1List) {
+	public void updateWatchedObjectsFromList(List<WatchableObject> par1List)
+	{
 		Iterator<WatchableObject> iterator = par1List.iterator();
 
-		do {
-			if(!iterator.hasNext()) {
+		do
+		{
+			if (!iterator.hasNext())
+			{
 				break;
 			}
 
@@ -255,13 +285,15 @@ public class DataWatcher {
 			WatchableObject watchableobject1 = watchedObjects.get(Integer
 					.valueOf(watchableobject.getDataValueId()));
 
-			if(watchableobject1 != null) {
+			if (watchableobject1 != null)
+			{
 				watchableobject1.setObject(watchableobject.getObject());
 			}
-		} while(true);
+		} while (true);
 	}
 
-	static {
+	static
+	{
 		dataTypes = new HashMap<Class<?>, Integer>();
 		dataTypes.put(java.lang.Byte.class, Integer.valueOf(0));
 		dataTypes.put(java.lang.Short.class, Integer.valueOf(1));

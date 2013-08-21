@@ -7,7 +7,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 public class ComponentTitledBorder implements Border, MouseListener,
-		SwingConstants {
+		SwingConstants
+{
 	private Component comp;
 	private JComponent container;
 	private Rectangle rect;
@@ -15,19 +16,22 @@ public class ComponentTitledBorder implements Border, MouseListener,
 	private int offset = 5;
 
 	public ComponentTitledBorder(Component comp, JComponent container,
-			Border border) {
+			Border border)
+	{
 		this.comp = comp;
 		this.container = container;
 		this.border = border;
 		container.addMouseListener(this);
 	}
 
-	public boolean isBorderOpaque() {
+	public boolean isBorderOpaque()
+	{
 		return true;
 	}
 
 	public void paintBorder(Component c, Graphics g, int x, int y, int width,
-			int height) {
+			int height)
+	{
 		Insets borderInsets = border.getBorderInsets(c);
 		Insets insets = getBorderInsets(c);
 		int temp = (insets.top - borderInsets.top) / 2;
@@ -37,43 +41,51 @@ public class ComponentTitledBorder implements Border, MouseListener,
 		SwingUtilities.paintComponent(g, comp, (Container) c, rect);
 	}
 
-	public Insets getBorderInsets(Component c) {
+	public Insets getBorderInsets(Component c)
+	{
 		Dimension size = comp.getPreferredSize();
 		Insets insets = border.getBorderInsets(c);
 		insets.top = Math.max(insets.top, size.height);
 		return insets;
 	}
 
-	private void dispatchEvent(MouseEvent me) {
-		if(rect != null && rect.contains(me.getX(), me.getY())) {
+	private void dispatchEvent(MouseEvent me)
+	{
+		if (rect != null && rect.contains(me.getX(), me.getY()))
+		{
 			Point pt = me.getPoint();
 			pt.translate(-offset, 0);
 			comp.setBounds(rect);
 			comp.dispatchEvent(new MouseEvent(comp, me.getID(), me.getWhen(),
 					me.getModifiers(), pt.x, pt.y, me.getClickCount(), me
 							.isPopupTrigger(), me.getButton()));
-			if(!comp.isValid())
+			if (!comp.isValid())
 				container.repaint();
 		}
 	}
 
-	public void mouseClicked(MouseEvent me) {
+	public void mouseClicked(MouseEvent me)
+	{
 		dispatchEvent(me);
 	}
 
-	public void mouseEntered(MouseEvent me) {
+	public void mouseEntered(MouseEvent me)
+	{
 		dispatchEvent(me);
 	}
 
-	public void mouseExited(MouseEvent me) {
+	public void mouseExited(MouseEvent me)
+	{
 		dispatchEvent(me);
 	}
 
-	public void mousePressed(MouseEvent me) {
+	public void mousePressed(MouseEvent me)
+	{
 		dispatchEvent(me);
 	}
 
-	public void mouseReleased(MouseEvent me) {
+	public void mouseReleased(MouseEvent me)
+	{
 		dispatchEvent(me);
 	}
 }

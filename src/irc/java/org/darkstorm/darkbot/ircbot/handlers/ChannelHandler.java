@@ -10,7 +10,8 @@ import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 import org.darkstorm.darkbot.ircbot.util.Tools;
 
-public class ChannelHandler extends IRCHandler implements MessageListener {
+public class ChannelHandler extends IRCHandler implements MessageListener
+{
 	private Map<String, Channel> channels;
 	private String joinMessage = null;
 	private String partMessage = null;
@@ -18,7 +19,8 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 
 	private String[] channelsToJoin;
 
-	public ChannelHandler(IRCBot bot, IRCBotData botInfo) {
+	public ChannelHandler(IRCBot bot, IRCBotData botInfo)
+	{
 		super(bot);
 		channels = new HashMap<String, Channel>();
 		channelsToJoin = botInfo.channels;
@@ -26,28 +28,33 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 		eventHandler.addMessageListener(this);
 	}
 
-	public Channel newChannel(String name) {
+	public Channel newChannel(String name)
+	{
 		Channel channel = getChannel(name);
-		if(channel != null)
+		if (channel != null)
 			return channel;
 		return new Channel(this, name, "");
 	}
 
 	@Override
-	public void onMessageReceived(MessageEvent event) {
+	public void onMessageReceived(MessageEvent event)
+	{
 		Message message = event.getMessage();
 		MessageType messageType = message.getType();
-		if(messageType.equals(MessageType.JOIN)) {
+		if (messageType.equals(MessageType.JOIN))
+		{
 			JoinMessage joinMessage = (JoinMessage) message;
 			NicknameHandler nicknameHandler = bot.getNicknameHandler();
 			String nickname = nicknameHandler.getNickname();
 			Channel channel = joinMessage.getChannel();
-			synchronized(channels) {
-				if(!Tools.containsIgnoreCase(channels.keySet(),
+			synchronized (channels)
+			{
+				if (!Tools.containsIgnoreCase(channels.keySet(),
 						channel.getName()))
 					channels.put(channel.getName(), channel);
-				if(!nickname.equalsIgnoreCase(joinMessage.getUser()
-						.getNickname())) {
+				if (!nickname.equalsIgnoreCase(joinMessage.getUser()
+						.getNickname()))
+				{
 					User[] currentUsers = channel.getUsers();
 					User[] users = new User[currentUsers.length + 1];
 					System.arraycopy(currentUsers, 0, users, 0,
@@ -57,50 +64,63 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 					channel.setUsers(users);
 				}
 			}
-		} else if(messageType.equals(MessageType.PART)) {
+		} else if (messageType.equals(MessageType.PART))
+		{
 			PartMessage partMessage = (PartMessage) message;
 			NicknameHandler nicknameHandler = bot.getNicknameHandler();
 			String nickname = nicknameHandler.getNickname();
-			if(nickname.equals(partMessage.getUser().getNickname())) {
+			if (nickname.equals(partMessage.getUser().getNickname()))
+			{
 				Channel channel = partMessage.getChannel();
-				synchronized(channels) {
-					for(String joinedChannel : channels.keySet())
-						if(joinedChannel.equalsIgnoreCase(channel.getName()))
+				synchronized (channels)
+				{
+					for (String joinedChannel : channels.keySet())
+						if (joinedChannel.equalsIgnoreCase(channel.getName()))
 							channels.remove(joinedChannel);
 				}
 			}
-		} else if(messageType.equals(MessageType.KICK)) {
+		} else if (messageType.equals(MessageType.KICK))
+		{
 			KickMessage kickMessage = (KickMessage) message;
 			NicknameHandler nicknameHandler = bot.getNicknameHandler();
 			String nickname = nicknameHandler.getNickname();
-			if(nickname.equals(kickMessage.getTargetNickname())) {
+			if (nickname.equals(kickMessage.getTargetNickname()))
+			{
 				Channel channel = kickMessage.getChannel();
-				synchronized(channels) {
-					for(String joinedChannel : channels.keySet())
-						if(joinedChannel.equalsIgnoreCase(channel.getName()))
+				synchronized (channels)
+				{
+					for (String joinedChannel : channels.keySet())
+						if (joinedChannel.equalsIgnoreCase(channel.getName()))
 							channels.remove(joinedChannel);
 				}
 			}
-		} else if(messageType.equals(MessageType.SERVER)) {
+		} else if (messageType.equals(MessageType.SERVER))
+		{
 			ServerResponseMessage serverResponse = (ServerResponseMessage) message;
 			int responseCode = serverResponse.getResponseCode();
 			String[] extraInfo = serverResponse.getExtraInfo();
-			switch(responseCode) {
-			case ServerResponseCodes.RPL_NAMREPLY: {
+			switch (responseCode)
+			{
+			case ServerResponseCodes.RPL_NAMREPLY:
+			{
 				String channelName = extraInfo[1];
 				Channel channel = newChannel(channelName);
-				synchronized(channels) {
-					if(getChannel(channelName) == null)
+				synchronized (channels)
+				{
+					if (getChannel(channelName) == null)
 						channels.put(channel.getName(), channel);
 				}
 				String[] userNicks = extraInfo[2].split(" ");
 				User[] users = new User[userNicks.length];
-				for(int i = 0; i < userNicks.length; i++) {
+				for (int i = 0; i < userNicks.length; i++)
+				{
 					String userNick = userNicks[i];
 					String prefix = "";
-					for(int j = 0; j < prefixes.length(); j++) {
-						if(userNick.startsWith(Character.toString(prefixes
-								.charAt(j)))) {
+					for (int j = 0; j < prefixes.length(); j++)
+					{
+						if (userNick.startsWith(Character.toString(prefixes
+								.charAt(j))))
+						{
 							userNick = userNick.substring(1);
 							prefix = Character.toString(prefixes.charAt(j));
 						}
@@ -109,10 +129,13 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 				}
 				List<User> userList = new ArrayList<User>(Arrays.asList(channel
 						.getUsers()));
-				newUserLabel: for(User user : users) {
-					for(User currentUser : userList) {
+				newUserLabel: for (User user : users)
+				{
+					for (User currentUser : userList)
+					{
 						String nickname = user.getNickname();
-						if(nickname.equalsIgnoreCase(currentUser.getNickname()))
+						if (nickname
+								.equalsIgnoreCase(currentUser.getNickname()))
 							break newUserLabel;
 					}
 					userList.add(user);
@@ -122,9 +145,12 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 			}
 			case ServerResponseCodes.RPL_ENDOFMOTD:
 			case ServerResponseCodes.ERR_NOMOTD:
-				if(channelsToJoin != null) {
-					synchronized(channels) {
-						for(String channelToJoin : channelsToJoin) {
+				if (channelsToJoin != null)
+				{
+					synchronized (channels)
+					{
+						for (String channelToJoin : channelsToJoin)
+						{
 							Channel channel = newChannel(channelToJoin);
 							channel.join();
 							channels.put(channelToJoin, channel);
@@ -137,62 +163,78 @@ public class ChannelHandler extends IRCHandler implements MessageListener {
 	}
 
 	@Override
-	public void onMessageSent(MessageEvent event) {
+	public void onMessageSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public void onNoticeSent(MessageEvent event) {
+	public void onNoticeSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public void onRawSent(MessageEvent event) {
+	public void onRawSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "ChannelHandler";
 	}
 
-	public String getJoinMessage() {
+	public String getJoinMessage()
+	{
 		return joinMessage;
 	}
 
-	public String getPartMessage() {
+	public String getPartMessage()
+	{
 		return partMessage;
 	}
 
-	public String getPrefixes() {
+	public String getPrefixes()
+	{
 		return prefixes;
 	}
 
-	public void setJoinMessage(String joinMessage) {
+	public void setJoinMessage(String joinMessage)
+	{
 		this.joinMessage = joinMessage;
 	}
 
-	public void setPartMessage(String partMessage) {
+	public void setPartMessage(String partMessage)
+	{
 		this.partMessage = partMessage;
 	}
 
-	public void setPrefixes(String prefixes) {
+	public void setPrefixes(String prefixes)
+	{
 		this.prefixes = prefixes;
 	}
 
-	public String[] getChannelNames() {
-		synchronized(channels) {
+	public String[] getChannelNames()
+	{
+		synchronized (channels)
+		{
 			Set<String> channelNameList = channels.keySet();
 			return channelNameList.toArray(new String[channelNameList.size()]);
 		}
 	}
 
-	public Channel[] getChannels() {
-		synchronized(channels) {
+	public Channel[] getChannels()
+	{
+		synchronized (channels)
+		{
 			Collection<Channel> channelList = channels.values();
 			return channelList.toArray(new Channel[channelList.size()]);
 		}
 	}
 
-	public Channel getChannel(String name) {
-		synchronized(channels) {
+	public Channel getChannel(String name)
+	{
+		synchronized (channels)
+		{
 			return Tools.getIgnoreCase(channels, name);
 		}
 	}

@@ -2,12 +2,15 @@ package org.darkstorm.darkbot.minecraftbot.protocol.v61.packets;
 
 import java.io.*;
 
-public class Packet33RelEntityMoveLook extends Packet30Entity {
-	public Packet33RelEntityMoveLook() {
+public class Packet33RelEntityMoveLook extends Packet30Entity
+{
+	public Packet33RelEntityMoveLook()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		super.readData(in);
 		xPosition = in.readByte();
 		yPosition = in.readByte();
@@ -17,7 +20,8 @@ public class Packet33RelEntityMoveLook extends Packet30Entity {
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 33;
 	}
 }

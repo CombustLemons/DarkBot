@@ -13,7 +13,8 @@ import org.jdom.output.*;
  * @created Jun 30, 2010 at 5:48:44 PM
  * @author DarkStorm
  */
-public class SettingsHandler {
+public class SettingsHandler
+{
 	private SettingList settings;
 	private SettingList defaultSettings;
 	private XMLOutputter prettyXMLOutputter;
@@ -21,15 +22,17 @@ public class SettingsHandler {
 
 	private volatile boolean saveSettingsOnExit = true;
 
-	public SettingsHandler(String directory, String fileName) {
+	public SettingsHandler(String directory, String fileName)
+	{
 		this(directory, fileName, new HashMap<String, String>());
 	}
 
 	public SettingsHandler(String directory, String fileName,
-			SettingList defaultSettings) {
-		if(fileName == null)
+			SettingList defaultSettings)
+	{
+		if (fileName == null)
 			throw new NullPointerException();
-		if(defaultSettings == null)
+		if (defaultSettings == null)
 			throw new NullPointerException();
 
 		this.defaultSettings = defaultSettings;
@@ -38,10 +41,11 @@ public class SettingsHandler {
 	}
 
 	public SettingsHandler(String directory, String fileName,
-			Map<String, String> defaultSettings) {
-		if(fileName == null)
+			Map<String, String> defaultSettings)
+	{
+		if (fileName == null)
 			throw new IllegalArgumentException("param 0 (type String) is null");
-		if(defaultSettings == null)
+		if (defaultSettings == null)
 			throw new IllegalArgumentException(
 					"param 1 (type HashMap<String, String>) is null");
 		instantiateVariables(directory, fileName);
@@ -49,12 +53,14 @@ public class SettingsHandler {
 		init();
 	}
 
-	private SettingList produceSettingsFromMap(Map<String, String> settingsMap) {
+	private SettingList produceSettingsFromMap(Map<String, String> settingsMap)
+	{
 		SettingList settings = new SettingList();
-		for(Entry<String, String> entry : settingsMap.entrySet()) {
+		for (Entry<String, String> entry : settingsMap.entrySet())
+		{
 			String entryKey = entry.getKey();
 			String entryValue = entry.getValue();
-			if(entryKey == null || entryValue == null)
+			if (entryKey == null || entryValue == null)
 				continue;
 			Setting setting = new Setting(entry.getKey(), entry.getValue());
 			settings.add(setting);
@@ -62,32 +68,38 @@ public class SettingsHandler {
 		return settings;
 	}
 
-	private void instantiateVariables(String directory, String fileName) {
+	private void instantiateVariables(String directory, String fileName)
+	{
 		settings = new SettingList();
 		locateSettingsFileDir(directory, fileName);
 		prettyXMLOutputter = new XMLOutputter(Format.getPrettyFormat());
 	}
 
-	private void locateSettingsFileDir(String directory, String fileName) {
+	private void locateSettingsFileDir(String directory, String fileName)
+	{
 		File settingsFileDir = FileTools.getDirectoryFormatted(directory);
-		if(!settingsFileDir.exists())
+		if (!settingsFileDir.exists())
 			settingsFileDir.mkdirs();
 		settingsFile = new File(settingsFileDir.getPath() + "/" + fileName
 				+ ".xml");
 	}
 
-	private void init() {
+	private void init()
+	{
 		createShutdownHook();
 		reloadSettings();
 		addMissingDefaultSettings();
 	}
 
-	private void createShutdownHook() {
+	private void createShutdownHook()
+	{
 		Runtime runtime = Runtime.getRuntime();
-		Runnable shutdownRunnable = new Runnable() {
+		Runnable shutdownRunnable = new Runnable()
+		{
 			@Override
-			public void run() {
-				if(saveSettingsOnExit)
+			public void run()
+			{
+				if (saveSettingsOnExit)
 					saveSettings();
 			}
 		};
@@ -95,8 +107,10 @@ public class SettingsHandler {
 		runtime.addShutdownHook(shutdownHook);
 	}
 
-	public final void reloadSettings() {
-		synchronized(settingsFile) {
+	public final void reloadSettings()
+	{
+		synchronized (settingsFile)
+		{
 			settings.clear();
 			checkFile();
 			readAndParseDocuments();
@@ -104,53 +118,65 @@ public class SettingsHandler {
 		}
 	}
 
-	private void checkFile() {
-		if(!settingsFile.exists()) {
+	private void checkFile()
+	{
+		if (!settingsFile.exists())
+		{
 			settings.addAll(defaultSettings);
 			saveSettings();
 		}
 	}
 
-	private void readAndParseDocuments() {
-		try {
+	private void readAndParseDocuments()
+	{
+		try
+		{
 			List<Element> settingElementList = readDocument();
 			parseElementsToSettings(settingElementList);
 			addMissingDefaultSettings();
-		} catch(JDOMException e) {
+		} catch (JDOMException e)
+		{
 			System.err.println("The settings file is corrupt or invalid.");
-		} catch(IOException exception) {
+		} catch (IOException exception)
+		{
 			System.err.println("Unable to connect/read error");
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Element> readDocument() throws JDOMException, IOException {
+	private List<Element> readDocument() throws JDOMException, IOException
+	{
 		Document doc = new SAXBuilder().build(settingsFile);
 		Element rootElement = doc.getRootElement();
 		return rootElement.getChildren("setting");
 	}
 
-	private void parseElementsToSettings(List<Element> settingElementList) {
-		for(Element settingElement : settingElementList) {
+	private void parseElementsToSettings(List<Element> settingElementList)
+	{
+		for (Element settingElement : settingElementList)
+		{
 			Setting setting = createSettingForElement(settingElement);
 			settings.add(setting);
 		}
 	}
 
-	private Setting createSettingForElement(Element element) {
+	private Setting createSettingForElement(Element element)
+	{
 		String key = element.getAttributeValue("key");
 		String value = element.getAttributeValue("value");
-		if(value == null)
+		if (value == null)
 			value = "";
 		SettingList subSettings = readSubSettings(element);
 		Setting setting = new Setting(key, value, subSettings);
 		return setting;
 	}
 
-	private SettingList readSubSettings(Element settingElement) {
+	private SettingList readSubSettings(Element settingElement)
+	{
 		SettingList subSettings = new SettingList();
 		Element subSettingContainer = settingElement.getChild("subsettings");
-		if(subSettingContainer != null) {
+		if (subSettingContainer != null)
+		{
 			readSubSettingElements(subSettingContainer, subSettings);
 		}
 		return subSettings;
@@ -158,36 +184,46 @@ public class SettingsHandler {
 
 	@SuppressWarnings("unchecked")
 	private void readSubSettingElements(Element subSettingContainer,
-			SettingList subSettings) {
+			SettingList subSettings)
+	{
 		List<Element> subSettingElements = subSettingContainer
 				.getChildren("setting");
-		for(Element subSettingElement : subSettingElements) {
+		for (Element subSettingElement : subSettingElements)
+		{
 			Setting subSetting = createSettingForElement(subSettingElement);
 			subSettings.add(subSetting);
 		}
 	}
 
-	private void addMissingDefaultSettings() {
-		for(Setting defaultSetting : defaultSettings) {
+	private void addMissingDefaultSettings()
+	{
+		for (Setting defaultSetting : defaultSettings)
+		{
 			String defaultSettingKey = defaultSetting.getKey();
 			boolean containsDefaultSetting = false;
-			for(Setting setting : settings) {
+			for (Setting setting : settings)
+			{
 				String settingKey = setting.getKey();
-				if(settingKey.equals(defaultSettingKey))
+				if (settingKey.equals(defaultSettingKey))
 					containsDefaultSetting = true;
 			}
-			if(!containsDefaultSetting)
+			if (!containsDefaultSetting)
 				settings.add(defaultSetting);
 		}
 	}
 
-	public final void saveSettings() {
-		synchronized(settingsFile) {
-			try {
+	public final void saveSettings()
+	{
+		synchronized (settingsFile)
+		{
+			try
+			{
 				Document doc = new Document(new Element("settings"));
 				Element rootElement = doc.getRootElement();
-				for(Setting setting : settings) {
-					if(setting != null && setting.getKey() != null) {
+				for (Setting setting : settings)
+				{
+					if (setting != null && setting.getKey() != null)
+					{
 						Element settingElement = createElementForSetting(setting);
 						handleSubSettings(setting, settingElement);
 						rootElement.addContent(settingElement);
@@ -197,7 +233,8 @@ public class SettingsHandler {
 						settingsFile);
 				prettyXMLOutputter.output(doc, fileWriterToSettingsFile);
 				fileWriterToSettingsFile.close();
-			} catch(Exception e) {
+			} catch (Exception e)
+			{
 				System.err.println("Error while saving settings to "
 						+ settingsFile.getPath());
 			}
@@ -205,9 +242,11 @@ public class SettingsHandler {
 		}
 	}
 
-	private void handleSubSettings(Setting setting, Element settingElement) {
+	private void handleSubSettings(Setting setting, Element settingElement)
+	{
 		SettingList subSettings = setting.getSubSettings();
-		if(subSettings.size() > 0) {
+		if (subSettings.size() > 0)
+		{
 			Element subSettingsElement = new Element("subsettings");
 			createSubSettingElements(subSettings, subSettingsElement);
 			settingElement.addContent(subSettingsElement);
@@ -215,33 +254,40 @@ public class SettingsHandler {
 	}
 
 	private void createSubSettingElements(SettingList subSettings,
-			Element subSettingsElement) {
-		for(Setting subSetting : subSettings) {
-			if(subSetting != null && subSetting.getKey() != null) {
+			Element subSettingsElement)
+	{
+		for (Setting subSetting : subSettings)
+		{
+			if (subSetting != null && subSetting.getKey() != null)
+			{
 				Element subSettingElement = createElementForSetting(subSetting);
 				subSettingsElement.addContent(subSettingElement);
 			}
 		}
 	}
 
-	private Element createElementForSetting(Setting setting) {
+	private Element createElementForSetting(Setting setting)
+	{
 		Element settingElement = new Element("setting");
 		settingElement.setAttribute("key", setting.getKey());
 		String settingValue = setting.getValue();
-		if(settingValue != null && !settingValue.equals(""))
+		if (settingValue != null && !settingValue.equals(""))
 			settingElement.setAttribute("value", setting.getValue());
 		return settingElement;
 	}
 
-	public SettingList getSettings() {
+	public SettingList getSettings()
+	{
 		return settings;
 	}
 
-	public void setSaveSettingsOnExit(boolean saveSettingsOnExit) {
+	public void setSaveSettingsOnExit(boolean saveSettingsOnExit)
+	{
 		this.saveSettingsOnExit = saveSettingsOnExit;
 	}
 
-	public boolean isSaveSettingsOnExit() {
+	public boolean isSaveSettingsOnExit()
+	{
 		return saveSettingsOnExit;
 	}
 

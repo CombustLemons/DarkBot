@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet62NamedSoundEffect extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public String soundName;
 
 	public int xPosition;
@@ -15,10 +16,12 @@ public class Packet62NamedSoundEffect extends AbstractPacket implements
 	public float volume;
 	public int pitch;
 
-	public Packet62NamedSoundEffect() {
+	public Packet62NamedSoundEffect()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		soundName = readString(in, 32);
 		xPosition = in.readInt();
 		yPosition = in.readInt();
@@ -28,7 +31,8 @@ public class Packet62NamedSoundEffect extends AbstractPacket implements
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 62;
 	}
 }

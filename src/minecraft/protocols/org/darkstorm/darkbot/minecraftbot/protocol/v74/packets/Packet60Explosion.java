@@ -7,17 +7,20 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.block.BlockLocation;
 
-public class Packet60Explosion extends AbstractPacket implements ReadablePacket {
+public class Packet60Explosion extends AbstractPacket implements ReadablePacket
+{
 	public double explosionX, explosionY, explosionZ;
 	public float explosionSize;
 	public Set<BlockLocation> destroyedBlockPositions;
 
 	public float unknownX, unknownY, unknownZ;
 
-	public Packet60Explosion() {
+	public Packet60Explosion()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		explosionX = in.readDouble();
 		explosionY = in.readDouble();
 		explosionZ = in.readDouble();
@@ -28,7 +31,8 @@ public class Packet60Explosion extends AbstractPacket implements ReadablePacket 
 		int k = (int) explosionY;
 		int l = (int) explosionZ;
 
-		for(int i1 = 0; i1 < i; i1++) {
+		for (int i1 = 0; i1 < i; i1++)
+		{
 			int j1 = in.readByte() + j;
 			int k1 = in.readByte() + k;
 			int l1 = in.readByte() + l;
@@ -40,7 +44,8 @@ public class Packet60Explosion extends AbstractPacket implements ReadablePacket 
 		unknownZ = in.readFloat();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 60;
 	}
 }

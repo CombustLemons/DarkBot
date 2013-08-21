@@ -4,16 +4,20 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet2Handshake extends AbstractPacket implements WriteablePacket {
+public class Packet2Handshake extends AbstractPacket implements WriteablePacket
+{
 	public int protocolVersion;
 	public String username;
 	public String serverHost;
 	public int serverPort;
 
-	public Packet2Handshake() {
+	public Packet2Handshake()
+	{
 	}
 
-	public Packet2Handshake(int protocolVersion, String username, String serverHost, int serverPort) {
+	public Packet2Handshake(int protocolVersion, String username,
+			String serverHost, int serverPort)
+	{
 		this.protocolVersion = protocolVersion;
 		this.username = username;
 		this.serverHost = serverHost;
@@ -21,7 +25,8 @@ public class Packet2Handshake extends AbstractPacket implements WriteablePacket 
 	}
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeByte(protocolVersion);
 		writeString(username, out);
 		writeString(serverHost, out);
@@ -29,7 +34,8 @@ public class Packet2Handshake extends AbstractPacket implements WriteablePacket 
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 2;
 	}
 }

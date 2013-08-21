@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.mcspambot.commands;
 
-public interface Command {
+public interface Command
+{
 	public String getName();
 
 	public String getDescription();

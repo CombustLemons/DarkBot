@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.minecraftbot.world.entity;
 
-public class WatchableObject {
+public class WatchableObject
+{
 	private final int objectType;
 
 	/** id of max 31 */
@@ -9,35 +10,42 @@ public class WatchableObject {
 
 	// private boolean isWatching;
 
-	public WatchableObject(int par1, int par2, Object par3Obj) {
+	public WatchableObject(int par1, int par2, Object par3Obj)
+	{
 		dataValueId = par2;
 		watchedObject = par3Obj;
 		objectType = par1;
 		// isWatching = true;
 	}
 
-	public int getDataValueId() {
+	public int getDataValueId()
+	{
 		return dataValueId;
 	}
 
-	public void setObject(Object par1Obj) {
+	public void setObject(Object par1Obj)
+	{
 		watchedObject = par1Obj;
 	}
 
-	public Object getObject() {
+	public Object getObject()
+	{
 		return watchedObject;
 	}
 
-	public int getObjectType() {
+	public int getObjectType()
+	{
 		return objectType;
 	}
 
-	public void setWatching(boolean par1) {
+	public void setWatching(boolean par1)
+	{
 		// isWatching = par1;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return watchedObject == null ? "null" : watchedObject.toString();
 	}
 }

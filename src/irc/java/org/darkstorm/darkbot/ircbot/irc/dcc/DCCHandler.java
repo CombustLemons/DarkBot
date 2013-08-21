@@ -27,7 +27,8 @@ import org.darkstorm.darkbot.ircbot.events.DCCEvent;
  *         href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version 1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
  */
-public class DCCHandler {
+public class DCCHandler
+{
 	private final IRCBot bot;
 	private final Vector<DCCFileTransfer> awaitingResume = new Vector<DCCFileTransfer>();
 
@@ -40,7 +41,8 @@ public class DCCHandler {
 	 * @param bot
 	 *            The PircBot whose DCC events this class will handle.
 	 */
-	public DCCHandler(IRCBot bot) {
+	public DCCHandler(IRCBot bot)
+	{
 		this.bot = bot;
 	}
 
@@ -50,19 +52,23 @@ public class DCCHandler {
 	 * @return True if the type of request was handled successfully.
 	 */
 	public boolean processRequest(String nick, String login, String hostname,
-			String request) {
+			String request)
+	{
 		StringTokenizer tokenizer = new StringTokenizer(request);
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
 		String filename = tokenizer.nextToken();
 
-		if(type.equals("SEND")) {
+		if (type.equals("SEND"))
+		{
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long size = -1;
-			try {
+			try
+			{
 				size = Long.parseLong(tokenizer.nextToken());
-			} catch(Exception e) {
+			} catch (Exception e)
+			{
 				// Stick with the old value.
 			}
 
@@ -71,62 +77,76 @@ public class DCCHandler {
 			bot.getEventHandler().onIncomingFileTransfer(
 					new DCCEvent(this, transfer));
 
-		} else if(type.equals("RESUME")) {
+		} else if (type.equals("RESUME"))
+		{
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
 			DCCFileTransfer transfer = null;
-			synchronized(awaitingResume) {
-				for(int i = 0; i < awaitingResume.size(); i++) {
+			synchronized (awaitingResume)
+			{
+				for (int i = 0; i < awaitingResume.size(); i++)
+				{
 					transfer = awaitingResume.elementAt(i);
-					if(transfer.getNick().equals(nick)
-							&& transfer.getPort() == port) {
+					if (transfer.getNick().equals(nick)
+							&& transfer.getPort() == port)
+					{
 						awaitingResume.removeElementAt(i);
 						break;
 					}
 				}
 			}
 
-			if(transfer != null) {
+			if (transfer != null)
+			{
 				transfer.setProgress(progress);
 				bot.getMessageHandler().sendCTCPNotice(nick,
 						"DCC ACCEPT file.ext " + port + " " + progress);
 			}
 
-		} else if(type.equals("ACCEPT")) {
+		} else if (type.equals("ACCEPT"))
+		{
 			int port = Integer.parseInt(tokenizer.nextToken());
 
 			DCCFileTransfer transfer = null;
-			synchronized(awaitingResume) {
-				for(int i = 0; i < awaitingResume.size(); i++) {
+			synchronized (awaitingResume)
+			{
+				for (int i = 0; i < awaitingResume.size(); i++)
+				{
 					transfer = awaitingResume.elementAt(i);
-					if(transfer.getNick().equals(nick)
-							&& transfer.getPort() == port) {
+					if (transfer.getNick().equals(nick)
+							&& transfer.getPort() == port)
+					{
 						awaitingResume.removeElementAt(i);
 						break;
 					}
 				}
 			}
 
-			if(transfer != null) {
+			if (transfer != null)
+			{
 				transfer.doReceive(transfer.getFile(), true);
 			}
 
-		} else if(type.equals("CHAT")) {
+		} else if (type.equals("CHAT"))
+		{
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
 			final DCCChat chat = new DCCChat(bot, nick, login, hostname,
 					address, port);
 
-			new Thread() {
+			new Thread()
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					bot.getEventHandler().onIncomingChatRequest(
 							new DCCEvent(DCCHandler.this, chat));
 				}
 			}.start();
-		} else {
+		} else
+		{
 			return false;
 		}
 
@@ -139,8 +159,10 @@ public class DCCHandler {
 	 * @param transfer
 	 *            the DccFileTransfer that may be resumed.
 	 */
-	public void addAwaitingResume(DCCFileTransfer transfer) {
-		synchronized(awaitingResume) {
+	public void addAwaitingResume(DCCFileTransfer transfer)
+	{
+		synchronized (awaitingResume)
+		{
 			awaitingResume.addElement(transfer);
 		}
 	}
@@ -148,15 +170,18 @@ public class DCCHandler {
 	/**
 	 * Remove this transfer from the list of those awaiting resuming.
 	 */
-	public void removeAwaitingResume(DCCFileTransfer transfer) {
+	public void removeAwaitingResume(DCCFileTransfer transfer)
+	{
 		awaitingResume.removeElement(transfer);
 	}
 
-	public InetAddress getDCCInetAddress() {
+	public InetAddress getDCCInetAddress()
+	{
 		return dccInetAddress;
 	}
 
-	public List<Integer> getDCCPorts() {
+	public List<Integer> getDCCPorts()
+	{
 		return dccPorts;
 	}
 }

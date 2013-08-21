@@ -2,30 +2,36 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 
-public class SignUpdateEvent extends ProtocolEvent {
+public class SignUpdateEvent extends ProtocolEvent
+{
 	private final int x, y, z;
 	private final String[] text;
 
-	public SignUpdateEvent(int x, int y, int z, String[] text) {
+	public SignUpdateEvent(int x, int y, int z, String[] text)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.text = text;
 	}
 
-	public int getX() {
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getZ() {
+	public int getZ()
+	{
 		return z;
 	}
 
-	public String[] getText() {
+	public String[] getText()
+	{
 		return text.clone();
 	}
 }

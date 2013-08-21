@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet34EntityTeleport extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 
 	public int xPosition;
@@ -14,10 +15,12 @@ public class Packet34EntityTeleport extends AbstractPacket implements
 	public byte yaw;
 	public byte pitch;
 
-	public Packet34EntityTeleport() {
+	public Packet34EntityTeleport()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		xPosition = in.readInt();
 		yPosition = in.readInt();
@@ -26,7 +29,8 @@ public class Packet34EntityTeleport extends AbstractPacket implements
 		pitch = (byte) in.read();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 34;
 	}
 }

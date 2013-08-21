@@ -2,7 +2,8 @@ package org.darkstorm.darkbot.minecraftbot.world.pathfinding;
 
 import org.darkstorm.darkbot.minecraftbot.world.WorldLocation;
 
-public interface PathNode {
+public interface PathNode
+{
 	public WorldLocation getLocation();
 
 	public PathNode getNext();

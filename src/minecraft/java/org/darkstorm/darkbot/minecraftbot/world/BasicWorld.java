@@ -22,7 +22,8 @@ import org.darkstorm.darkbot.minecraftbot.world.entity.*;
 import org.darkstorm.darkbot.minecraftbot.world.pathfinding.PathSearchProvider;
 import org.darkstorm.darkbot.minecraftbot.world.pathfinding.astar.AStarPathSearchProvider;
 
-public final class BasicWorld implements World, EventListener {
+public final class BasicWorld implements World, EventListener
+{
 	private final MinecraftBot bot;
 	private final WorldType type;
 	private final Dimension dimension;
@@ -34,7 +35,9 @@ public final class BasicWorld implements World, EventListener {
 
 	private long time, age;
 
-	public BasicWorld(MinecraftBot bot, WorldType type, Dimension dimension, Difficulty difficulty, int height) {
+	public BasicWorld(MinecraftBot bot, WorldType type, Dimension dimension,
+			Difficulty difficulty, int height)
+	{
 		this.bot = bot;
 		this.type = type;
 		this.height = height;
@@ -48,61 +51,73 @@ public final class BasicWorld implements World, EventListener {
 	}
 
 	@EventHandler
-	public void onPlayerEquipmentUpdate(PlayerEquipmentUpdateEvent event) {
+	public void onPlayerEquipmentUpdate(PlayerEquipmentUpdateEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null || !(entity instanceof LivingEntity))
+		if (entity == null || !(entity instanceof LivingEntity))
 			return;
 		LivingEntity livingEntity = (LivingEntity) entity;
 		livingEntity.setWornItemAt(event.getSlot(), event.getItem());
 	}
 
 	@EventHandler
-	public void onTimeUpdate(TimeUpdateEvent event) {
+	public void onTimeUpdate(TimeUpdateEvent event)
+	{
 		time = event.getTime();
 		age = event.getWorldAge();
 	}
 
 	@EventHandler
-	public void onRespawn(RespawnEvent event) {
-		synchronized(chunks) {
+	public void onRespawn(RespawnEvent event)
+	{
+		synchronized (chunks)
+		{
 			chunks.clear();
 		}
 	}
 
 	@EventHandler
-	public void onPlayerSpawn(PlayerSpawnEvent event) {
+	public void onPlayerSpawn(PlayerSpawnEvent event)
+	{
 		RotatedSpawnLocation location = event.getLocation();
-		PlayerEntity entity = new PlayerEntity(this, event.getEntityId(), event.getPlayerName());
+		PlayerEntity entity = new PlayerEntity(this, event.getEntityId(),
+				event.getPlayerName());
 		entity.setX(location.getX());
 		entity.setY(location.getY());
 		entity.setZ(location.getZ());
 		entity.setYaw(location.getYaw());
 		entity.setPitch(location.getPitch());
 		entity.setWornItemAt(0, event.getHeldItem());
-		if(event.getMetadata() != null)
+		if (event.getMetadata() != null)
 			entity.updateMetadata(event.getMetadata());
 		spawnEntity(entity);
 	}
 
 	@EventHandler
-	public void onEntityCollect(EntityCollectEvent event) {
+	public void onEntityCollect(EntityCollectEvent event)
+	{
 		Entity entity = getEntityById(event.getCollectedId());
-		if(entity != null)
+		if (entity != null)
 			despawnEntity(entity);
 	}
 
 	@EventHandler
-	public void onObjectEntitySpawn(ObjectEntitySpawnEvent event) {
+	public void onObjectEntitySpawn(ObjectEntitySpawnEvent event)
+	{
 		RotatedSpawnLocation spawnLocation = event.getLocation();
 		ObjectSpawnData spawnData = event.getSpawnData();
-		Class<? extends Entity> entityClass = EntityList.getObjectEntityClass(spawnData.getType());
-		if(entityClass == null)
+		Class<? extends Entity> entityClass = EntityList
+				.getObjectEntityClass(spawnData.getType());
+		if (entityClass == null)
 			return;
 		Entity entity;
-		try {
-			Constructor<? extends Entity> constructor = entityClass.getConstructor(World.class, Integer.TYPE);
+		try
+		{
+			Constructor<? extends Entity> constructor = entityClass
+					.getConstructor(World.class, Integer.TYPE);
 			entity = constructor.newInstance(this, event.getEntityId());
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 			return;
 		}
@@ -111,26 +126,34 @@ public final class BasicWorld implements World, EventListener {
 		entity.setZ(spawnLocation.getZ());
 		entity.setYaw(spawnLocation.getYaw());
 		entity.setPitch(spawnLocation.getPitch());
-		if(entity instanceof ThrownEntity && event.getSpawnData() instanceof ThrownObjectSpawnData) {
-			Entity thrower = getEntityById(((ThrownObjectSpawnData) event.getSpawnData()).getThrowerId());
-			if(thrower != null)
+		if (entity instanceof ThrownEntity
+				&& event.getSpawnData() instanceof ThrownObjectSpawnData)
+		{
+			Entity thrower = getEntityById(((ThrownObjectSpawnData) event
+					.getSpawnData()).getThrowerId());
+			if (thrower != null)
 				((ThrownEntity) entity).setThrower(thrower);
 		}
 		spawnEntity(entity);
 	}
 
 	@EventHandler
-	public void onLivingEntitySpawn(LivingEntitySpawnEvent event) {
+	public void onLivingEntitySpawn(LivingEntitySpawnEvent event)
+	{
 		LivingEntitySpawnData spawnData = event.getSpawnData();
 		LivingEntitySpawnLocation spawnLocation = event.getLocation();
-		Class<? extends LivingEntity> entityClass = EntityList.getLivingEntityClass(spawnData.getType());
-		if(entityClass == null)
+		Class<? extends LivingEntity> entityClass = EntityList
+				.getLivingEntityClass(spawnData.getType());
+		if (entityClass == null)
 			return;
 		LivingEntity entity;
-		try {
-			Constructor<? extends LivingEntity> constructor = entityClass.getConstructor(World.class, Integer.TYPE);
+		try
+		{
+			Constructor<? extends LivingEntity> constructor = entityClass
+					.getConstructor(World.class, Integer.TYPE);
 			entity = constructor.newInstance(this, event.getEntityId());
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 			return;
 		}
@@ -141,15 +164,17 @@ public final class BasicWorld implements World, EventListener {
 		entity.setPitch(spawnLocation.getPitch());
 		entity.setHeadYaw(spawnLocation.getHeadYaw());
 
-		if(event.getMetadata() != null)
+		if (event.getMetadata() != null)
 			entity.updateMetadata(event.getMetadata());
 		spawnEntity(entity);
 	}
 
 	@EventHandler
-	public void onPaintingSpawn(PaintingSpawnEvent event) {
+	public void onPaintingSpawn(PaintingSpawnEvent event)
+	{
 		PaintingSpawnLocation spawnLocation = event.getLocation();
-		PaintingEntity entity = new PaintingEntity(this, event.getEntityId(), ArtType.getArtTypeByName(event.getTitle()));
+		PaintingEntity entity = new PaintingEntity(this, event.getEntityId(),
+				ArtType.getArtTypeByName(event.getTitle()));
 		entity.setX(spawnLocation.getX());
 		entity.setY(spawnLocation.getY());
 		entity.setZ(spawnLocation.getZ());
@@ -158,18 +183,21 @@ public final class BasicWorld implements World, EventListener {
 	}
 
 	@EventHandler
-	public void onEntityDespawn(EntityDespawnEvent event) {
+	public void onEntityDespawn(EntityDespawnEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity != null) {
+		if (entity != null)
+		{
 			despawnEntity(entity);
 			entity.setDead(true);
 		}
 	}
 
 	@EventHandler
-	public void onEntityMove(EntityMoveEvent event) {
+	public void onEntityMove(EntityMoveEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null)
+		if (entity == null)
 			return;
 		entity.setX(entity.getX() + event.getX());
 		entity.setY(entity.getY() + event.getY());
@@ -177,18 +205,20 @@ public final class BasicWorld implements World, EventListener {
 	}
 
 	@EventHandler
-	public void onEntityRotate(EntityRotateEvent event) {
+	public void onEntityRotate(EntityRotateEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null)
+		if (entity == null)
 			return;
 		entity.setYaw(event.getYaw());
 		entity.setPitch(event.getPitch());
 	}
 
 	@EventHandler
-	public void onEntityTeleport(EntityTeleportEvent event) {
+	public void onEntityTeleport(EntityTeleportEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null)
+		if (entity == null)
 			return;
 		entity.setX(event.getX());
 		entity.setY(event.getY());
@@ -198,69 +228,88 @@ public final class BasicWorld implements World, EventListener {
 	}
 
 	@EventHandler
-	public void onEntityHeadRotate(EntityHeadRotateEvent event) {
+	public void onEntityHeadRotate(EntityHeadRotateEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null || !(entity instanceof LivingEntity))
+		if (entity == null || !(entity instanceof LivingEntity))
 			return;
 		((LivingEntity) entity).setHeadYaw(event.getHeadYaw());
 	}
 
 	@EventHandler
-	public void onEntityMount(EntityMountEvent event) {
+	public void onEntityMount(EntityMountEvent event)
+	{
 		Entity rider = getEntityById(event.getEntityId());
 		Entity riding = getEntityById(event.getMountedEntityId());
-		if(rider == null || riding == null)
+		if (rider == null || riding == null)
 			return;
 		rider.setRiding(riding);
 		riding.setRider(rider);
 	}
 
 	@EventHandler
-	public void onEntityDismount(EntityDismountEvent event) {
+	public void onEntityDismount(EntityDismountEvent event)
+	{
 		Entity rider = getEntityById(event.getEntityId());
-		if(rider == null)
+		if (rider == null)
 			return;
-		if(rider.getRiding() != null) {
+		if (rider.getRiding() != null)
+		{
 			rider.getRiding().setRider(null);
 			rider.setRiding(null);
 		}
 	}
 
 	@EventHandler
-	public void onEntityMetadataUpdate(EntityMetadataUpdateEvent event) {
+	public void onEntityMetadataUpdate(EntityMetadataUpdateEvent event)
+	{
 		Entity entity = getEntityById(event.getEntityId());
-		if(entity == null)
+		if (entity == null)
 			return;
 		entity.updateMetadata(event.getMetadata());
 	}
 
 	@EventHandler
-	public void onChunkLoad(org.darkstorm.darkbot.minecraftbot.events.protocol.server.ChunkLoadEvent event) {
-		ChunkLocation location = new ChunkLocation(event.getX(), event.getY(), event.getZ());
-		Chunk chunk = new Chunk(this, location, event.getBlocks(), event.getMetadata(), event.getLight(), event.getSkylight(), event.getBiomes());
-		synchronized(chunks) {
+	public void onChunkLoad(
+			org.darkstorm.darkbot.minecraftbot.events.protocol.server.ChunkLoadEvent event)
+	{
+		ChunkLocation location = new ChunkLocation(event.getX(), event.getY(),
+				event.getZ());
+		Chunk chunk = new Chunk(this, location, event.getBlocks(),
+				event.getMetadata(), event.getLight(), event.getSkylight(),
+				event.getBiomes());
+		synchronized (chunks)
+		{
 			chunks.put(location, chunk);
 		}
 		bot.getEventManager().sendEvent(new ChunkLoadEvent(this, chunk));
 	}
 
 	@EventHandler
-	public void onBlockChange(BlockChangeEvent event) {
+	public void onBlockChange(BlockChangeEvent event)
+	{
 		setBlockIdAt(event.getId(), event.getX(), event.getY(), event.getZ());
-		setBlockMetadataAt(event.getMetadata(), event.getX(), event.getY(), event.getZ());
+		setBlockMetadataAt(event.getMetadata(), event.getX(), event.getY(),
+				event.getZ());
 	}
 
 	@EventHandler
-	public void onTileEntityUpdate(TileEntityUpdateEvent event) {
-		BlockLocation location = new BlockLocation(event.getX(), event.getY(), event.getZ());
-		Class<? extends TileEntity> entityClass = EntityList.getTileEntityClass(event.getType());
-		if(entityClass == null)
+	public void onTileEntityUpdate(TileEntityUpdateEvent event)
+	{
+		BlockLocation location = new BlockLocation(event.getX(), event.getY(),
+				event.getZ());
+		Class<? extends TileEntity> entityClass = EntityList
+				.getTileEntityClass(event.getType());
+		if (entityClass == null)
 			return;
 		TileEntity entity;
-		try {
-			Constructor<? extends TileEntity> constructor = entityClass.getConstructor(NBTTagCompound.class);
+		try
+		{
+			Constructor<? extends TileEntity> constructor = entityClass
+					.getConstructor(NBTTagCompound.class);
 			entity = constructor.newInstance(event.getCompound());
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 			return;
 		}
@@ -268,232 +317,293 @@ public final class BasicWorld implements World, EventListener {
 	}
 
 	@EventHandler
-	public void onSignUpdate(SignUpdateEvent event) {
-		BlockLocation location = new BlockLocation(event.getX(), event.getY(), event.getZ());
-		setTileEntityAt(new SignTileEntity(location.getX(), location.getY(), location.getZ(), event.getText()), location);
+	public void onSignUpdate(SignUpdateEvent event)
+	{
+		BlockLocation location = new BlockLocation(event.getX(), event.getY(),
+				event.getZ());
+		setTileEntityAt(new SignTileEntity(location.getX(), location.getY(),
+				location.getZ(), event.getText()), location);
 	}
 
 	@EventHandler
-	public void onEditTileEntity(EditTileEntityEvent event) {
-		TileEntity entity = getTileEntityAt(event.getX(), event.getY(), event.getZ());
-		if(entity != null)
-			if(entity instanceof SignTileEntity)
-				bot.getEventManager().sendEvent(new EditSignEvent(entity.getLocation()));
+	public void onEditTileEntity(EditTileEntityEvent event)
+	{
+		TileEntity entity = getTileEntityAt(event.getX(), event.getY(),
+				event.getZ());
+		if (entity != null)
+			if (entity instanceof SignTileEntity)
+				bot.getEventManager().sendEvent(
+						new EditSignEvent(entity.getLocation()));
 	}
 
 	@Override
-	public void destroy() {
+	public void destroy()
+	{
 		EventManager eventManager = bot.getEventManager();
 		eventManager.unregisterListener(this);
-		synchronized(entities) {
-			for(Entity entity : entities)
+		synchronized (entities)
+		{
+			for (Entity entity : entities)
 				entity.setDead(true);
 			entities.clear();
 		}
-		synchronized(chunks) {
+		synchronized (chunks)
+		{
 			chunks.clear();
 		}
 		System.gc();
 	}
 
 	@Override
-	public MinecraftBot getBot() {
+	public MinecraftBot getBot()
+	{
 		return bot;
 	}
 
 	@Override
-	public Block getBlockAt(int x, int y, int z) {
+	public Block getBlockAt(int x, int y, int z)
+	{
 		return getBlockAt(new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public Block getBlockAt(BlockLocation location) {
+	public Block getBlockAt(BlockLocation location)
+	{
 		ChunkLocation chunkLocation = new ChunkLocation(location);
 		Chunk chunk = getChunkAt(chunkLocation);
-		if(chunk == null)
+		if (chunk == null)
 			return null;
 		BlockLocation chunkBlockOffset = new BlockLocation(chunkLocation);
 		int chunkOffsetX = location.getX() - chunkBlockOffset.getX();
 		int chunkOffsetY = location.getY() - chunkBlockOffset.getY();
 		int chunkOffsetZ = location.getZ() - chunkBlockOffset.getZ();
 		int id = chunk.getBlockIdAt(chunkOffsetX, chunkOffsetY, chunkOffsetZ);
-		int metadata = chunk.getBlockMetadataAt(chunkOffsetX, chunkOffsetY, chunkOffsetZ);
+		int metadata = chunk.getBlockMetadataAt(chunkOffsetX, chunkOffsetY,
+				chunkOffsetZ);
 		return new Block(this, chunk, location, id, metadata);
 	}
 
 	@Override
-	public int getBlockIdAt(int x, int y, int z) {
+	public int getBlockIdAt(int x, int y, int z)
+	{
 		return getBlockIdAt(new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public int getBlockIdAt(BlockLocation blockLocation) {
+	public int getBlockIdAt(BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return 0;
-		int id = chunk.getBlockIdAt(blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		int id = chunk.getBlockIdAt(
+				blockLocation.getX() - chunkBlockOffset.getX(),
+				blockLocation.getY() - chunkBlockOffset.getY(),
+				blockLocation.getZ() - chunkBlockOffset.getZ());
 		return id;
 	}
 
 	@Override
-	public void setBlockIdAt(int id, int x, int y, int z) {
+	public void setBlockIdAt(int id, int x, int y, int z)
+	{
 		setBlockIdAt(id, new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public void setBlockIdAt(int id, BlockLocation blockLocation) {
+	public void setBlockIdAt(int id, BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return;
-		chunk.setBlockIdAt(id, blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		chunk.setBlockIdAt(id, blockLocation.getX() - chunkBlockOffset.getX(),
+				blockLocation.getY() - chunkBlockOffset.getY(),
+				blockLocation.getZ() - chunkBlockOffset.getZ());
 	}
 
 	@Override
-	public int getBlockMetadataAt(int x, int y, int z) {
+	public int getBlockMetadataAt(int x, int y, int z)
+	{
 		return getBlockMetadataAt(new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public int getBlockMetadataAt(BlockLocation blockLocation) {
+	public int getBlockMetadataAt(BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return 0;
-		int metadata = chunk.getBlockMetadataAt(blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		int metadata = chunk.getBlockMetadataAt(blockLocation.getX()
+				- chunkBlockOffset.getX(), blockLocation.getY()
+				- chunkBlockOffset.getY(), blockLocation.getZ()
+				- chunkBlockOffset.getZ());
 		return metadata;
 	}
 
 	@Override
-	public void setBlockMetadataAt(int metadata, int x, int y, int z) {
+	public void setBlockMetadataAt(int metadata, int x, int y, int z)
+	{
 		setBlockMetadataAt(metadata, new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public void setBlockMetadataAt(int metadata, BlockLocation blockLocation) {
+	public void setBlockMetadataAt(int metadata, BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return;
-		chunk.setBlockMetadataAt(metadata, blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		chunk.setBlockMetadataAt(metadata, blockLocation.getX()
+				- chunkBlockOffset.getX(), blockLocation.getY()
+				- chunkBlockOffset.getY(), blockLocation.getZ()
+				- chunkBlockOffset.getZ());
 	}
 
 	@Override
-	public TileEntity getTileEntityAt(int x, int y, int z) {
+	public TileEntity getTileEntityAt(int x, int y, int z)
+	{
 		return getTileEntityAt(new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public TileEntity getTileEntityAt(BlockLocation blockLocation) {
+	public TileEntity getTileEntityAt(BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return null;
-		TileEntity tileEntity = chunk.getTileEntityAt(blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		TileEntity tileEntity = chunk.getTileEntityAt(blockLocation.getX()
+				- chunkBlockOffset.getX(), blockLocation.getY()
+				- chunkBlockOffset.getY(), blockLocation.getZ()
+				- chunkBlockOffset.getZ());
 		return tileEntity;
 	}
 
 	@Override
-	public void setTileEntityAt(TileEntity tileEntity, int x, int y, int z) {
+	public void setTileEntityAt(TileEntity tileEntity, int x, int y, int z)
+	{
 		setTileEntityAt(tileEntity, new BlockLocation(x, y, z));
 	}
 
 	@Override
-	public void setTileEntityAt(TileEntity tileEntity, BlockLocation blockLocation) {
+	public void setTileEntityAt(TileEntity tileEntity,
+			BlockLocation blockLocation)
+	{
 		ChunkLocation location = new ChunkLocation(blockLocation);
 		BlockLocation chunkBlockOffset = new BlockLocation(location);
 		Chunk chunk = getChunkAt(location);
-		if(chunk == null)
+		if (chunk == null)
 			return;
-		chunk.setTileEntityAt(tileEntity, blockLocation.getX() - chunkBlockOffset.getX(), blockLocation.getY() - chunkBlockOffset.getY(), blockLocation.getZ() - chunkBlockOffset.getZ());
+		chunk.setTileEntityAt(tileEntity, blockLocation.getX()
+				- chunkBlockOffset.getX(), blockLocation.getY()
+				- chunkBlockOffset.getY(), blockLocation.getZ()
+				- chunkBlockOffset.getZ());
 	}
 
 	@Override
-	public Chunk getChunkAt(int x, int y, int z) {
+	public Chunk getChunkAt(int x, int y, int z)
+	{
 		return getChunkAt(new ChunkLocation(x, y, z));
 	}
 
 	@Override
-	public Chunk getChunkAt(ChunkLocation location) {
-		synchronized(chunks) {
+	public Chunk getChunkAt(ChunkLocation location)
+	{
+		synchronized (chunks)
+		{
 			return chunks.get(location);
 		}
 	}
 
 	@Override
-	public Entity[] getEntities() {
-		synchronized(entities) {
+	public Entity[] getEntities()
+	{
+		synchronized (entities)
+		{
 			return entities.toArray(new Entity[entities.size()]);
 		}
 	}
 
 	@Override
-	public void spawnEntity(Entity entity) {
-		if(entity == null)
+	public void spawnEntity(Entity entity)
+	{
+		if (entity == null)
 			throw new NullPointerException();
-		synchronized(entities) {
-			if(!entities.contains(entity))
+		synchronized (entities)
+		{
+			if (!entities.contains(entity))
 				entities.add(entity);
 		}
 	}
 
 	@Override
-	public Entity getEntityById(int id) {
-		synchronized(entities) {
-			for(Entity entity : entities)
-				if(id == entity.getId())
+	public Entity getEntityById(int id)
+	{
+		synchronized (entities)
+		{
+			for (Entity entity : entities)
+				if (id == entity.getId())
 					return entity;
 			return null;
 		}
 	}
 
 	@Override
-	public void despawnEntity(Entity entity) {
-		if(entity == null)
+	public void despawnEntity(Entity entity)
+	{
+		if (entity == null)
 			throw new NullPointerException();
-		synchronized(entities) {
+		synchronized (entities)
+		{
 			entities.remove(entity);
 		}
 	}
 
 	@Override
-	public Dimension getDimension() {
+	public Dimension getDimension()
+	{
 		return dimension;
 	}
 
 	@Override
-	public Difficulty getDifficulty() {
+	public Difficulty getDifficulty()
+	{
 		return difficulty;
 	}
 
 	@Override
-	public WorldType getType() {
+	public WorldType getType()
+	{
 		return type;
 	}
 
 	@Override
-	public int getMaxHeight() {
+	public int getMaxHeight()
+	{
 		return height;
 	}
 
 	@Override
-	public PathSearchProvider getPathFinder() {
+	public PathSearchProvider getPathFinder()
+	{
 		return pathFinder;
 	}
 
 	@Override
-	public long getTime() {
+	public long getTime()
+	{
 		return time;
 	}
 
 	@Override
-	public long getAge() {
+	public long getAge()
+	{
 		return age;
 	}
 }

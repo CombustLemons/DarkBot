@@ -4,7 +4,8 @@ import static org.darkstorm.darkbot.loopsystem.Loopable.*;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-public class LoopHandler implements UncaughtExceptionHandler {
+public class LoopHandler implements UncaughtExceptionHandler
+{
 	private LoopHandlerFactory factory;
 	private Thread loopThread;
 	private String name;
@@ -15,8 +16,9 @@ public class LoopHandler implements UncaughtExceptionHandler {
 	private boolean paused = false;
 
 	public LoopHandler(LoopHandlerFactory factory, Loopable loopable,
-			String name) {
-		if(factory == null || loopable == null || name == null)
+			String name)
+	{
+		if (factory == null || loopable == null || name == null)
 			throw new NullPointerException();
 		this.factory = factory;
 		this.loopable = loopable;
@@ -24,7 +26,8 @@ public class LoopHandler implements UncaughtExceptionHandler {
 		createThread();
 	}
 
-	private void createThread() {
+	private void createThread()
+	{
 		ThreadGroup loopControllerThreadGroup = factory
 				.getLoopControllerThreadGroup();
 		Runnable loopThreadRunnable = createLoopThreadRunnable();
@@ -34,19 +37,24 @@ public class LoopHandler implements UncaughtExceptionHandler {
 		setUncaughtExceptionHandler();
 	}
 
-	private Runnable createLoopThreadRunnable() {
-		return new Runnable() {
+	private Runnable createLoopThreadRunnable()
+	{
+		return new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				loopUntilStop();
 			}
 		};
 	}
 
-	private void loopUntilStop() {
-		while(!stop) {
+	private void loopUntilStop()
+	{
+		while (!stop)
+		{
 			loopUntilPaused();
-			if(stop)
+			if (stop)
 				break;
 			setPausedIfOpposite(true);
 			waitUntilInterrupted();
@@ -54,70 +62,90 @@ public class LoopHandler implements UncaughtExceptionHandler {
 		stop = false;
 	}
 
-	private void loopUntilPaused() {
-		while(!pause) {
+	private void loopUntilPaused()
+	{
+		while (!pause)
+		{
 			setPausedIfOpposite(false);
 			loopAndSleepWithExceptionCheck();
-			if(stop)
+			if (stop)
 				break;
 		}
 	}
 
-	public void setDaemon(boolean daemon) {
+	public void setDaemon(boolean daemon)
+	{
 		loopThread.setDaemon(daemon);
 	}
 
-	public boolean isDaemon() {
+	public boolean isDaemon()
+	{
 		return loopThread.isDaemon();
 	}
 
-	private void setPausedIfOpposite(boolean targetValueForPaused) {
-		if(paused != targetValueForPaused)
+	private void setPausedIfOpposite(boolean targetValueForPaused)
+	{
+		if (paused != targetValueForPaused)
 			paused = targetValueForPaused;
 	}
 
-	private void loopAndSleepWithExceptionCheck() {
-		try {
+	private void loopAndSleepWithExceptionCheck()
+	{
+		try
+		{
 			loopAndSleep();
-		} catch(RuntimeException e) {
+		} catch (RuntimeException e)
+		{
 			stop = false;
 			throw e;
 		}
 	}
 
-	private void loopAndSleep() {
-		try {
+	private void loopAndSleep()
+	{
+		try
+		{
 			int sleepTime = loopable.loop();
-			if(sleepTime < 0)
+			if (sleepTime < 0)
 				handleLoopReturnCode(sleepTime);
 			else
 				Thread.sleep(sleepTime);
-		} catch(InterruptedException e) {}
+		} catch (InterruptedException e)
+		{
+		}
 	}
 
 	private void handleLoopReturnCode(int returnCode)
-			throws InterruptedException {
-		if(returnCode == STOP)
+			throws InterruptedException
+	{
+		if (returnCode == STOP)
 			stop();
-		else if(returnCode == YIELD)
+		else if (returnCode == YIELD)
 			Thread.yield();
-		else if(returnCode == WAIT)
+		else if (returnCode == WAIT)
 			wait();
 	}
 
-	private void waitUntilInterrupted() {
-		try {
+	private void waitUntilInterrupted()
+	{
+		try
+		{
 			wait();
-		} catch(InterruptedException e) {}
+		} catch (InterruptedException e)
+		{
+		}
 	}
 
-	private void setUncaughtExceptionHandler() {
+	private void setUncaughtExceptionHandler()
+	{
 		loopThread.setUncaughtExceptionHandler(this);
 	}
 
 	@Override
-	public void uncaughtException(Thread thread, Throwable e) {
-		if(thread.equals(loopThread) && !(e instanceof ThreadDeath)) {
+	public void uncaughtException(Thread thread, Throwable e)
+	{
+		if (thread.equals(loopThread) && !(e instanceof ThreadDeath))
+		{
 			System.err.print("Exception in thread \"" + thread.getName()
 					+ "\": ");
 			e.printStackTrace();
@@ -125,48 +153,60 @@ public class LoopHandler implements UncaughtExceptionHandler {
 		}
 	}
 
-	public synchronized void start() {
-		if(!loopThread.isAlive()) {
-			if(stop)
+	public synchronized void start()
+	{
+		if (!loopThread.isAlive())
+		{
+			if (stop)
 				stop = false;
 			loopThread.start();
 		}
 	}
 
-	public synchronized void stop() {
-		if(!stop && loopThread.isAlive()) {
+	public synchronized void stop()
+	{
+		if (!stop && loopThread.isAlive())
+		{
 			stop = true;
 			loopThread.interrupt();
 		}
 	}
 
-	public synchronized void pause() {
-		if(!pause && loopThread.isAlive()) {
+	public synchronized void pause()
+	{
+		if (!pause && loopThread.isAlive())
+		{
 			pause = true;
 			loopThread.interrupt();
 		}
 	}
 
-	public synchronized void resume() {
-		if(pause && isAlive()) {
+	public synchronized void resume()
+	{
+		if (pause && isAlive())
+		{
 			pause = false;
 			loopThread.interrupt();
 		}
 	}
 
-	public synchronized boolean isAlive() {
+	public synchronized boolean isAlive()
+	{
 		return loopThread.isAlive();
 	}
 
-	public synchronized boolean isActive() {
+	public synchronized boolean isActive()
+	{
 		return !paused;
 	}
 
-	public LoopHandlerFactory getFactory() {
+	public LoopHandlerFactory getFactory()
+	{
 		return factory;
 	}
 
-	public Loopable getLoopable() {
+	public Loopable getLoopable()
+	{
 		return loopable;
 	}
 

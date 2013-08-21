@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import javax.crypto.SecretKey;
 
-public interface ConnectionHandler {
+public interface ConnectionHandler
+{
 	public void sendPacket(WriteablePacket packet);
 
 	public void process();
@@ -13,7 +14,8 @@ public interface ConnectionHandler {
 
 	public SecretKey getSharedKey() throws UnsupportedOperationException;
 
-	public void setSharedKey(SecretKey sharedKey) throws UnsupportedOperationException;
+	public void setSharedKey(SecretKey sharedKey)
+			throws UnsupportedOperationException;
 
 	public void enableEncryption() throws UnsupportedOperationException;
 

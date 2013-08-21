@@ -5,13 +5,15 @@ import org.darkstorm.darkbot.ircbot.events.*;
 import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class NicknameHandler extends IRCHandler implements MessageListener {
+public class NicknameHandler extends IRCHandler implements MessageListener
+{
 	private final String originalNickname;
 	private String nickname;
 	private String password;
 	private boolean identify = false;
 
-	public NicknameHandler(IRCBot bot, IRCBotData botInfo) {
+	public NicknameHandler(IRCBot bot, IRCBotData botInfo)
+	{
 		super(bot);
 		originalNickname = botInfo.nickname;
 		nickname = botInfo.nickname;
@@ -20,40 +22,49 @@ public class NicknameHandler extends IRCHandler implements MessageListener {
 		eventHandler.addMessageListener(this);
 	}
 
-	public String getOriginalNickname() {
+	public String getOriginalNickname()
+	{
 		return originalNickname;
 	}
 
-	public String getNickname() {
+	public String getNickname()
+	{
 		return nickname;
 	}
 
-	public String getPassword() {
+	public String getPassword()
+	{
 		return password;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "NicknameHandler";
 	}
 
-	public void identifyOnNickServMessage() {
-		if(password != null && password.length() > 0)
+	public void identifyOnNickServMessage()
+	{
+		if (password != null && password.length() > 0)
 			identify = true;
 	}
 
 	@Override
-	public void onMessageReceived(MessageEvent event) {
-		if(event.getMessage() instanceof UserMessage) {
+	public void onMessageReceived(MessageEvent event)
+	{
+		if (event.getMessage() instanceof UserMessage)
+		{
 			UserMessage message = (UserMessage) event.getMessage();
 			String sender = message.getSender().getNickname();
 			MessageType type = message.getType();
-			if(identify && type.equals(MessageType.NOTICE)
+			if (identify && type.equals(MessageType.NOTICE)
 					&& sender.equals("NickServ"))
 				identify();
-		} else if(event.getMessage() instanceof NickMessage) {
+		} else if (event.getMessage() instanceof NickMessage)
+		{
 			NickMessage message = (NickMessage) event.getMessage();
-			if(nickname.equals(message.getOriginalNickname())) {
+			if (nickname.equals(message.getOriginalNickname()))
+			{
 				String newNickname = message.getNewNickname();
 				NickServEvent nickServEvent = new NickServEvent(this, nickname,
 						newNickname);
@@ -64,8 +75,9 @@ public class NicknameHandler extends IRCHandler implements MessageListener {
 		}
 	}
 
-	public void identify() {
-		if(password == null)
+	public void identify()
+	{
+		if (password == null)
 			return;
 		MessageHandler messageHandler = bot.getMessageHandler();
 		messageHandler.sendMessage("NickServ", "identify " + password);
@@ -76,27 +88,32 @@ public class NicknameHandler extends IRCHandler implements MessageListener {
 	}
 
 	@Override
-	public void onMessageSent(MessageEvent event) {
+	public void onMessageSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public void onRawSent(MessageEvent event) {
+	public void onRawSent(MessageEvent event)
+	{
 	}
 
-	public void setNickname(String nickname) {
-		if(nickname == null)
+	public void setNickname(String nickname)
+	{
+		if (nickname == null)
 			throw new NullPointerException();
 		this.nickname = nickname;
 		updateNickname();
 	}
 
-	public void updateNickname() {
+	public void updateNickname()
+	{
 		MessageHandler messageHandler = bot.getMessageHandler();
 		messageHandler.sendRaw("NICK " + nickname);
 	}
 
 	@Override
-	public void onNoticeSent(MessageEvent event) {
+	public void onNoticeSent(MessageEvent event)
+	{
 	}
 
 }

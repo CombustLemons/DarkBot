@@ -8,13 +8,15 @@ import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 import org.darkstorm.darkbot.ircbot.util.Connection;
 
-public class ServerHandler extends IRCHandler implements MessageListener {
+public class ServerHandler extends IRCHandler implements MessageListener
+{
 	private Map<String, String> properties;
 	private Connection connection;
 	private String server;
 	private int port;
 
-	public ServerHandler(IRCBot bot, IRCBotData botInfo) {
+	public ServerHandler(IRCBot bot, IRCBotData botInfo)
+	{
 		super(bot);
 		server = botInfo.server;
 		port = botInfo.port;
@@ -25,25 +27,31 @@ public class ServerHandler extends IRCHandler implements MessageListener {
 	}
 
 	@Override
-	public void onMessageReceived(MessageEvent event) {
+	public void onMessageReceived(MessageEvent event)
+	{
 		Message message = event.getMessage();
-		if(message.getType() == MessageType.SERVER)
+		if (message.getType() == MessageType.SERVER)
 			handleServerResponse((ServerResponseMessage) message);
 	}
 
-	private void handleServerResponse(ServerResponseMessage message) {
+	private void handleServerResponse(ServerResponseMessage message)
+	{
 		int responseCode = message.getResponseCode();
-		if(responseCode == 005)
+		if (responseCode == 005)
 			parse005SupportedProperties(message);
 	}
 
-	private void parse005SupportedProperties(ServerResponseMessage message) {
+	private void parse005SupportedProperties(ServerResponseMessage message)
+	{
 		String[] extraInfo = message.getExtraInfo();
-		synchronized(properties) {
+		synchronized (properties)
+		{
 			properties.clear();
-			for(int i = 0; i < extraInfo.length - 1; i++) {
+			for (int i = 0; i < extraInfo.length - 1; i++)
+			{
 				String key = "", value = "";
-				if(extraInfo[i].contains("=")) {
+				if (extraInfo[i].contains("="))
+				{
 					key = extraInfo[i].split("\\=")[0];
 					value = extraInfo[i].substring((key + "=").length());
 				} else
@@ -54,61 +62,74 @@ public class ServerHandler extends IRCHandler implements MessageListener {
 	}
 
 	@Override
-	public void onMessageSent(MessageEvent event) {
+	public void onMessageSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public void onNoticeSent(MessageEvent event) {
+	public void onNoticeSent(MessageEvent event)
+	{
 	}
 
 	@Override
-	public void onRawSent(MessageEvent event) {
+	public void onRawSent(MessageEvent event)
+	{
 	}
 
-	public String getServer() {
+	public String getServer()
+	{
 		return server;
 	}
 
-	public int getPort() {
+	public int getPort()
+	{
 		return port;
 	}
 
-	public void setServer(String server) {
+	public void setServer(String server)
+	{
 		this.server = server;
 		connection.setHost(server);
 	}
 
-	public void setPort(int port) {
+	public void setPort(int port)
+	{
 		this.port = port;
 		connection.setPort(port);
 	}
 
-	public boolean connect() {
-		if(!connection.connect())
+	public boolean connect()
+	{
+		if (!connection.connect())
 			return false;
 		return true;
 	}
 
-	public boolean disconnect() {
-		if(!connection.disconnect())
+	public boolean disconnect()
+	{
+		if (!connection.disconnect())
 			return false;
 		return true;
 	}
 
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		return connection.isConnected();
 	}
 
-	public Connection getConnection() {
+	public Connection getConnection()
+	{
 		return connection;
 	}
 
-	public Map<String, String> getProperties() {
+	public Map<String, String> getProperties()
+	{
 		return Collections.unmodifiableMap(properties);
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "ServerHandler";
 	}
 

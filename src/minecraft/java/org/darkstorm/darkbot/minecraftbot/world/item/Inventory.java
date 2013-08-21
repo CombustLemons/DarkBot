@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.minecraftbot.world.item;
 
-public interface Inventory {
+public interface Inventory
+{
 	public int getSize();
 
 	public ItemStack getItemAt(int slot);

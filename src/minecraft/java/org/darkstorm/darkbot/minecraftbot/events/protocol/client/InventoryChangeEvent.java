@@ -2,14 +2,17 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.client;
 
 import org.darkstorm.darkbot.minecraftbot.world.item.*;
 
-public class InventoryChangeEvent extends InventoryEvent {
+public class InventoryChangeEvent extends InventoryEvent
+{
 	private final int slot;
 	private final int button;
 	private final short transactionId;
 	private final ItemStack item;
 	private final boolean shiftHeld;
 
-	public InventoryChangeEvent(Inventory inventory, int slot, int button, short transactionId, ItemStack item, boolean shiftHeld) {
+	public InventoryChangeEvent(Inventory inventory, int slot, int button,
+			short transactionId, ItemStack item, boolean shiftHeld)
+	{
 		super(inventory);
 
 		this.slot = slot;
@@ -19,23 +22,28 @@ public class InventoryChangeEvent extends InventoryEvent {
 		this.shiftHeld = shiftHeld;
 	}
 
-	public int getSlot() {
+	public int getSlot()
+	{
 		return slot;
 	}
 
-	public int getButton() {
+	public int getButton()
+	{
 		return button;
 	}
 
-	public short getTransactionId() {
+	public short getTransactionId()
+	{
 		return transactionId;
 	}
 
-	public ItemStack getItem() {
+	public ItemStack getItem()
+	{
 		return item;
 	}
 
-	public boolean isShiftHeld() {
+	public boolean isShiftHeld()
+	{
 		return shiftHeld;
 	}
 }

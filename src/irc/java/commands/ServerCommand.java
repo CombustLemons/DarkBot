@@ -8,15 +8,18 @@ import org.darkstorm.darkbot.ircbot.handlers.PermissionsHandler.Permissions;
 import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.util.*;
 
-public class ServerCommand extends IRCCommand {
+public class ServerCommand extends IRCCommand
+{
 
-	public ServerCommand(CommandHandler commandHandler) {
+	public ServerCommand(CommandHandler commandHandler)
+	{
 		super(commandHandler);
 	}
 
 	@Override
-	public void execute(Message message) {
-		if(!(message instanceof UserMessage))
+	public void execute(Message message)
+	{
+		if (!(message instanceof UserMessage))
 			return;
 		UserMessage userMessage = (UserMessage) message;
 		String[] parts = userMessage.getMessage().split(" ");
@@ -24,12 +27,16 @@ public class ServerCommand extends IRCCommand {
 		MessageHandler messageHandler = bot.getMessageHandler();
 		String target = Tools.getCorrectTarget(userMessage);
 
-		if(parts.length > 3) {
+		if (parts.length > 3)
+		{
 			messageHandler.sendMessage(target, "Invalid argument count");
 			return;
-		} else {
-			for(String part : parts) {
-				if(part.isEmpty()) {
+		} else
+		{
+			for (String part : parts)
+			{
+				if (part.isEmpty())
+				{
 					messageHandler.sendMessage(target, "Invalid argument");
 					return;
 				}
@@ -37,23 +44,28 @@ public class ServerCommand extends IRCCommand {
 		}
 
 		String host = parts[0];
-		if(host.isEmpty()) {
+		if (host.isEmpty())
+		{
 			messageHandler.sendMessage(target, "Invalid host");
 			return;
 		}
 
 		int port = 6667;
-		if(parts.length > 1) {
-			try {
+		if (parts.length > 1)
+		{
+			try
+			{
 				port = Integer.parseInt(parts[1]);
-			} catch(NumberFormatException exception) {
+			} catch (NumberFormatException exception)
+			{
 				messageHandler.sendMessage(target, "Invalid port");
 				return;
 			}
 		}
 
 		String owner = bot.getPermissionsHandler().getOriginalOwner();
-		if(parts.length > 2) {
+		if (parts.length > 2)
+		{
 			owner = parts[2];
 		}
 
@@ -65,9 +77,11 @@ public class ServerCommand extends IRCCommand {
 		data.port = port;
 
 		DarkBot darkBot = bot.getDarkBot();
-		try {
+		try
+		{
 			darkBot.createBot(data);
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			messageHandler.sendMessage(target, "Unable to create bot");
 			return;
 		}
@@ -75,27 +89,32 @@ public class ServerCommand extends IRCCommand {
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Server Command";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Connects a bot to the specified server";
 	}
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "SERVER ";
 	}
 
 	@Override
-	public String getUsage() {
+	public String getUsage()
+	{
 		return "SERVER <host> [port [owner]]";
 	}
 
 	@Override
-	public Permissions getPermissions() {
+	public Permissions getPermissions()
+	{
 		return Permissions.OWNER;
 	}
 

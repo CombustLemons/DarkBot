@@ -4,7 +4,8 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet63Particle extends AbstractPacket implements ReadablePacket {
+public class Packet63Particle extends AbstractPacket implements ReadablePacket
+{
 	public String particleName;
 
 	public float posX, posY, posZ;
@@ -13,11 +14,13 @@ public class Packet63Particle extends AbstractPacket implements ReadablePacket {
 	public float speed;
 	public int quantity;
 
-	public Packet63Particle() {
+	public Packet63Particle()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		particleName = readString(in, 64);
 		posX = in.readFloat();
 		posY = in.readFloat();
@@ -30,7 +33,8 @@ public class Packet63Particle extends AbstractPacket implements ReadablePacket {
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 63;
 	}
 }

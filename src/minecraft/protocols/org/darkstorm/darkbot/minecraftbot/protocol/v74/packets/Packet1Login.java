@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.*;
 
-public class Packet1Login extends AbstractPacket implements ReadablePacket {
+public class Packet1Login extends AbstractPacket implements ReadablePacket
+{
 	public int playerId;
 	public WorldType worldType = WorldType.DEFAULT;
 	public boolean bool;
@@ -16,20 +17,24 @@ public class Packet1Login extends AbstractPacket implements ReadablePacket {
 
 	public byte worldHeight, maxPlayers;
 
-	public Packet1Login() {
+	public Packet1Login()
+	{
 	}
 
-	public Packet1Login(int id) {
+	public Packet1Login(int id)
+	{
 		playerId = id;
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		playerId = in.readInt();
 		String s = readString(in, 16);
 		worldType = WorldType.parseWorldType(s);
 
-		if(worldType == null) {
+		if (worldType == null)
+		{
 			worldType = WorldType.DEFAULT;
 		}
 
@@ -44,7 +49,8 @@ public class Packet1Login extends AbstractPacket implements ReadablePacket {
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 1;
 	}
 }

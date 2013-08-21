@@ -1,23 +1,27 @@
 package org.darkstorm.darkbot.loopsystem;
 
-public class LoopHandlerFactory {
+public class LoopHandlerFactory
+{
 	private LoopManager loopManager;
 	private ThreadGroup loopControllerThreadGroup;
 
-	public LoopHandlerFactory(LoopManager loopManager) {
-		if(loopManager == null)
+	public LoopHandlerFactory(LoopManager loopManager)
+	{
+		if (loopManager == null)
 			throw new IllegalArgumentException(
 					"param 0 (type LoopHandler) is null");
 		this.loopManager = loopManager;
-		loopControllerThreadGroup = new ThreadGroup(loopManager
-				.getThreadGroup(), "LoopControllers");
+		loopControllerThreadGroup = new ThreadGroup(
+				loopManager.getThreadGroup(), "LoopControllers");
 	}
 
-	public LoopHandler produceLoopableController(Loopable loopable, String name) {
+	public LoopHandler produceLoopableController(Loopable loopable, String name)
+	{
 		LoopHandler loopHandler = new LoopHandler(this, loopable, name);
-		if(loopManager.hasStarted()) {
+		if (loopManager.hasStarted())
+		{
 			loopHandler.start();
-			if(loopManager.isPaused())
+			if (loopManager.isPaused())
 				loopHandler.pause();
 			else
 				loopHandler.resume();
@@ -26,11 +30,13 @@ public class LoopHandlerFactory {
 		return loopHandler;
 	}
 
-	public ThreadGroup getLoopControllerThreadGroup() {
+	public ThreadGroup getLoopControllerThreadGroup()
+	{
 		return loopControllerThreadGroup;
 	}
 
-	public LoopManager getLoopManager() {
+	public LoopManager getLoopManager()
+	{
 		return loopManager;
 	}
 

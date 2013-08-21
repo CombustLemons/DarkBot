@@ -19,7 +19,8 @@ import org.darkstorm.darkbot.minecraftbot.util.Util;
 import org.darkstorm.darkbot.minecraftbot.world.entity.MainPlayerEntity;
 import org.darkstorm.darkbot.minecraftbot.world.item.PlayerInventory;
 
-public abstract class MinecraftBotWrapper implements EventListener {
+public abstract class MinecraftBotWrapper implements EventListener
+{
 	private static final DarkBot darkbot = new DarkBot();
 
 	protected final MinecraftBot bot;
@@ -28,7 +29,9 @@ public abstract class MinecraftBotWrapper implements EventListener {
 	private final List<Backend> backends = new CopyOnWriteArrayList<>();
 	private final List<String> owners = new CopyOnWriteArrayList<>();
 
-	public MinecraftBotWrapper(MinecraftBotData data) throws AuthenticationException, UnsupportedProtocolException {
+	public MinecraftBotWrapper(MinecraftBotData data)
+			throws AuthenticationException, UnsupportedProtocolException
+	{
 		System.out.println("[" + data.getUsername() + "] Connecting...");
 		bot = new MinecraftBot(darkbot, data);
 		System.out.println("[" + data.getUsername() + "] Joined!");
@@ -37,101 +40,125 @@ public abstract class MinecraftBotWrapper implements EventListener {
 	}
 
 	@EventHandler
-	public void onChatReceived(ChatReceivedEvent event) {
+	public void onChatReceived(ChatReceivedEvent event)
+	{
 		String message = Util.stripColors(event.getMessage());
-		System.out.println("[" + bot.getSession().getUsername() + "] " + message);
+		System.out.println("[" + bot.getSession().getUsername() + "] "
+				+ message);
 		String nocheat = "Please type '([^']*)' to continue sending messages/commands\\.";
 		Matcher nocheatMatcher = Pattern.compile(nocheat).matcher(message);
-		if(nocheatMatcher.matches()) {
-			try {
+		if (nocheatMatcher.matches())
+		{
+			try
+			{
 				String captcha = nocheatMatcher.group(1);
 				bot.say(captcha);
-			} catch(Exception exception) {
+			} catch (Exception exception)
+			{
 				exception.printStackTrace();
 			}
-		} else if(message.contains("has requested to teleport to you.")) {
-			for(String owner : owners) {
-				if(message.contains(owner)) {
+		} else if (message.contains("has requested to teleport to you."))
+		{
+			for (String owner : owners)
+			{
+				if (message.contains(owner))
+				{
 					bot.say("/tpaccept");
 					break;
 				}
 			}
-		} else if(message.startsWith("/uc "))
+		} else if (message.startsWith("/uc "))
 			bot.say(message);
 	}
 
 	@EventHandler
-	public void onHealthUpdate(HealthUpdateEvent event) {
-		if(event.getHealth() <= 0)
+	public void onHealthUpdate(HealthUpdateEvent event)
+	{
+		if (event.getHealth() <= 0)
 			bot.getEventManager().sendEvent(new RequestRespawnEvent());
 	}
 
 	@EventHandler
-	public void onRespawn(RespawnEvent event) {
+	public void onRespawn(RespawnEvent event)
+	{
 		TaskManager taskManager = bot.getTaskManager();
 		taskManager.stopAll();
 		bot.setActivity(null);
 	}
 
 	@EventHandler
-	public void onSpawn(SpawnEvent event) {
+	public void onSpawn(SpawnEvent event)
+	{
 		MainPlayerEntity player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 		inventory.setDelay(250);
 	}
 
 	@EventHandler
-	public void onDisconnect(DisconnectEvent event) {
-		System.out.println("[" + bot.getSession().getUsername() + "] Disconnected: " + event.getReason());
+	public void onDisconnect(DisconnectEvent event)
+	{
+		System.out.println("[" + bot.getSession().getUsername()
+				+ "] Disconnected: " + event.getReason());
 	}
 
-	public void say(String message) {
-		for(Backend backend : backends)
+	public void say(String message)
+	{
+		for (Backend backend : backends)
 			backend.say(message);
 	}
 
-	public CommandManager getCommandManager() {
+	public CommandManager getCommandManager()
+	{
 		return commandManager;
 	}
 
-	public String[] getOwners() {
+	public String[] getOwners()
+	{
 		return owners.toArray(new String[0]);
 	}
 
-	public void addOwner(String owner) {
+	public void addOwner(String owner)
+	{
 		owners.add(owner);
 	}
 
-	public void removeOwner(String owner) {
+	public void removeOwner(String owner)
+	{
 		owners.remove(owner);
 	}
 
-	public boolean isOwner(String username) {
-		for(String owner : owners)
-			if(owner.equals(username))
+	public boolean isOwner(String username)
+	{
+		for (String owner : owners)
+			if (owner.equals(username))
 				return true;
 		return false;
 	}
 
-	public Backend[] getBackends() {
+	public Backend[] getBackends()
+	{
 		return backends.toArray(new Backend[0]);
 	}
 
-	public void addBackend(Backend backend) {
+	public void addBackend(Backend backend)
+	{
 		backend.enable();
 		backends.add(backend);
 	}
 
-	public void removeBackend(Backend backend) {
+	public void removeBackend(Backend backend)
+	{
 		backends.remove(backend);
 		backend.disable();
 	}
 
-	public MinecraftBot getBot() {
+	public MinecraftBot getBot()
+	{
 		return bot;
 	}
 
-	public static DarkBot getDarkBot() {
+	public static DarkBot getDarkBot()
+	{
 		return darkbot;
 	}
 }

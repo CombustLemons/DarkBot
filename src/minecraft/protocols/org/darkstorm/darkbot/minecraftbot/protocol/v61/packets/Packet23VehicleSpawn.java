@@ -4,7 +4,9 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet23VehicleSpawn extends AbstractPacket implements ReadablePacket {
+public class Packet23VehicleSpawn extends AbstractPacket implements
+		ReadablePacket
+{
 	public int entityId;
 
 	public int xPosition;
@@ -19,11 +21,13 @@ public class Packet23VehicleSpawn extends AbstractPacket implements ReadablePack
 	public int type;
 	public int throwerEntityId;
 
-	public Packet23VehicleSpawn() {
+	public Packet23VehicleSpawn()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		type = in.readByte();
 		xPosition = in.readInt();
@@ -33,7 +37,8 @@ public class Packet23VehicleSpawn extends AbstractPacket implements ReadablePack
 		pitch = in.readByte();
 		throwerEntityId = in.readInt();
 
-		if(throwerEntityId > 0) {
+		if (throwerEntityId > 0)
+		{
 			speedX = in.readShort();
 			speedY = in.readShort();
 			speedZ = in.readShort();
@@ -41,7 +46,8 @@ public class Packet23VehicleSpawn extends AbstractPacket implements ReadablePack
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 23;
 	}
 }

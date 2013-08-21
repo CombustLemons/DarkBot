@@ -2,7 +2,8 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 
-public class TeleportEvent extends ProtocolEvent {
+public class TeleportEvent extends ProtocolEvent
+{
 	private final double x;
 	private final double y;
 	private final double z;
@@ -10,7 +11,9 @@ public class TeleportEvent extends ProtocolEvent {
 	private final float yaw;
 	private final float pitch;
 
-	public TeleportEvent(double x, double y, double z, double stance, float yaw, float pitch) {
+	public TeleportEvent(double x, double y, double z, double stance,
+			float yaw, float pitch)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -19,27 +22,33 @@ public class TeleportEvent extends ProtocolEvent {
 		this.pitch = pitch;
 	}
 
-	public double getX() {
+	public double getX()
+	{
 		return x;
 	}
 
-	public double getY() {
+	public double getY()
+	{
 		return y;
 	}
 
-	public double getZ() {
+	public double getZ()
+	{
 		return z;
 	}
 
-	public double getStance() {
+	public double getStance()
+	{
 		return stance;
 	}
 
-	public float getYaw() {
+	public float getYaw()
+	{
 		return yaw;
 	}
 
-	public float getPitch() {
+	public float getPitch()
+	{
 		return pitch;
 	}
 }

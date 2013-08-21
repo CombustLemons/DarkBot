@@ -10,7 +10,8 @@ import org.apache.http.impl.client.ProxyClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.darkstorm.darkbot.minecraftbot.util.ProxyData.ProxyType;
 
-public class Connection {
+public class Connection
+{
 	private static final ProxyClient proxyClient = createClient();
 	private static final Credentials proxyCredentials = createCredentials();
 
@@ -21,34 +22,41 @@ public class Connection {
 	private DataOutputStream outputStream;
 	private ProxyData proxy;
 
-	public Connection(String host, int port) {
+	public Connection(String host, int port)
+	{
 		this.host = host;
 		this.port = port;
 	}
 
-	public Connection(String host, int port, ProxyData proxy) {
-		if(proxy.getType().equals(ProxyType.HTTP))
-			throw new IllegalArgumentException("HTTP proxies are not usable for this purpose.");
+	public Connection(String host, int port, ProxyData proxy)
+	{
+		if (proxy.getType().equals(ProxyType.HTTP))
+			throw new IllegalArgumentException(
+					"HTTP proxies are not usable for this purpose.");
 		this.host = host;
 		this.port = port;
 		this.proxy = proxy;
 	}
 
-	public Connection(Socket socket) {
-		if(!socket.isConnected())
+	public Connection(Socket socket)
+	{
+		if (!socket.isConnected())
 			throw new IllegalArgumentException("Socket must be open");
-		try {
+		try
+		{
 			InetAddress address = socket.getInetAddress();
 			host = address.getHostAddress();
 			port = socket.getPort();
 			this.socket = socket;
 			createStreams();
-		} catch(IOException exception) {
+		} catch (IOException exception)
+		{
 			exception.printStackTrace();
 		}
 	}
 
-	private static ProxyClient createClient() {
+	private static ProxyClient createClient()
+	{
 		ProxyClient client = new ProxyClient();
 
 		HttpConnectionParams.setConnectionTimeout(client.getParams(), 3000);
@@ -57,111 +65,145 @@ public class Connection {
 		return client;
 	}
 
-	private static Credentials createCredentials() {
-		return new Credentials() {
+	private static Credentials createCredentials()
+	{
+		return new Credentials()
+		{
 
 			@Override
-			public Principal getUserPrincipal() {
+			public Principal getUserPrincipal()
+			{
 				return null;
 			}
 
 			@Override
-			public String getPassword() {
+			public String getPassword()
+			{
 				return null;
 			}
 		};
 	}
 
-	public void connect() throws IOException {
-		if(isConnected())
+	public void connect() throws IOException
+	{
+		if (isConnected())
 			return;
-		if(proxy != null) {
-			switch(proxy.getType()) {
+		if (proxy != null)
+		{
+			switch (proxy.getType())
+			{
 			case SOCKS:
-				socket = new Socket(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(proxy.getHostName(), proxy.getPort())));
+				socket = new Socket(new Proxy(Proxy.Type.SOCKS,
+						new InetSocketAddress(proxy.getHostName(),
+								proxy.getPort())));
 				break;
 			case HTTP_CONNECT:
-				try {
-					socket = proxyClient.tunnel(proxy.getHost(), new HttpHost(host, port), proxyCredentials);
-				} catch(HttpException exception) {
+				try
+				{
+					socket = proxyClient.tunnel(proxy.getHost(), new HttpHost(
+							host, port), proxyCredentials);
+				} catch (HttpException exception)
+				{
 					throw new IOException(exception);
 				}
 				break;
 			}
 		} else
 			socket = new Socket();
-		try {
+		try
+		{
 			socket.setSoTimeout(15000);
-		} catch(SocketException exception) {}
+		} catch (SocketException exception)
+		{
+		}
 		socket.connect(new InetSocketAddress(host, port), 3000);
 		createStreams();
 	}
 
-	private void createStreams() throws IOException {
+	private void createStreams() throws IOException
+	{
 		InputStream in = socket.getInputStream();
 		inputStream = new DataInputStream(in);
 		OutputStream out = socket.getOutputStream();
 		outputStream = new DataOutputStream(out);
 	}
 
-	public void disconnect() {
-		if(isConnected()) {
-			try {
+	public void disconnect()
+	{
+		if (isConnected())
+		{
+			try
+			{
 				socket.close();
-			} catch(IOException e) {}
+			} catch (IOException e)
+			{
+			}
 			socket = null;
 			inputStream = null;
 			outputStream = null;
 		}
 	}
 
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		return socket != null && socket.isConnected() && !socket.isClosed();
 	}
 
-	public String getHost() {
+	public String getHost()
+	{
 		return host;
 	}
 
-	public int getPort() {
+	public int getPort()
+	{
 		return port;
 	}
 
-	public ProxyData getProxy() {
+	public ProxyData getProxy()
+	{
 		return proxy;
 	}
 
-	public void setHost(String host) {
+	public void setHost(String host)
+	{
 		this.host = host;
 	}
 
-	public void setPort(int port) {
+	public void setPort(int port)
+	{
 		this.port = port;
 	}
 
-	public void setProxy(ProxyData proxy) {
-		if(proxy.getType().equals(ProxyType.HTTP))
-			throw new IllegalArgumentException("HTTP proxies are not usable for this purpose.");
+	public void setProxy(ProxyData proxy)
+	{
+		if (proxy.getType().equals(ProxyType.HTTP))
+			throw new IllegalArgumentException(
+					"HTTP proxies are not usable for this purpose.");
 		this.proxy = proxy;
 	}
 
-	public Socket getSocket() {
+	public Socket getSocket()
+	{
 		return socket;
 	}
 
-	public DataInputStream getInputStream() {
+	public DataInputStream getInputStream()
+	{
 		return inputStream;
 	}
 
-	public void setInputStream(DataInputStream inputStream) {
+	public void setInputStream(DataInputStream inputStream)
+	{
 		this.inputStream = inputStream;
 	}
 
-	public DataOutputStream getOutputStream() {
+	public DataOutputStream getOutputStream()
+	{
 		return outputStream;
 	}
 
-	public void setOutputStream(DataOutputStream outputStream) {
+	public void setOutputStream(DataOutputStream outputStream)
+	{
 		this.outputStream = outputStream;
 	}
 }

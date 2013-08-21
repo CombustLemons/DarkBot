@@ -2,14 +2,16 @@ package org.darkstorm.darkbot.minecraftbot.world.block;
 
 import org.darkstorm.darkbot.minecraftbot.world.*;
 
-public class Block {
+public class Block
+{
 	private final World world;
 	private final Chunk chunk;
 	private final BlockLocation location;
 	private final int id, metadata;
 
 	public Block(World world, Chunk chunk, BlockLocation location, int id,
-			int metadata) {
+			int metadata)
+	{
 		this.world = world;
 		this.chunk = chunk;
 		this.location = location;
@@ -17,23 +19,28 @@ public class Block {
 		this.metadata = metadata;
 	}
 
-	public World getWorld() {
+	public World getWorld()
+	{
 		return world;
 	}
 
-	public Chunk getChunk() {
+	public Chunk getChunk()
+	{
 		return chunk;
 	}
 
-	public BlockLocation getLocation() {
+	public BlockLocation getLocation()
+	{
 		return location;
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return id;
 	}
 
-	public int getMetadata() {
+	public int getMetadata()
+	{
 		return metadata;
 	}
 }

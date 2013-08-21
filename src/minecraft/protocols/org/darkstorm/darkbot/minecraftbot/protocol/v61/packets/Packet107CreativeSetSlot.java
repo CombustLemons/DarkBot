@@ -6,29 +6,35 @@ import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.item.ItemStack;
 
 public class Packet107CreativeSetSlot extends AbstractPacket implements
-		ReadablePacket, WriteablePacket {
+		ReadablePacket, WriteablePacket
+{
 	public int slot;
 	public ItemStack itemStack;
 
-	public Packet107CreativeSetSlot() {
+	public Packet107CreativeSetSlot()
+	{
 	}
 
-	public Packet107CreativeSetSlot(int par1, ItemStack par2ItemStack) {
+	public Packet107CreativeSetSlot(int par1, ItemStack par2ItemStack)
+	{
 		slot = par1;
 		itemStack = par2ItemStack;
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		slot = in.readShort();
 		itemStack = readItemStack(in);
 	}
 
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeShort(slot);
 		writeItemStack(itemStack, out);
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 107;
 	}
 }

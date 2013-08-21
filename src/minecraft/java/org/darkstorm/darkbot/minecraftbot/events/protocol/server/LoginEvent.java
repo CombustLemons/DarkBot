@@ -3,7 +3,8 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 import org.darkstorm.darkbot.minecraftbot.world.*;
 
-public class LoginEvent extends ProtocolEvent {
+public class LoginEvent extends ProtocolEvent
+{
 	private final int playerId;
 	private final WorldType worldType;
 	private final GameMode gameMode;
@@ -11,7 +12,10 @@ public class LoginEvent extends ProtocolEvent {
 	private final Difficulty difficulty;
 	private final int worldHeight, maxPlayers;
 
-	public LoginEvent(int playerId, WorldType worldType, GameMode gameMode, Dimension dimension, Difficulty difficulty, int worldHeight, int maxPlayers) {
+	public LoginEvent(int playerId, WorldType worldType, GameMode gameMode,
+			Dimension dimension, Difficulty difficulty, int worldHeight,
+			int maxPlayers)
+	{
 		this.playerId = playerId;
 		this.worldType = worldType;
 		this.gameMode = gameMode;
@@ -21,31 +25,38 @@ public class LoginEvent extends ProtocolEvent {
 		this.maxPlayers = maxPlayers;
 	}
 
-	public int getPlayerId() {
+	public int getPlayerId()
+	{
 		return playerId;
 	}
 
-	public WorldType getWorldType() {
+	public WorldType getWorldType()
+	{
 		return worldType;
 	}
 
-	public GameMode getGameMode() {
+	public GameMode getGameMode()
+	{
 		return gameMode;
 	}
 
-	public Dimension getDimension() {
+	public Dimension getDimension()
+	{
 		return dimension;
 	}
 
-	public Difficulty getDifficulty() {
+	public Difficulty getDifficulty()
+	{
 		return difficulty;
 	}
 
-	public int getWorldHeight() {
+	public int getWorldHeight()
+	{
 		return worldHeight;
 	}
 
-	public int getMaxPlayers() {
+	public int getMaxPlayers()
+	{
 		return maxPlayers;
 	}
 }

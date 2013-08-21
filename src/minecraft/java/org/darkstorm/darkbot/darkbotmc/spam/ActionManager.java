@@ -3,7 +3,8 @@ package org.darkstorm.darkbot.darkbotmc.spam;
 import org.darkstorm.darkbot.darkbotmc.spam.ActionProvider.Action;
 import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
 
-public interface ActionManager {
+public interface ActionManager
+{
 	public void start();
 
 	public void stop();

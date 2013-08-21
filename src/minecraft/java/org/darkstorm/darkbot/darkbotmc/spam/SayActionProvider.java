@@ -4,38 +4,45 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class SayActionProvider extends ActionProvider {
+public class SayActionProvider extends ActionProvider
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	// JFormDesigner - End of variables declaration //GEN-END:variables
 
-	public SayActionProvider() {
+	public SayActionProvider()
+	{
 		initComponents();
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		// //GEN-END:initComponents
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Say";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Send a message";
 	}
 
 	@Override
-	public Action provideAction() {
+	public Action provideAction()
+	{
 		return new SayAction();
 	}
 
 	@SuppressWarnings("serial")
-	private class SayAction extends JPanel implements Action {
+	private class SayAction extends JPanel implements Action
+	{
 		// JFormDesigner - Variables declaration - DO NOT MODIFY
 		// //GEN-BEGIN:variables
 		private JScrollPane scrollPane1;
@@ -44,34 +51,40 @@ public class SayActionProvider extends ActionProvider {
 
 		private int line;
 
-		private SayAction() {
+		private SayAction()
+		{
 			initComponents();
 		}
 
 		@Override
-		public ActionProvider getProvider() {
+		public ActionProvider getProvider()
+		{
 			return SayActionProvider.this;
 		}
 
 		@Override
-		public JPanel getOptions() {
+		public JPanel getOptions()
+		{
 			return this;
 		}
 
 		@Override
-		public void performAction(ActionManager manager) {
+		public void performAction(ActionManager manager)
+		{
 			String[] lines = textArea.getText().replace("\r", "").split("\n");
-			if(line > lines.length - 1)
+			if (line > lines.length - 1)
 				line = 0;
 			manager.getBot().say(lines[line++]);
 		}
 
 		@Override
-		public String getDescription() {
+		public String getDescription()
+		{
 			return textArea.getText().replace("\r", "").split("\n")[0];
 		}
 
-		private void initComponents() {
+		private void initComponents()
+		{
 			// JFormDesigner - Component initialization - DO NOT MODIFY
 			// //GEN-BEGIN:initComponents
 			scrollPane1 = new JScrollPane();

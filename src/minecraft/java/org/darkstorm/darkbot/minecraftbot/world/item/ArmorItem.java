@@ -1,5 +1,6 @@
 package org.darkstorm.darkbot.minecraftbot.world.item;
 
-public interface ArmorItem extends Item {
+public interface ArmorItem extends Item
+{
 
 }

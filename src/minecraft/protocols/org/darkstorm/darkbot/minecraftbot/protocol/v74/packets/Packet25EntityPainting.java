@@ -6,7 +6,8 @@ import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.block.ArtType;
 
 public class Packet25EntityPainting extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 	public String title;
 
@@ -15,10 +16,12 @@ public class Packet25EntityPainting extends AbstractPacket implements
 	public int zPosition;
 	public int direction;
 
-	public Packet25EntityPainting() {
+	public Packet25EntityPainting()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		title = readString(in, ArtType.MAX_ART_TITLE_LENGTH);
 		xPosition = in.readInt();
@@ -27,7 +30,8 @@ public class Packet25EntityPainting extends AbstractPacket implements
 		direction = in.readInt();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 25;
 	}
 }

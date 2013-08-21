@@ -6,21 +6,26 @@ import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.util.IntHashMap;
 import org.darkstorm.darkbot.minecraftbot.world.entity.*;
 
-public class Packet40EntityMetadata extends AbstractPacket implements ReadablePacket {
+public class Packet40EntityMetadata extends AbstractPacket implements
+		ReadablePacket
+{
 	public int entityId;
 	public IntHashMap<WatchableObject> metadata;
 
-	public Packet40EntityMetadata() {
+	public Packet40EntityMetadata()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		metadata = DataWatcher.readWatchableObjects(in);
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 40;
 	}
 }

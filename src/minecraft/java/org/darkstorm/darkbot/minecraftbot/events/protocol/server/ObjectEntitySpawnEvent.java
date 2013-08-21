@@ -1,35 +1,45 @@
 package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 
-public class ObjectEntitySpawnEvent extends RotatedEntitySpawnEvent {
+public class ObjectEntitySpawnEvent extends RotatedEntitySpawnEvent
+{
 	private final ObjectSpawnData spawnData;
 
-	public ObjectEntitySpawnEvent(int entityId, RotatedSpawnLocation location, ObjectSpawnData spawnData) {
+	public ObjectEntitySpawnEvent(int entityId, RotatedSpawnLocation location,
+			ObjectSpawnData spawnData)
+	{
 		super(entityId, location);
 
 		this.spawnData = spawnData;
 	}
 
-	public ObjectSpawnData getSpawnData() {
+	public ObjectSpawnData getSpawnData()
+	{
 		return spawnData;
 	}
 
-	public static class ObjectSpawnData {
+	public static class ObjectSpawnData
+	{
 		private final int type;
 
-		public ObjectSpawnData(int type) {
+		public ObjectSpawnData(int type)
+		{
 			this.type = type;
 		}
 
-		public int getType() {
+		public int getType()
+		{
 			return type;
 		}
 	}
 
-	public static class ThrownObjectSpawnData extends ObjectSpawnData {
+	public static class ThrownObjectSpawnData extends ObjectSpawnData
+	{
 		private final int throwerId;
 		private final double speedX, speedY, speedZ;
 
-		public ThrownObjectSpawnData(int type, int throwerId, double speedX, double speedY, double speedZ) {
+		public ThrownObjectSpawnData(int type, int throwerId, double speedX,
+				double speedY, double speedZ)
+		{
 			super(type);
 
 			this.throwerId = throwerId;
@@ -38,19 +48,23 @@ public class ObjectEntitySpawnEvent extends RotatedEntitySpawnEvent {
 			this.speedZ = speedZ;
 		}
 
-		public int getThrowerId() {
+		public int getThrowerId()
+		{
 			return throwerId;
 		}
 
-		public double getSpeedX() {
+		public double getSpeedX()
+		{
 			return speedX;
 		}
 
-		public double getSpeedY() {
+		public double getSpeedY()
+		{
 			return speedY;
 		}
 
-		public double getSpeedZ() {
+		public double getSpeedZ()
+		{
 			return speedZ;
 		}
 	}

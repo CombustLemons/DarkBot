@@ -4,7 +4,8 @@ import org.darkstorm.darkbot.ircbot.irc.Channel;
 import org.darkstorm.darkbot.ircbot.irc.parsing.UserInfo;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class InviteMessage extends Message {
+public class InviteMessage extends Message
+{
 	private String senderNickname;
 	private String senderUsername;
 	private String senderHostname;
@@ -12,7 +13,8 @@ public class InviteMessage extends Message {
 	private Channel channel;
 
 	public InviteMessage(String raw, UserInfo sender, String receiver,
-			Channel channel) {
+			Channel channel)
+	{
 		super(MessageType.INVITE, raw);
 		senderNickname = sender.getNickname();
 		senderUsername = sender.getUsername();
@@ -21,23 +23,28 @@ public class InviteMessage extends Message {
 		this.channel = channel;
 	}
 
-	public String getSenderNickname() {
+	public String getSenderNickname()
+	{
 		return senderNickname;
 	}
 
-	public String getSenderUsername() {
+	public String getSenderUsername()
+	{
 		return senderUsername;
 	}
 
-	public String getSenderHostname() {
+	public String getSenderHostname()
+	{
 		return senderHostname;
 	}
 
-	public String getReceiver() {
+	public String getReceiver()
+	{
 		return receiver;
 	}
 
-	public Channel getChannel() {
+	public Channel getChannel()
+	{
 		return channel;
 	}
 }

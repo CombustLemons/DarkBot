@@ -5,22 +5,26 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet8UpdateHealth extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int healthMP;
 	public int food;
 
 	public float foodSaturation;
 
-	public Packet8UpdateHealth() {
+	public Packet8UpdateHealth()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		healthMP = in.readShort();
 		food = in.readShort();
 		foodSaturation = in.readFloat();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 8;
 	}
 }

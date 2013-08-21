@@ -5,39 +5,45 @@ import java.util.*;
 
 import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
 
-public class BasicTaskManager implements TaskManager {
+public class BasicTaskManager implements TaskManager
+{
 	private final MinecraftBot bot;
 	private final Map<Class<? extends Task>, Task> tasks = new HashMap<Class<? extends Task>, Task>();
 	private final Map<Task, BigInteger> startTimes = new HashMap<Task, BigInteger>();
 
-	public BasicTaskManager(MinecraftBot bot) {
+	public BasicTaskManager(MinecraftBot bot)
+	{
 		this.bot = bot;
 	}
 
 	@Override
-	public synchronized boolean registerTask(Task task) {
-		if(task == null)
+	public synchronized boolean registerTask(Task task)
+	{
+		if (task == null)
 			return false;
-		if(tasks.get(task.getClass()) != null)
+		if (tasks.get(task.getClass()) != null)
 			return false;
 		tasks.put(task.getClass(), task);
 		return true;
 	}
 
 	@Override
-	public synchronized boolean unregisterTask(Task task) {
-		if(task == null)
+	public synchronized boolean unregisterTask(Task task)
+	{
+		if (task == null)
 			return false;
 		return unregisterTask(task.getClass());
 	}
 
 	@Override
-	public synchronized boolean unregisterTask(Class<? extends Task> taskClass) {
-		if(taskClass == null)
+	public synchronized boolean unregisterTask(Class<? extends Task> taskClass)
+	{
+		if (taskClass == null)
 			return false;
 		Task task = tasks.remove(taskClass);
-		if(task != null) {
-			if(task.isActive())
+		if (task != null)
+		{
+			if (task.isActive())
 				task.stop();
 			startTimes.remove(task);
 		}
@@ -45,55 +51,66 @@ public class BasicTaskManager implements TaskManager {
 	}
 
 	@Override
-	public synchronized void update() {
+	public synchronized void update()
+	{
 		List<Task> exclusiveIgnoringTasks = new ArrayList<Task>();
 		Task highestExclusiveTask = null;
 		int highestPriority = -1;
 		BigInteger highestStartTime = null;
-		for(Task task : tasks.values()) {
+		for (Task task : tasks.values())
+		{
 			boolean active = task.isActive();
 			boolean hasStartTime = startTimes.containsKey(task);
-			if(hasStartTime && !active)
+			if (hasStartTime && !active)
 				startTimes.remove(task);
-			else if(!hasStartTime && active)
+			else if (!hasStartTime && active)
 				startTimes.put(task,
 						BigInteger.valueOf(System.currentTimeMillis()));
 
-			if(!active && task.isPreconditionMet()) {
-				if(task.start())
+			if (!active && task.isPreconditionMet())
+			{
+				if (task.start())
 					startTimes.put(task,
 							BigInteger.valueOf(System.currentTimeMillis()));
 				else
 					task.stop();
 			}
-			if(task.isExclusive() && active) {
+			if (task.isExclusive() && active)
+			{
 				int taskPriority = task.getPriority().ordinal();
 				BigInteger taskStartTime = startTimes.get(task);
-				if(highestExclusiveTask == null
+				if (highestExclusiveTask == null
 						|| taskPriority > highestPriority
 						|| (taskPriority == highestPriority && taskStartTime
-								.compareTo(highestStartTime) < 0)) {
+								.compareTo(highestStartTime) < 0))
+				{
 					highestExclusiveTask = task;
 					highestPriority = taskPriority;
 					highestStartTime = taskStartTime;
 				}
 			}
-			if(task.ignoresExclusive())
+			if (task.ignoresExclusive())
 				exclusiveIgnoringTasks.add(task);
 		}
 
-		if(bot.hasActivity() || highestExclusiveTask != null) {
-			if(!bot.hasActivity()) {
+		if (bot.hasActivity() || highestExclusiveTask != null)
+		{
+			if (!bot.hasActivity())
+			{
 				highestExclusiveTask.run();
-				if(!highestExclusiveTask.isActive()) {
+				if (!highestExclusiveTask.isActive())
+				{
 					highestExclusiveTask.stop();
 					startTimes.remove(highestExclusiveTask);
 				}
 			}
-			for(Task task : exclusiveIgnoringTasks) {
-				if(task.isActive()) {
+			for (Task task : exclusiveIgnoringTasks)
+			{
+				if (task.isActive())
+				{
 					task.run();
-					if(!task.isActive()) {
+					if (!task.isActive())
+					{
 						task.stop();
 						startTimes.remove(task);
 					}
@@ -102,10 +119,13 @@ public class BasicTaskManager implements TaskManager {
 			return;
 		}
 
-		for(Task task : tasks.values()) {
-			if(task.isActive()) {
+		for (Task task : tasks.values())
+		{
+			if (task.isActive())
+			{
 				task.run();
-				if(!task.isActive()) {
+				if (!task.isActive())
+				{
 					task.stop();
 					startTimes.remove(task);
 				}
@@ -114,23 +134,27 @@ public class BasicTaskManager implements TaskManager {
 	}
 
 	@Override
-	public synchronized void stopAll() {
-		for(Task task : tasks.values()) {
-			if(task.isActive())
+	public synchronized void stopAll()
+	{
+		for (Task task : tasks.values())
+		{
+			if (task.isActive())
 				task.stop();
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends Task> T getTaskFor(Class<T> taskClass) {
-		if(taskClass == null)
+	public synchronized <T extends Task> T getTaskFor(Class<T> taskClass)
+	{
+		if (taskClass == null)
 			return null;
 		return (T) tasks.get(taskClass);
 	}
 
 	@Override
-	public List<Task> getRegisteredTasks() {
+	public List<Task> getRegisteredTasks()
+	{
 		return new ArrayList<Task>(tasks.values());
 	}
 

@@ -8,7 +8,8 @@ import org.darkstorm.darkbot.ircbot.logging.*;
 import org.darkstorm.darkbot.loopsystem.LoopManager;
 
 @BotManifest(name = "IRCBot", botDataClass = IRCBotData.class)
-public class IRCBot extends Bot {
+public class IRCBot extends Bot
+{
 	public static final int DEFAULT_PORT = 6667;
 
 	private final LoopManager loopManager;
@@ -24,9 +25,10 @@ public class IRCBot extends Bot {
 
 	private IRCLogger logger;
 
-	public IRCBot(DarkBot darkBot, IRCBotData botData) {
+	public IRCBot(DarkBot darkBot, IRCBotData botData)
+	{
 		super(darkBot);
-		if(!botData.isValid())
+		if (!botData.isValid())
 			throw new IllegalArgumentException("Invalid bot data");
 		loopManager = new LoopManager(new ThreadGroup("IRCBot Loop Threads"));
 		logger = new IRCSystemLogger(this);
@@ -42,72 +44,88 @@ public class IRCBot extends Bot {
 		connect();
 	}
 
-	public boolean connect() {
-		if(serverHandler.isConnected())
+	public boolean connect()
+	{
+		if (serverHandler.isConnected())
 			return false;
 		return connectHandler.connect();
 	}
 
-	public boolean disconnect() {
-		if(!serverHandler.isConnected())
+	public boolean disconnect()
+	{
+		if (!serverHandler.isConnected())
 			return false;
 		return connectHandler.disconnect();
 	}
 
 	@Override
-	public boolean isConnected() {
+	public boolean isConnected()
+	{
 		return serverHandler.isConnected();
 	}
 
-	public EventHandler getEventHandler() {
+	public EventHandler getEventHandler()
+	{
 		return eventHandler;
 	}
 
-	public LoopManager getLoopManager() {
+	public LoopManager getLoopManager()
+	{
 		return loopManager;
 	}
 
-	public ServerHandler getServerHandler() {
+	public ServerHandler getServerHandler()
+	{
 		return serverHandler;
 	}
 
-	public CommandHandler getCommandHandler() {
+	public CommandHandler getCommandHandler()
+	{
 		return commandHandler;
 	}
 
-	public MessageHandler getMessageHandler() {
+	public MessageHandler getMessageHandler()
+	{
 		return messageHandler;
 	}
 
-	public ChannelHandler getChannelHandler() {
+	public ChannelHandler getChannelHandler()
+	{
 		return channelHandler;
 	}
 
-	public NicknameHandler getNicknameHandler() {
+	public NicknameHandler getNicknameHandler()
+	{
 		return nicknameHandler;
 	}
 
-	public PermissionsHandler getPermissionsHandler() {
+	public PermissionsHandler getPermissionsHandler()
+	{
 		return permissionsHandler;
 	}
 
-	public DCCHandler getDCCHandler() {
+	public DCCHandler getDCCHandler()
+	{
 		return dccHandler;
 	}
 
-	public IRCLogger getLogger() {
+	public IRCLogger getLogger()
+	{
 		return logger;
 	}
 
-	public String getQuitMessage() {
+	public String getQuitMessage()
+	{
 		return connectHandler.getQuitMessage();
 	}
 
-	public void setQuitMessage(String quitMessage) {
+	public void setQuitMessage(String quitMessage)
+	{
 		connectHandler.setQuitMessage(quitMessage);
 	}
 
-	public void setLogger(IRCLogger logger) {
+	public void setLogger(IRCLogger logger)
+	{
 		this.logger = logger;
 	}
 }

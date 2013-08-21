@@ -7,7 +7,8 @@ import joptsimple.*;
 import org.darkstorm.darkbot.bot.*;
 import org.darkstorm.darkbot.ircbot.irc.Channel;
 
-public class IRCBotData extends BotData {
+public class IRCBotData extends BotData
+{
 	public String server;
 	public int port;
 
@@ -18,37 +19,40 @@ public class IRCBotData extends BotData {
 	public String[] channels;
 
 	@Override
-	public void parse(OptionSet options) {
-		if(!options.has("server") || !options.has("nickname")
+	public void parse(OptionSet options)
+	{
+		if (!options.has("server") || !options.has("nickname")
 				|| !options.has("owner"))
 			throw new RuntimeException("Missing some arguments");
 		server = (String) options.valueOf("server");
 		nickname = (String) options.valueOf("nickname");
 		owner = (String) options.valueOf("owner");
 		port = IRCBot.DEFAULT_PORT;
-		if(options.has("port"))
+		if (options.has("port"))
 			port = (Integer) options.valueOf("port");
-		if(options.has("password"))
+		if (options.has("password"))
 			password = (String) options.valueOf("password");
 		else
 			password = "";
-		if(options.has("channels"))
+		if (options.has("channels"))
 			channels = ((ChannelList) options.valueOf("channels"))
 					.getChannels();
 	}
 
 	@Override
-	public boolean isValid() {
-		if(channels != null)
-			for(String channel : channels)
-				if(channel == null || !Channel.isChannel(channel))
+	public boolean isValid()
+	{
+		if (channels != null)
+			for (String channel : channels)
+				if (channel == null || !Channel.isChannel(channel))
 					return false;
 		return nickname != null && password != null && server != null
 				&& port >= 0 && owner != null;
 	}
 
 	@BotArgumentHandler
-	public static OptionSpec<?>[] getArguments() {
+	public static OptionSpec<?>[] getArguments()
+	{
 		OptionParser parser = new OptionParser();
 		ArrayList<OptionSpec<?>> arguments = new ArrayList<OptionSpec<?>>();
 		arguments.add(parser.acceptsAll(Arrays.asList("s", "server"))
@@ -72,14 +76,18 @@ public class IRCBotData extends BotData {
 	}
 
 	private static class ChannelValueConverter implements
-			ValueConverter<ChannelList> {
+			ValueConverter<ChannelList>
+	{
 		@Override
-		public ChannelList convert(String value) {
+		public ChannelList convert(String value)
+		{
 			ArrayList<String> converted = new ArrayList<String>();
 			String[] channels = value.split(",");
-			for(String channel : channels) {
+			for (String channel : channels)
+			{
 				channel = channel.trim();
-				if(!Channel.isChannel(channel)) {
+				if (!Channel.isChannel(channel))
+				{
 					System.err.println("Skipping channel: " + channel);
 					continue;
 				}
@@ -90,25 +98,30 @@ public class IRCBotData extends BotData {
 		}
 
 		@Override
-		public String valuePattern() {
+		public String valuePattern()
+		{
 			return null;
 		}
 
 		@Override
-		public Class<ChannelList> valueType() {
+		public Class<ChannelList> valueType()
+		{
 			return ChannelList.class;
 		}
 	}
 }
 
-class ChannelList {
+class ChannelList
+{
 	private String[] channels;
 
-	public ChannelList(String[] channels) {
+	public ChannelList(String[] channels)
+	{
 		this.channels = channels;
 	}
 
-	public String[] getChannels() {
+	public String[] getChannels()
+	{
 		return channels;
 	}
 }

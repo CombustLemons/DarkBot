@@ -4,22 +4,27 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet254ServerPing extends AbstractPacket implements WriteablePacket {
+public class Packet254ServerPing extends AbstractPacket implements
+		WriteablePacket
+{
 	public int protocolVersion;
 	public String hostname;
 	public int port;
 
-	public Packet254ServerPing() {
+	public Packet254ServerPing()
+	{
 	}
 
-	public Packet254ServerPing(int protocolVersion, String hostname, int port) {
+	public Packet254ServerPing(int protocolVersion, String hostname, int port)
+	{
 		this.protocolVersion = protocolVersion;
 		this.hostname = hostname;
 		this.port = port;
 	}
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeByte(1);
 		out.write(250);
 		writeString("MC|PingHost", out);
@@ -30,7 +35,8 @@ public class Packet254ServerPing extends AbstractPacket implements WriteablePack
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 254;
 	}
 }

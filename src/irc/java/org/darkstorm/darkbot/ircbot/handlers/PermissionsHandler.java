@@ -5,12 +5,11 @@ import java.util.Vector;
 import org.darkstorm.darkbot.ircbot.*;
 import org.darkstorm.darkbot.ircbot.util.Tools;
 
-public class PermissionsHandler extends IRCHandler {
-	public enum Permissions {
-		OWNER,
-		ORIGINAL_OWNER,
-		PRIVILEGED,
-		ALL
+public class PermissionsHandler extends IRCHandler
+{
+	public enum Permissions
+	{
+		OWNER, ORIGINAL_OWNER, PRIVILEGED, ALL
 	}
 
 	private final String originalOwner;
@@ -18,7 +17,8 @@ public class PermissionsHandler extends IRCHandler {
 	private String owner;
 	private Vector<String> privileged;
 
-	public PermissionsHandler(IRCBot bot, IRCBotData botInfo) {
+	public PermissionsHandler(IRCBot bot, IRCBotData botInfo)
+	{
 		super(bot);
 		owner = botInfo.owner;
 		originalOwner = owner;
@@ -26,18 +26,21 @@ public class PermissionsHandler extends IRCHandler {
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "PermissionsHandler";
 	}
 
-	public boolean isPermitted(String nickname, Permissions permissionsRequired) {
-		if(nickname == null)
+	public boolean isPermitted(String nickname, Permissions permissionsRequired)
+	{
+		if (nickname == null)
 			throw new NullPointerException();
-		if(permissionsRequired == null)
+		if (permissionsRequired == null)
 			return true;
 		String nicknameLC = nickname.toLowerCase();
 		String ownerLC = owner.toLowerCase();
-		switch(permissionsRequired) {
+		switch (permissionsRequired)
+		{
 		case ALL:
 			return true;
 		case OWNER:
@@ -45,40 +48,46 @@ public class PermissionsHandler extends IRCHandler {
 		case ORIGINAL_OWNER:
 			return nicknameLC.equals(originalOwner.toLowerCase());
 		case PRIVILEGED:
-			if(nicknameLC.equals(ownerLC))
+			if (nicknameLC.equals(ownerLC))
 				return true;
 			return Tools.containsIgnoreCase(privileged, nickname);
 		}
 		return false;
 	}
 
-	public String getOriginalOwner() {
+	public String getOriginalOwner()
+	{
 		return originalOwner;
 	}
 
-	public String getOwner() {
+	public String getOwner()
+	{
 		return owner;
 	}
 
-	public void setOwner(String owner) {
-		if(owner == null)
+	public void setOwner(String owner)
+	{
+		if (owner == null)
 			throw new NullPointerException();
 		this.owner = owner;
 	}
 
-	public String[] getPrivilegedNicknames() {
+	public String[] getPrivilegedNicknames()
+	{
 		return privileged.toArray(new String[privileged.size()]);
 	}
 
-	public void addPrivilegedNick(String nickname) {
-		if(nickname == null)
+	public void addPrivilegedNick(String nickname)
+	{
+		if (nickname == null)
 			throw new NullPointerException();
-		if(!Tools.containsIgnoreCase(privileged, nickname))
+		if (!Tools.containsIgnoreCase(privileged, nickname))
 			privileged.add(nickname);
 	}
 
-	public boolean removePrivilegedNick(String nickname) {
-		if(nickname == null)
+	public boolean removePrivilegedNick(String nickname)
+	{
+		if (nickname == null)
 			throw new NullPointerException();
 		return Tools.removeIgnoreCase(privileged, nickname);
 	}

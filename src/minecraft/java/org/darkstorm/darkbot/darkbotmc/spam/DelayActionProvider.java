@@ -4,71 +4,87 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class DelayActionProvider extends ActionProvider {
+public class DelayActionProvider extends ActionProvider
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	// JFormDesigner - End of variables declaration //GEN-END:variables
 
-	public DelayActionProvider() {
+	public DelayActionProvider()
+	{
 		initComponents();
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		// //GEN-END:initComponents
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Delay";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Wait for a specified amount of time";
 	}
 
 	@Override
-	public Action provideAction() {
+	public Action provideAction()
+	{
 		return new DelayAction();
 	}
 
 	@SuppressWarnings("serial")
-	private class DelayAction extends JPanel implements Action {
+	private class DelayAction extends JPanel implements Action
+	{
 		// JFormDesigner - Variables declaration - DO NOT MODIFY
 		// //GEN-BEGIN:variables
 		private JSpinner delaySpinner;
 
 		// JFormDesigner - End of variables declaration //GEN-END:variables
 
-		private DelayAction() {
+		private DelayAction()
+		{
 			initComponents();
 		}
 
 		@Override
-		public ActionProvider getProvider() {
+		public ActionProvider getProvider()
+		{
 			return DelayActionProvider.this;
 		}
 
 		@Override
-		public JPanel getOptions() {
+		public JPanel getOptions()
+		{
 			return this;
 		}
 
 		@Override
-		public void performAction(ActionManager manager) {
-			try {
+		public void performAction(ActionManager manager)
+		{
+			try
+			{
 				Thread.sleep((Integer) delaySpinner.getValue());
-			} catch(InterruptedException exception) {}
+			} catch (InterruptedException exception)
+			{
+			}
 		}
 
 		@Override
-		public String getDescription() {
+		public String getDescription()
+		{
 			return delaySpinner.getValue() + " ms";
 		}
 
-		private void initComponents() {
+		private void initComponents()
+		{
 			// JFormDesigner - Component initialization - DO NOT MODIFY
 			// //GEN-BEGIN:initComponents
 			JLabel delayLabel = new JLabel();

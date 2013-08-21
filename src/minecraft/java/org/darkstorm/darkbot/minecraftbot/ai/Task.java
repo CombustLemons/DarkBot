@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.minecraftbot.ai;
 
-public interface Task {
+public interface Task
+{
 	/**
 	 * Returns true if the precondition to activate it is met.
 	 */

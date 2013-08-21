@@ -2,51 +2,62 @@ package org.darkstorm.darkbot.minecraftbot.world.item;
 
 import org.darkstorm.darkbot.minecraftbot.nbt.NBTTagCompound;
 
-public class BasicItemStack implements ItemStack {
+public class BasicItemStack implements ItemStack
+{
 	private int id, stackSize, damage;
 	private NBTTagCompound stackTagCompound;
 
-	public BasicItemStack(int id, int stackSize, int damage) {
+	public BasicItemStack(int id, int stackSize, int damage)
+	{
 		this.id = id;
 		this.stackSize = stackSize;
 		this.damage = damage;
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return id;
 	}
 
-	public int getStackSize() {
+	public int getStackSize()
+	{
 		return stackSize;
 	}
 
-	public void setStackSize(int stackSize) {
+	public void setStackSize(int stackSize)
+	{
 		this.stackSize = stackSize;
 	}
 
-	public int getDamage() {
+	public int getDamage()
+	{
 		return damage;
 	}
 
-	public void setDamage(int damage) {
+	public void setDamage(int damage)
+	{
 		this.damage = damage;
 	}
 
-	public NBTTagCompound getStackTagCompound() {
+	public NBTTagCompound getStackTagCompound()
+	{
 		return stackTagCompound;
 	}
 
-	public void setStackTagCompound(NBTTagCompound stackTagCompound) {
+	public void setStackTagCompound(NBTTagCompound stackTagCompound)
+	{
 		this.stackTagCompound = stackTagCompound;
 	}
 
 	@Override
-	public ItemStack clone() {
+	public ItemStack clone()
+	{
 		return new BasicItemStack(id, stackSize, damage);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "ItemStack[" + id + ":" + damage + "x" + stackSize + "]";
 	}
 }

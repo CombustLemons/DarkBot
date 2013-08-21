@@ -1,4 +1,5 @@
 package commands;
+
 import org.darkstorm.darkbot.ircbot.commands.IRCCommand;
 import org.darkstorm.darkbot.ircbot.handlers.*;
 import org.darkstorm.darkbot.ircbot.handlers.PermissionsHandler.Permissions;
@@ -6,16 +7,20 @@ import org.darkstorm.darkbot.ircbot.irc.Channel;
 import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class InviteCommand extends IRCCommand {
+public class InviteCommand extends IRCCommand
+{
 
-	public InviteCommand(CommandHandler commandHandler) {
+	public InviteCommand(CommandHandler commandHandler)
+	{
 		super(commandHandler);
 	}
 
 	@Override
-	public void execute(Message message) {
+	public void execute(Message message)
+	{
 		MessageType type = message.getType();
-		if(type.equals(MessageType.INVITE)) {
+		if (type.equals(MessageType.INVITE))
+		{
 			InviteMessage invite = (InviteMessage) message;
 			Channel channel = invite.getChannel();
 			channel.join();
@@ -26,17 +31,20 @@ public class InviteCommand extends IRCCommand {
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Invite";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Enters a channel upon invite";
 	}
 
 	@Override
-	public Permissions getPermissions() {
+	public Permissions getPermissions()
+	{
 		return Permissions.PRIVILEGED;
 	}
 

@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet26EntityExpOrb extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 
 	public int posX;
@@ -14,10 +15,12 @@ public class Packet26EntityExpOrb extends AbstractPacket implements
 
 	public int xpValue;
 
-	public Packet26EntityExpOrb() {
+	public Packet26EntityExpOrb()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		posX = in.readInt();
 		posY = in.readInt();
@@ -25,7 +28,8 @@ public class Packet26EntityExpOrb extends AbstractPacket implements
 		xpValue = in.readShort();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 26;
 	}
 }

@@ -3,16 +3,19 @@ package org.darkstorm.darkbot.ircbot.handlers;
 import org.darkstorm.darkbot.DarkBot;
 import org.darkstorm.darkbot.ircbot.IRCBot;
 
-public class ConnectHandler extends IRCHandler {
+public class ConnectHandler extends IRCHandler
+{
 	private String quitMessage = null;
 
-	public ConnectHandler(IRCBot bot) {
+	public ConnectHandler(IRCBot bot)
+	{
 		super(bot);
 	}
 
-	public synchronized boolean connect() {
+	public synchronized boolean connect()
+	{
 		ServerHandler serverHandler = bot.getServerHandler();
-		if(serverHandler.isConnected() || !serverHandler.connect())
+		if (serverHandler.isConnected() || !serverHandler.connect())
 			return false;
 		NicknameHandler nicknameHandler = bot.getNicknameHandler();
 		nicknameHandler.updateNickname();
@@ -25,11 +28,13 @@ public class ConnectHandler extends IRCHandler {
 		return true;
 	}
 
-	public synchronized boolean disconnect() {
+	public synchronized boolean disconnect()
+	{
 		String endQuitMessage = "";
-		if(quitMessage != null && quitMessage.length() > 0) {
+		if (quitMessage != null && quitMessage.length() > 0)
+		{
 			endQuitMessage += " ";
-			if(containsNonletters(quitMessage))
+			if (containsNonletters(quitMessage))
 				endQuitMessage += ":";
 			endQuitMessage += quitMessage;
 		}
@@ -37,28 +42,32 @@ public class ConnectHandler extends IRCHandler {
 		messageHandler.sendRaw("QUIT" + endQuitMessage);
 		messageHandler.flush();
 		ServerHandler serverHandler = bot.getServerHandler();
-		if(!serverHandler.isConnected())
+		if (!serverHandler.isConnected())
 			return false;
 		return serverHandler.disconnect();
 	}
 
-	private boolean containsNonletters(String string) {
-		for(char character : string.toCharArray())
-			if(!Character.isLetter(character))
+	private boolean containsNonletters(String string)
+	{
+		for (char character : string.toCharArray())
+			if (!Character.isLetter(character))
 				return true;
 		return false;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "ConnectHandler";
 	}
 
-	public synchronized String getQuitMessage() {
+	public synchronized String getQuitMessage()
+	{
 		return quitMessage;
 	}
 
-	public synchronized void setQuitMessage(String quitMessage) {
+	public synchronized void setQuitMessage(String quitMessage)
+	{
 		this.quitMessage = quitMessage;
 	}
 }

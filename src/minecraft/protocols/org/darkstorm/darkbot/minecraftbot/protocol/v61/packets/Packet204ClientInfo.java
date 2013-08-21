@@ -4,7 +4,9 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet204ClientInfo extends AbstractPacket implements WriteablePacket {
+public class Packet204ClientInfo extends AbstractPacket implements
+		WriteablePacket
+{
 	public String language;
 	public int renderDistance;
 	public int chatVisisble;
@@ -12,10 +14,13 @@ public class Packet204ClientInfo extends AbstractPacket implements WriteablePack
 	public int gameDifficulty;
 	public boolean showCape;
 
-	public Packet204ClientInfo() {
+	public Packet204ClientInfo()
+	{
 	}
 
-	public Packet204ClientInfo(String par1Str, int par2, int par3, boolean par4, int par5, boolean par6) {
+	public Packet204ClientInfo(String par1Str, int par2, int par3,
+			boolean par4, int par5, boolean par6)
+	{
 		language = par1Str;
 		renderDistance = par2;
 		chatVisisble = par3;
@@ -25,7 +30,8 @@ public class Packet204ClientInfo extends AbstractPacket implements WriteablePack
 	}
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		writeString(language, out);
 		out.writeByte(renderDistance);
 		out.writeByte(chatVisisble | (chatColours ? 1 : 0) << 3);
@@ -34,7 +40,8 @@ public class Packet204ClientInfo extends AbstractPacket implements WriteablePack
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 204;
 	}
 }

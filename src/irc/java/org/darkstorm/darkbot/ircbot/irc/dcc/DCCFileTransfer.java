@@ -29,7 +29,8 @@ import org.darkstorm.darkbot.ircbot.util.Tools;
  *         href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version 1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
  */
-public class DCCFileTransfer implements DCCTransfer {
+public class DCCFileTransfer implements DCCTransfer
+{
 	private IRCBot bot;
 	private DCCHandler handler;
 	private String nick;
@@ -62,7 +63,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * Constructor used for receiving files.
 	 */
 	DCCFileTransfer(IRCBot bot, String nick, String login, String hostname,
-			String type, String filename, long address, int port, long size) {
+			String type, String filename, long address, int port, long size)
+	{
 		this.bot = bot;
 		handler = bot.getDCCHandler();
 		this.nick = nick;
@@ -82,7 +84,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * Constructor used for sending files.
 	 */
 	public DCCFileTransfer(IRCBot bot, File file, String nick, int timeout,
-			int... ports) {
+			int... ports)
+	{
 		this.bot = bot;
 		handler = bot.getDCCHandler();
 		this.nick = nick;
@@ -91,9 +94,10 @@ public class DCCFileTransfer implements DCCTransfer {
 		this.timeout = timeout;
 		received = true;
 		List<Integer> portList;
-		if(ports.length > 0) {
+		if (ports.length > 0)
+		{
 			portList = new ArrayList<Integer>();
-			for(Integer port : ports)
+			for (Integer port : ports)
 				portList.add(port);
 		} else
 			portList = handler.getDCCPorts();
@@ -113,21 +117,27 @@ public class DCCFileTransfer implements DCCTransfer {
 	 *            True if you wish to try and resume the download instead of
 	 *            overwriting an existing file.
 	 */
-	public synchronized void receive(File file, boolean resume) {
-		if(!received) {
+	public synchronized void receive(File file, boolean resume)
+	{
+		if (!received)
+		{
 			received = true;
 			this.file = file;
 
-			if(type.equals("SEND") && resume) {
+			if (type.equals("SEND") && resume)
+			{
 				progress = file.length();
-				if(progress == 0) {
+				if (progress == 0)
+				{
 					doReceive(file, false);
-				} else {
+				} else
+				{
 					bot.getMessageHandler().sendCTCPMessage(nick,
 							"DCC RESUME file.ext " + port + " " + progress);
 					handler.addAwaitingResume(this);
 				}
-			} else {
+			} else
+			{
 				progress = file.length();
 				doReceive(file, resume);
 			}
@@ -137,14 +147,18 @@ public class DCCFileTransfer implements DCCTransfer {
 	/**
 	 * Receive the file in a new thread.
 	 */
-	void doReceive(final File file, final boolean resume) {
-		new Thread() {
+	void doReceive(final File file, final boolean resume)
+	{
+		new Thread()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 
 				BufferedOutputStream foutput = null;
 
-				try {
+				try
+				{
 
 					// Convert the integer address to a proper IP address.
 					int[] ip = Tools.longToIp(address);
@@ -172,7 +186,9 @@ public class DCCFileTransfer implements DCCTransfer {
 					byte[] inBuffer = new byte[BUFFER_SIZE];
 					byte[] outBuffer = new byte[4];
 					int bytesRead = 0;
-					while((bytesRead = input.read(inBuffer, 0, inBuffer.length)) != -1) {
+					while ((bytesRead = input
+							.read(inBuffer, 0, inBuffer.length)) != -1)
+					{
 						foutput.write(inBuffer, 0, bytesRead);
 						progress += bytesRead;
 						// Send back an acknowledgement of how many bytes we
@@ -186,13 +202,17 @@ public class DCCFileTransfer implements DCCTransfer {
 						delay();
 					}
 					foutput.flush();
-				} catch(Exception e) {
+				} catch (Exception e)
+				{
 					exception = e;
-				} finally {
-					try {
+				} finally
+				{
+					try
+					{
 						foutput.close();
 						socket.close();
-					} catch(Exception anye) {
+					} catch (Exception anye)
+					{
 						// Do nothing.
 					}
 				}
@@ -206,34 +226,45 @@ public class DCCFileTransfer implements DCCTransfer {
 	/**
 	 * Method to send the file inside a new thread.
 	 */
-	public void doSend(final boolean allowResume) {
-		new Thread() {
+	public void doSend(final boolean allowResume)
+	{
+		new Thread()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 
 				BufferedInputStream finput = null;
 
-				try {
+				try
+				{
 
 					ServerSocket ss = null;
 
-					if(ports == null) {
+					if (ports == null)
+					{
 						ss = new ServerSocket(0);
-					} else {
-						for(int port : ports) {
-							try {
+					} else
+					{
+						for (int port : ports)
+						{
+							try
+							{
 								ss = new ServerSocket(port);
 								break;
-							} catch(Exception e) {}
+							} catch (Exception e)
+							{
+							}
 						}
-						if(ss == null)
+						if (ss == null)
 							throw new IOException("All ports given are in use.");
 					}
 
 					ss.setSoTimeout(timeout);
 					port = ss.getLocalPort();
 					InetAddress inetAddress = handler.getDCCInetAddress();
-					if(inetAddress == null) {
+					if (inetAddress == null)
+					{
 						inetAddress = bot.getServerHandler().getConnection()
 								.getSocket().getInetAddress();
 					}
@@ -247,7 +278,8 @@ public class DCCFileTransfer implements DCCTransfer {
 					String safeFilename = file.getName().replace(' ', '_');
 					safeFilename = safeFilename.replace('\t', '_');
 
-					if(allowResume) {
+					if (allowResume)
+					{
 						handler.addAwaitingResume(DCCFileTransfer.this);
 					}
 
@@ -265,7 +297,7 @@ public class DCCFileTransfer implements DCCTransfer {
 
 					// No longer possible to resume this transfer once it's
 					// underway
-					if(allowResume)
+					if (allowResume)
 						handler.removeAwaitingResume(DCCFileTransfer.this);
 
 					// Might as well close the server socket now; it's finished
@@ -279,9 +311,11 @@ public class DCCFileTransfer implements DCCTransfer {
 					finput = new BufferedInputStream(new FileInputStream(file));
 
 					// Check for resuming.
-					if(progress > 0) {
+					if (progress > 0)
+					{
 						long bytesSkipped = 0;
-						while(bytesSkipped < progress) {
+						while (bytesSkipped < progress)
+						{
 							bytesSkipped += finput
 									.skip(progress - bytesSkipped);
 						}
@@ -290,21 +324,26 @@ public class DCCFileTransfer implements DCCTransfer {
 					byte[] outBuffer = new byte[BUFFER_SIZE];
 					byte[] inBuffer = new byte[4];
 					int bytesRead = 0;
-					while((bytesRead = finput.read(outBuffer, 0,
-							outBuffer.length)) != -1) {
+					while ((bytesRead = finput.read(outBuffer, 0,
+							outBuffer.length)) != -1)
+					{
 						output.write(outBuffer, 0, bytesRead);
 						output.flush();
 						input.read(inBuffer, 0, inBuffer.length);
 						progress += bytesRead;
 						delay();
 					}
-				} catch(Exception e) {
+				} catch (Exception e)
+				{
 					exception = e;
-				} finally {
-					try {
+				} finally
+				{
+					try
+					{
 						finput.close();
 						socket.close();
-					} catch(Exception e) {
+					} catch (Exception e)
+					{
 						// Do nothing.
 					}
 				}
@@ -318,18 +357,23 @@ public class DCCFileTransfer implements DCCTransfer {
 	/**
 	 * Package mutator for setting the progress of the file transfer.
 	 */
-	void setProgress(long progress) {
+	void setProgress(long progress)
+	{
 		this.progress = progress;
 	}
 
 	/**
 	 * Delay between packets.
 	 */
-	private void delay() {
-		if(packetDelay > 0) {
-			try {
+	private void delay()
+	{
+		if (packetDelay > 0)
+		{
+			try
+			{
 				Thread.sleep(packetDelay);
-			} catch(InterruptedException e) {
+			} catch (InterruptedException e)
+			{
 				// Do nothing.
 			}
 		}
@@ -340,7 +384,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the nick of the other user.
 	 */
-	public String getNick() {
+	public String getNick()
+	{
 		return nick;
 	}
 
@@ -349,7 +394,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the login of the file sender. null if we are sending.
 	 */
-	public String getLogin() {
+	public String getLogin()
+	{
 		return login;
 	}
 
@@ -358,7 +404,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the hostname of the file sender. null if we are sending.
 	 */
-	public String getHostname() {
+	public String getHostname()
+	{
 		return hostname;
 	}
 
@@ -367,7 +414,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the suggested file to be used.
 	 */
-	public File getFile() {
+	public File getFile()
+	{
 		return file;
 	}
 
@@ -376,7 +424,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the port number.
 	 */
-	public int getPort() {
+	public int getPort()
+	{
 		return port;
 	}
 
@@ -386,7 +435,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return true if the file transfer is incoming.
 	 */
-	public boolean isIncoming() {
+	public boolean isIncoming()
+	{
 		return incoming;
 	}
 
@@ -396,7 +446,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return true if the file transfer is outgoing.
 	 */
-	public boolean isOutgoing() {
+	public boolean isOutgoing()
+	{
 		return !isIncoming();
 	}
 
@@ -408,7 +459,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * @param millis
 	 *            The number of milliseconds to wait between packets.
 	 */
-	public void setPacketDelay(long millis) {
+	public void setPacketDelay(long millis)
+	{
 		packetDelay = millis;
 	}
 
@@ -417,7 +469,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the delay between each packet.
 	 */
-	public long getPacketDelay() {
+	public long getPacketDelay()
+	{
 		return packetDelay;
 	}
 
@@ -427,7 +480,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * @return the size of the file. Returns -1 if the sender did not specify
 	 *         this value.
 	 */
-	public long getSize() {
+	public long getSize()
+	{
 		return size;
 	}
 
@@ -438,7 +492,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the progress of the transfer.
 	 */
-	public long getProgress() {
+	public long getProgress()
+	{
 		return progress;
 	}
 
@@ -450,17 +505,21 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the progress of the transfer as a percentage.
 	 */
-	public double getProgressPercentage() {
+	public double getProgressPercentage()
+	{
 		return 100 * (getProgress() / (double) getSize());
 	}
 
 	/**
 	 * Stops the DCC file transfer by closing the connection.
 	 */
-	public void close() {
-		try {
+	public void close()
+	{
+		try
+		{
 			socket.close();
-		} catch(Exception e) {
+		} catch (Exception e)
+		{
 			// Let the DCC manager worry about anything that may go wrong.
 		}
 	}
@@ -472,15 +531,18 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return data transfer rate in bytes per second.
 	 */
-	public long getTransferRate() {
+	public long getTransferRate()
+	{
 		long time = (System.currentTimeMillis() - startTime) / 1000;
-		if(time <= 0) {
+		if (time <= 0)
+		{
 			return 0;
 		}
 		return getProgress() / time;
 	}
 
-	public Exception getException() {
+	public Exception getException()
+	{
 		return exception;
 	}
 
@@ -489,7 +551,8 @@ public class DCCFileTransfer implements DCCTransfer {
 	 * 
 	 * @return the address of the sender as a long.
 	 */
-	public long getNumericalAddress() {
+	public long getNumericalAddress()
+	{
 		return address;
 	}
 

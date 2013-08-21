@@ -1,6 +1,7 @@
 package org.darkstorm.darkbot.mcspambot.commands;
 
-public interface CommandManager {
+public interface CommandManager
+{
 	public void register(Command command);
 
 	public void unregister(Command command);

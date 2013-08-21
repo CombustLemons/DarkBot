@@ -4,7 +4,8 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet71Weather extends AbstractPacket implements ReadablePacket {
+public class Packet71Weather extends AbstractPacket implements ReadablePacket
+{
 	public int entityID;
 
 	public int posX;
@@ -13,10 +14,12 @@ public class Packet71Weather extends AbstractPacket implements ReadablePacket {
 
 	public int isLightningBolt;
 
-	public Packet71Weather() {
+	public Packet71Weather()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityID = in.readInt();
 		isLightningBolt = in.readByte();
 		posX = in.readInt();
@@ -24,7 +27,8 @@ public class Packet71Weather extends AbstractPacket implements ReadablePacket {
 		posZ = in.readInt();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 71;
 	}
 }

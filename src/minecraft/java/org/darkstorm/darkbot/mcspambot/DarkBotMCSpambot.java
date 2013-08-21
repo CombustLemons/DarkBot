@@ -29,25 +29,32 @@ import org.darkstorm.darkbot.minecraftbot.util.ProxyData.ProxyType;
 import org.darkstorm.darkbot.minecraftbot.world.entity.MainPlayerEntity;
 
 @SuppressWarnings("unused")
-public class DarkBotMCSpambot extends MinecraftBotWrapper {
+public class DarkBotMCSpambot extends MinecraftBotWrapper
+{
 	private static final boolean createFaction = true;
 	private static final List<DarkBotMCSpambot> bots = new ArrayList<DarkBotMCSpambot>();
 	private static final char[] msgChars = new char[] { 'a', 'e', 'i', 'o', 'u' };
 	private static final String[] spamList;
 	private static ArrayList<String> captchaList = new ArrayList<String>();
 
-	static {
+	static
+	{
 		List<String> spamlist = new ArrayList<String>();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("spamlist.txt")));
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(new File(
+					"spamlist.txt")));
 			String line;
-			while((line = reader.readLine()) != null) {
-				if(line.trim().isEmpty())
+			while ((line = reader.readLine()) != null)
+			{
+				if (line.trim().isEmpty())
 					continue;
 				spamlist.add(line);
 			}
 			reader.close();
-		} catch(Exception exception) {}
+		} catch (Exception exception)
+		{
+		}
 		spamList = spamlist.toArray(new String[0]);
 	}
 
@@ -56,11 +63,15 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 
 	private ConnectionHandler connectionHandler;
 	private Random random = new Random();
-	private int nextSkill, nextBot, nextMsgChar, nextSpamList, tickDelay = 100, nextMessage;
+	private int nextSkill, nextBot, nextMsgChar, nextSpamList, tickDelay = 100,
+			nextMessage;
 
-	private DarkBotMCSpambot(MinecraftBotData data, String owner) throws AuthenticationException, UnsupportedProtocolException {
+	private DarkBotMCSpambot(MinecraftBotData data, String owner)
+			throws AuthenticationException, UnsupportedProtocolException
+	{
 		super(data);
-		synchronized(bots) {
+		synchronized (bots)
+		{
 			bots.add(this);
 		}
 		addOwner(owner);
@@ -97,124 +108,205 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 
 		connectionHandler = bot.getConnectionHandler();
 		Session session = bot.getSession();
-		System.out.println("[" + session.getUsername() + "] Done! (" + bots.size() + ")");
+		System.out.println("[" + session.getUsername() + "] Done! ("
+				+ bots.size() + ")");
 	}
 
 	@Override
 	@EventHandler
-	public void onChatReceived(ChatReceivedEvent event) {
+	public void onChatReceived(ChatReceivedEvent event)
+	{
 		super.onChatReceived(event);
 		String message = Util.stripColors(event.getMessage());
-		if(message.startsWith("Please register with \"/register")) {
+		if (message.startsWith("Please register with \"/register"))
+		{
 			String password = Util.generateRandomString(10 + random.nextInt(6));
 			bot.say("/register " + password + " " + password);
-		} else if(message.contains("You are not member of any faction.") && spamMessage != null && createFaction) {
-			String msg = "/f create " + Util.generateRandomString(7 + random.nextInt(4));
+		} else if (message.contains("You are not member of any faction.")
+				&& spamMessage != null && createFaction)
+		{
+			String msg = "/f create "
+					+ Util.generateRandomString(7 + random.nextInt(4));
 			bot.say(msg);
 		}
-		for(String s : captchaList) {
+		for (String s : captchaList)
+		{
 			Matcher captchaMatcher = Pattern.compile(s).matcher(message);
-			if(captchaMatcher.matches())
+			if (captchaMatcher.matches())
 				bot.say(captchaMatcher.group(1));
 		}
 	}
 
 	@Override
 	@EventHandler
-	public void onDisconnect(DisconnectEvent event) {
-		synchronized(bots) {
+	public void onDisconnect(DisconnectEvent event)
+	{
+		synchronized (bots)
+		{
 			bots.remove(this);
 		}
 		super.onDisconnect(event);
 	}
 
 	@EventHandler
-	public void onTick(TickEvent event) {
-		if(!bot.hasSpawned() || !bot.isConnected())
+	public void onTick(TickEvent event)
+	{
+		if (!bot.hasSpawned() || !bot.isConnected())
 			return;
-		if(tickDelay > 0) {
+		if (tickDelay > 0)
+		{
 			tickDelay--;
 			return;
 		}
 
 		MainPlayerEntity player = bot.getPlayer();
-		if(player == null || !bot.hasSpawned() || spamMessage == null)
+		if (player == null || !bot.hasSpawned() || spamMessage == null)
 			return;
-		if(nextMessage > 0) {
+		if (nextMessage > 0)
+		{
 			nextMessage--;
 			return;
 		}
-		try {
+		try
+		{
 			String message = spamMessage;
 			MessageFormatter formatter = new MessageFormatter();
-			synchronized(bots) {
-				if(bots.size() > 0) {
-					DarkBotMCSpambot bot = bots.get(++nextBot >= bots.size() ? nextBot = 0 : nextBot);
-					if(bot != null && bot.bot != null && bot.bot.getSession() != null)
-						formatter.setVariable("bot", bot.bot.getSession().getUsername());
+			synchronized (bots)
+			{
+				if (bots.size() > 0)
+				{
+					DarkBotMCSpambot bot = bots
+							.get(++nextBot >= bots.size() ? nextBot = 0
+									: nextBot);
+					if (bot != null && bot.bot != null
+							&& bot.bot.getSession() != null)
+						formatter.setVariable("bot", bot.bot.getSession()
+								.getUsername());
 				}
 			}
-			if(spamList.length > 0) {
-				formatter.setVariable("spamlist", spamList[++nextSpamList >= spamList.length ? nextSpamList = 0 : nextSpamList]);
+			if (spamList.length > 0)
+			{
+				formatter
+						.setVariable(
+								"spamlist",
+								spamList[++nextSpamList >= spamList.length ? nextSpamList = 0
+										: nextSpamList]);
 			}
-			formatter.setVariable("rnd", Util.generateRandomString(15 + random.nextInt(6)));
-			formatter.setVariable("msg", Character.toString(msgChars[++nextMsgChar >= msgChars.length ? nextMsgChar = 0 : nextMsgChar]));
+			formatter.setVariable("rnd",
+					Util.generateRandomString(15 + random.nextInt(6)));
+			formatter
+					.setVariable(
+							"msg",
+							Character
+									.toString(msgChars[++nextMsgChar >= msgChars.length ? nextMsgChar = 0
+											: nextMsgChar]));
 			message = formatter.format(message);
 			bot.say(message);
-		} catch(Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		nextMessage = messageDelay;
 	}
 
-	public static String getSpamMessage() {
+	public static String getSpamMessage()
+	{
 		return spamMessage;
 	}
 
-	public static void setSpamMessage(String spamMessage) {
+	public static void setSpamMessage(String spamMessage)
+	{
 		DarkBotMCSpambot.spamMessage = spamMessage;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		// TODO main
 		OptionParser parser = new OptionParser();
 		parser.acceptsAll(Arrays.asList("h", "help"), "Show this help dialog.");
-		OptionSpec<String> serverOption = parser.acceptsAll(Arrays.asList("s", "server"), "Server to join.").withRequiredArg().describedAs("server-address[:port]");
-		OptionSpec<String> proxyOption = parser.acceptsAll(Arrays.asList("P", "proxy"), "SOCKS proxy to use. Ignored in presence of 'socks-proxy-list'.").withRequiredArg().describedAs("proxy-address");
-		OptionSpec<String> ownerOption = parser.acceptsAll(Arrays.asList("o", "owner"), "Owner of the bot (username of in-game control).").withRequiredArg().describedAs("username");
-		OptionSpec<?> offlineOption = parser.acceptsAll(Arrays.asList("O", "offline"), "Offline-mode. Ignores 'password' and 'account-list' (will " + "generate random usernames if 'username' is not supplied).");
-		OptionSpec<?> autoRejoinOption = parser.acceptsAll(Arrays.asList("a", "auto-rejoin"), "Auto-rejoin a server on disconnect.");
-		OptionSpec<Integer> loginDelayOption = parser.acceptsAll(Arrays.asList("d", "login-delay"), "Delay between bot joins, in milliseconds. 5000 is " + "recommended if not using socks proxies.").withRequiredArg().describedAs("delay").ofType(Integer.class);
-		OptionSpec<Integer> botAmountOption = parser.acceptsAll(Arrays.asList("b", "bot-amount"), "Amount of bots to join. Must be <= amount of accounts.").withRequiredArg().describedAs("amount").ofType(Integer.class);
-		OptionSpec<String> protocolOption = parser.accepts("protocol", "Protocol version to use. Can be either protocol number or Minecraft version.").withRequiredArg();
-		OptionSpec<?> protocolsOption = parser.accepts("protocols", "List available protocols and exit.");
+		OptionSpec<String> serverOption = parser
+				.acceptsAll(Arrays.asList("s", "server"), "Server to join.")
+				.withRequiredArg().describedAs("server-address[:port]");
+		OptionSpec<String> proxyOption = parser
+				.acceptsAll(Arrays.asList("P", "proxy"),
+						"SOCKS proxy to use. Ignored in presence of 'socks-proxy-list'.")
+				.withRequiredArg().describedAs("proxy-address");
+		OptionSpec<String> ownerOption = parser
+				.acceptsAll(Arrays.asList("o", "owner"),
+						"Owner of the bot (username of in-game control).")
+				.withRequiredArg().describedAs("username");
+		OptionSpec<?> offlineOption = parser
+				.acceptsAll(
+						Arrays.asList("O", "offline"),
+						"Offline-mode. Ignores 'password' and 'account-list' (will "
+								+ "generate random usernames if 'username' is not supplied).");
+		OptionSpec<?> autoRejoinOption = parser.acceptsAll(
+				Arrays.asList("a", "auto-rejoin"),
+				"Auto-rejoin a server on disconnect.");
+		OptionSpec<Integer> loginDelayOption = parser
+				.acceptsAll(
+						Arrays.asList("d", "login-delay"),
+						"Delay between bot joins, in milliseconds. 5000 is "
+								+ "recommended if not using socks proxies.")
+				.withRequiredArg().describedAs("delay").ofType(Integer.class);
+		OptionSpec<Integer> botAmountOption = parser
+				.acceptsAll(Arrays.asList("b", "bot-amount"),
+						"Amount of bots to join. Must be <= amount of accounts.")
+				.withRequiredArg().describedAs("amount").ofType(Integer.class);
+		OptionSpec<String> protocolOption = parser
+				.accepts("protocol",
+						"Protocol version to use. Can be either protocol number or Minecraft version.")
+				.withRequiredArg();
+		OptionSpec<?> protocolsOption = parser.accepts("protocols",
+				"List available protocols and exit.");
 
-		OptionSpec<String> accountListOption = parser.accepts("account-list", "File containing a list of accounts, in username/email:password format.").withRequiredArg().describedAs("file");
-		OptionSpec<String> socksProxyListOption = parser.accepts("socks-proxy-list", "File containing a list of SOCKS proxies, in address:port format.").withRequiredArg().describedAs("file");
-		OptionSpec<String> httpProxyListOption = parser.accepts("http-proxy-list", "File containing a list of HTTP proxies, in address:port format.").withRequiredArg().describedAs("file");
-		OptionSpec<String> captchaListOption = parser.accepts("captcha-list", "File containing a list of chat baised captcha to bypass.").withRequiredArg().describedAs("file");
+		OptionSpec<String> accountListOption = parser
+				.accepts("account-list",
+						"File containing a list of accounts, in username/email:password format.")
+				.withRequiredArg().describedAs("file");
+		OptionSpec<String> socksProxyListOption = parser
+				.accepts("socks-proxy-list",
+						"File containing a list of SOCKS proxies, in address:port format.")
+				.withRequiredArg().describedAs("file");
+		OptionSpec<String> httpProxyListOption = parser
+				.accepts("http-proxy-list",
+						"File containing a list of HTTP proxies, in address:port format.")
+				.withRequiredArg().describedAs("file");
+		OptionSpec<String> captchaListOption = parser
+				.accepts("captcha-list",
+						"File containing a list of chat baised captcha to bypass.")
+				.withRequiredArg().describedAs("file");
 
 		OptionSet options;
-		try {
+		try
+		{
 			options = parser.parse(args);
-		} catch(OptionException exception) {
-			try {
+		} catch (OptionException exception)
+		{
+			try
+			{
 				parser.printHelpOn(System.out);
-			} catch(Exception exception1) {
+			} catch (Exception exception1)
+			{
 				exception1.printStackTrace();
 			}
 			return;
 		}
 
-		if(options.has("help")) {
+		if (options.has("help"))
+		{
 			printHelp(parser);
 			return;
 		}
-		if(options.has(protocolsOption)) {
+		if (options.has(protocolsOption))
+		{
 			System.out.println("Available protocols:");
-			for(ProtocolProvider provider : ProtocolProvider.getProviders())
-				System.out.println("\t" + provider.getMinecraftVersion() + " (" + provider.getSupportedVersion() + "): " + provider.getClass().getName());
-			System.out.println("If no protocols are listed above, you may attempt to specify a protocol version in case the provider is actually in the class-path.");
+			for (ProtocolProvider provider : ProtocolProvider.getProviders())
+				System.out.println("\t" + provider.getMinecraftVersion() + " ("
+						+ provider.getSupportedVersion() + "): "
+						+ provider.getClass().getName());
+			System.out
+					.println("If no protocols are listed above, you may attempt to specify a protocol version in case the provider is actually in the class-path.");
 			return;
 		}
 
@@ -222,21 +314,25 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		final boolean autoRejoin = options.has(autoRejoinOption);
 
 		final List<String> accounts;
-		if(options.has(accountListOption)) {
+		if (options.has(accountListOption))
+		{
 			accounts = loadAccounts(options.valueOf(accountListOption));
-		} else if(!offline) {
-			System.out.println("Option 'accounts' must be supplied in " + "absence of option 'offline'.");
+		} else if (!offline)
+		{
+			System.out.println("Option 'accounts' must be supplied in "
+					+ "absence of option 'offline'.");
 			printHelp(parser);
 			return;
 		} else
 			accounts = null;
 
 		final List<String> captcha;
-		if(options.has(captchaListOption))
+		if (options.has(captchaListOption))
 			readCaptchaFile(options.valueOf(captchaListOption));
 
 		final String server;
-		if(!options.has(serverOption)) {
+		if (!options.has(serverOption))
+		{
 			System.out.println("Option 'server' required.");
 			printHelp(parser);
 			return;
@@ -244,7 +340,8 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			server = options.valueOf(serverOption);
 
 		final String owner;
-		if(!options.has(ownerOption)) {
+		if (!options.has(ownerOption))
+		{
 			System.out.println("Option 'owner' required.");
 			printHelp(parser);
 			return;
@@ -252,18 +349,25 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			owner = options.valueOf(ownerOption);
 
 		final int protocol;
-		if(options.has(protocolOption)) {
+		if (options.has(protocolOption))
+		{
 			String protocolString = options.valueOf(protocolOption);
 			int parsedProtocol;
-			try {
+			try
+			{
 				parsedProtocol = Integer.parseInt(protocolString);
-			} catch(NumberFormatException exception) {
+			} catch (NumberFormatException exception)
+			{
 				ProtocolProvider foundProvider = null;
-				for(ProtocolProvider provider : ProtocolProvider.getProviders())
-					if(protocolString.equals(provider.getMinecraftVersion()))
+				for (ProtocolProvider provider : ProtocolProvider
+						.getProviders())
+					if (protocolString.equals(provider.getMinecraftVersion()))
 						foundProvider = provider;
-				if(foundProvider == null) {
-					System.out.println("No provider found for Minecraft version '" + protocolString + "'.");
+				if (foundProvider == null)
+				{
+					System.out
+							.println("No provider found for Minecraft version '"
+									+ protocolString + "'.");
 					return;
 				} else
 					parsedProtocol = foundProvider.getSupportedVersion();
@@ -273,30 +377,33 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			protocol = MinecraftBot.LATEST_PROTOCOL;
 
 		final List<String> socksProxies;
-		if(options.has(socksProxyListOption))
+		if (options.has(socksProxyListOption))
 			socksProxies = loadProxies(options.valueOf(socksProxyListOption));
 		else
 			socksProxies = null;
 		final boolean useProxy = socksProxies != null;
 
 		final List<String> httpProxies;
-		if(options.has(httpProxyListOption))
+		if (options.has(httpProxyListOption))
 			httpProxies = loadLoginProxies(options.valueOf(httpProxyListOption));
-		else if(!offline && accounts != null) {
-			System.out.println("Option 'http-proxy-list' required if " + "option 'account-list' is supplied.");
+		else if (!offline && accounts != null)
+		{
+			System.out.println("Option 'http-proxy-list' required if "
+					+ "option 'account-list' is supplied.");
 			printHelp(parser);
 			return;
 		} else
 			httpProxies = null;
 
 		final int loginDelay;
-		if(options.has(loginDelayOption))
+		if (options.has(loginDelayOption))
 			loginDelay = options.valueOf(loginDelayOption);
 		else
 			loginDelay = 0;
 
 		final int botAmount;
-		if(!options.has(botAmountOption)) {
+		if (!options.has(botAmountOption))
+		{
 			System.out.println("Option 'bot-amount' required.");
 			printHelp(parser);
 			return;
@@ -304,46 +411,71 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			botAmount = options.valueOf(botAmountOption);
 
 		initGui();
-		while(!sessions.get()) {
-			synchronized(sessions) {
-				try {
+		while (!sessions.get())
+		{
+			synchronized (sessions)
+			{
+				try
+				{
 					sessions.wait(5000);
-				} catch(InterruptedException exception) {}
+				} catch (InterruptedException exception)
+				{
+				}
 			}
 		}
 
 		final Queue<Runnable> lockQueue = new ArrayDeque<Runnable>();
 
-		ExecutorService service = Executors.newFixedThreadPool(botAmount + (loginDelay > 0 ? 1 : 0));
+		ExecutorService service = Executors.newFixedThreadPool(botAmount
+				+ (loginDelay > 0 ? 1 : 0));
 		final Object firstWait = new Object();
-		if(loginDelay > 0) {
-			service.execute(new Runnable() {
+		if (loginDelay > 0)
+		{
+			service.execute(new Runnable()
+			{
 				@Override
-				public void run() {
-					synchronized(firstWait) {
-						try {
+				public void run()
+				{
+					synchronized (firstWait)
+					{
+						try
+						{
 							firstWait.wait();
-						} catch(InterruptedException exception) {}
+						} catch (InterruptedException exception)
+						{
+						}
 					}
-					while(true) {
-						try {
+					while (true)
+					{
+						try
+						{
 							Thread.sleep(loginDelay);
-						} catch(InterruptedException exception) {}
-						synchronized(lockQueue) {
-							if(lockQueue.size() > 0) {
+						} catch (InterruptedException exception)
+						{
+						}
+						synchronized (lockQueue)
+						{
+							if (lockQueue.size() > 0)
+							{
 								Runnable thread = lockQueue.poll();
-								synchronized(thread) {
+								synchronized (thread)
+								{
 									thread.notifyAll();
 								}
 								lockQueue.offer(thread);
 							} else
 								continue;
 						}
-						while(!sessions.get()) {
-							synchronized(sessions) {
-								try {
+						while (!sessions.get())
+						{
+							synchronized (sessions)
+							{
+								try
+								{
 									sessions.wait(5000);
-								} catch(InterruptedException exception) {}
+								} catch (InterruptedException exception)
+								{
+								}
 							}
 						}
 					}
@@ -352,158 +484,255 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		}
 		final List<String> accountsInUse = new ArrayList<String>();
 		final Map<String, AtomicInteger> workingProxies = new HashMap<String, AtomicInteger>();
-		for(int i = 0; i < botAmount; i++) {
+		for (int i = 0; i < botAmount; i++)
+		{
 			final int botNumber = i;
-			Runnable runnable = new Runnable() {
+			Runnable runnable = new Runnable()
+			{
 				@Override
-				public void run() {
-					if(loginDelay > 0)
-						synchronized(lockQueue) {
+				public void run()
+				{
+					if (loginDelay > 0)
+						synchronized (lockQueue)
+						{
 							lockQueue.add(this);
 						}
 					Random random = new Random();
 
-					if(!offline) {
+					if (!offline)
+					{
 						AuthService authService = new LegacyAuthService();
 						boolean authenticated = false;
-						user: while(true) {
-							if(authenticated) {
+						user: while (true)
+						{
+							if (authenticated)
+							{
 								authenticated = false;
 								sessionCount.decrementAndGet();
 							}
 							Session session = null;
 							String loginProxy;
-							String account = accounts.get(random.nextInt(accounts.size()));
-							synchronized(accountsInUse) {
-								if(accountsInUse.size() == accounts.size())
+							String account = accounts.get(random
+									.nextInt(accounts.size()));
+							synchronized (accountsInUse)
+							{
+								if (accountsInUse.size() == accounts.size())
 									System.exit(0);
-								while(accountsInUse.contains(account))
-									account = accounts.get(random.nextInt(accounts.size()));
+								while (accountsInUse.contains(account))
+									account = accounts.get(random
+											.nextInt(accounts.size()));
 								accountsInUse.add(account);
 							}
 							String[] accountParts = account.split(":");
-							while(true) {
-								while(!sessions.get()) {
-									synchronized(sessions) {
-										try {
+							while (true)
+							{
+								while (!sessions.get())
+								{
+									synchronized (sessions)
+									{
+										try
+										{
 											sessions.wait(5000);
-										} catch(InterruptedException exception) {}
+										} catch (InterruptedException exception)
+										{
+										}
 									}
 								}
-								synchronized(workingProxies) {
-									Iterator<String> iterator = workingProxies.keySet().iterator();
-									if(iterator.hasNext())
+								synchronized (workingProxies)
+								{
+									Iterator<String> iterator = workingProxies
+											.keySet().iterator();
+									if (iterator.hasNext())
 										loginProxy = iterator.next();
 									else
-										loginProxy = httpProxies.get(random.nextInt(httpProxies.size()));;
+										loginProxy = httpProxies.get(random
+												.nextInt(httpProxies.size()));
+									;
 								}
-								try {
-									session = authService.login(accountParts[0], accountParts[1], toProxy(loginProxy, Proxy.Type.HTTP));
+								try
+								{
+									session = authService
+											.login(accountParts[0],
+													accountParts[1],
+													toProxy(loginProxy,
+															Proxy.Type.HTTP));
 									// addAccount(session);
-									synchronized(workingProxies) {
-										AtomicInteger count = workingProxies.get(loginProxy);
-										if(count != null)
+									synchronized (workingProxies)
+									{
+										AtomicInteger count = workingProxies
+												.get(loginProxy);
+										if (count != null)
 											count.set(0);
 										else
-											workingProxies.put(loginProxy, new AtomicInteger());
+											workingProxies.put(loginProxy,
+													new AtomicInteger());
 									}
 									sessionCount.incrementAndGet();
 									authenticated = true;
 									break;
-								} catch(IOException exception) {
-									synchronized(workingProxies) {
+								} catch (IOException exception)
+								{
+									synchronized (workingProxies)
+									{
 										workingProxies.remove(loginProxy);
 									}
-									System.err.println("[Bot" + botNumber + "] " + loginProxy + ": " + exception);
-								} catch(AuthenticationException exception) {
-									if(exception.getMessage().contains("Too many failed logins")) {
-										synchronized(workingProxies) {
-											AtomicInteger count = workingProxies.get(loginProxy);
-											if(count != null && count.incrementAndGet() >= 5)
-												workingProxies.remove(loginProxy);
+									System.err.println("[Bot" + botNumber
+											+ "] " + loginProxy + ": "
+											+ exception);
+								} catch (AuthenticationException exception)
+								{
+									if (exception.getMessage().contains(
+											"Too many failed logins"))
+									{
+										synchronized (workingProxies)
+										{
+											AtomicInteger count = workingProxies
+													.get(loginProxy);
+											if (count != null
+													&& count.incrementAndGet() >= 5)
+												workingProxies
+														.remove(loginProxy);
 										}
 									}
-									System.err.println("[Bot" + botNumber + "] " + loginProxy + ": " + exception);
+									System.err.println("[Bot" + botNumber
+											+ "] " + loginProxy + ": "
+											+ exception);
 									continue user;
 								}
 							}
-							System.out.println("[" + session.getUsername() + "] " + session);
-							while(!joins.get()) {
-								synchronized(joins) {
-									try {
+							System.out.println("[" + session.getUsername()
+									+ "] " + session);
+							while (!joins.get())
+							{
+								synchronized (joins)
+								{
+									try
+									{
 										joins.wait(5000);
-									} catch(InterruptedException exception) {}
+									} catch (InterruptedException exception)
+									{
+									}
 								}
 							}
-							if(loginDelay > 0) {
-								synchronized(this) {
-									try {
-										synchronized(firstWait) {
+							if (loginDelay > 0)
+							{
+								synchronized (this)
+								{
+									try
+									{
+										synchronized (firstWait)
+										{
 											firstWait.notifyAll();
 										}
 										wait();
-									} catch(InterruptedException exception) {}
+									} catch (InterruptedException exception)
+									{
+									}
 								}
 							}
 
-							while(true) {
-								String proxy = useProxy ? socksProxies.get(random.nextInt(socksProxies.size())) : null;
-								try {
-									DarkBotMCSpambot bot = new DarkBotMCSpambot(generateData(server, session.getUsername(), session.getPassword(), authService, session, protocol, null, proxy), owner);
-									while(bot.getBot().isConnected()) {
-										try {
+							while (true)
+							{
+								String proxy = useProxy ? socksProxies
+										.get(random.nextInt(socksProxies.size()))
+										: null;
+								try
+								{
+									DarkBotMCSpambot bot = new DarkBotMCSpambot(
+											generateData(server,
+													session.getUsername(),
+													session.getPassword(),
+													authService, session,
+													protocol, null, proxy),
+											owner);
+									while (bot.getBot().isConnected())
+									{
+										try
+										{
 											Thread.sleep(500);
-										} catch(InterruptedException exception) {
+										} catch (InterruptedException exception)
+										{
 											exception.printStackTrace();
 										}
 									}
-									if(!autoRejoin)
+									if (!autoRejoin)
 										break;
-								} catch(Exception exception) {
+								} catch (Exception exception)
+								{
 									exception.printStackTrace();
-									System.out.println("[" + session.getUsername() + "] Error connecting: " + exception.getCause().toString());
+									System.out.println("["
+											+ session.getUsername()
+											+ "] Error connecting: "
+											+ exception.getCause().toString());
 								}
 							}
-							System.out.println("[" + session.getUsername() + "] Account failed");
+							System.out.println("[" + session.getUsername()
+									+ "] Account failed");
 						}
-					} else {
-						while(true) {
-							String proxy = useProxy ? socksProxies.get(random.nextInt(socksProxies.size())) : null;
-							try {
+					} else
+					{
+						while (true)
+						{
+							String proxy = useProxy ? socksProxies.get(random
+									.nextInt(socksProxies.size())) : null;
+							try
+							{
 								String username;
-								if(accounts != null) {
-									username = accounts.get(random.nextInt(accounts.size())).split(":")[0];
-									synchronized(accountsInUse) {
-										while(accountsInUse.contains(username))
-											username = accounts.get(random.nextInt(accounts.size()));
+								if (accounts != null)
+								{
+									username = accounts.get(
+											random.nextInt(accounts.size()))
+											.split(":")[0];
+									synchronized (accountsInUse)
+									{
+										while (accountsInUse.contains(username))
+											username = accounts.get(random
+													.nextInt(accounts.size()));
 										accountsInUse.add(username);
 									}
 								} else
-									username = Util.generateRandomString(10 + random.nextInt(6));
-								if(loginDelay > 0) {
-									synchronized(this) {
-										try {
-											synchronized(firstWait) {
+									username = Util
+											.generateRandomString(10 + random
+													.nextInt(6));
+								if (loginDelay > 0)
+								{
+									synchronized (this)
+									{
+										try
+										{
+											synchronized (firstWait)
+											{
 												firstWait.notifyAll();
 											}
 											wait();
-										} catch(InterruptedException exception) {}
+										} catch (InterruptedException exception)
+										{
+										}
 									}
 								}
-								DarkBotMCSpambot bot = new DarkBotMCSpambot(generateData(server, username, null, null, null, protocol, null, proxy), owner);
-								while(bot.getBot().isConnected()) {
-									try {
+								DarkBotMCSpambot bot = new DarkBotMCSpambot(
+										generateData(server, username, null,
+												null, null, protocol, null,
+												proxy), owner);
+								while (bot.getBot().isConnected())
+								{
+									try
+									{
 										Thread.sleep(500);
-									} catch(InterruptedException exception) {
+									} catch (InterruptedException exception)
+									{
 										exception.printStackTrace();
 									}
 								}
-								if(!autoRejoin)
+								if (!autoRejoin)
 									break;
 								else
 									continue;
-							} catch(Exception exception) {
-								System.out.println("[Bot" + botNumber + "] Error connecting: " + exception.toString());
+							} catch (Exception exception)
+							{
+								System.out.println("[Bot" + botNumber
+										+ "] Error connecting: "
+										+ exception.toString());
 							}
 						}
 					}
@@ -513,10 +742,13 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			service.execute(runnable);
 		}
 		service.shutdown();
-		while(!service.isTerminated()) {
-			try {
+		while (!service.isTerminated())
+		{
+			try
+			{
 				service.awaitTermination(9000, TimeUnit.DAYS);
-			} catch(InterruptedException exception) {
+			} catch (InterruptedException exception)
+			{
 				exception.printStackTrace();
 			}
 		}
@@ -527,10 +759,13 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 	private static AtomicBoolean sessions = new AtomicBoolean();
 	private static AtomicBoolean joins = new AtomicBoolean();
 
-	private static void initGui() {
-		try {
+	private static void initGui()
+	{
+		try
+		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 		}
 		JFrame frame = new JFrame("DarkBot");
@@ -538,50 +773,72 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		frame.setLayout(new GridBagLayout());
 		Insets noInsets = new Insets(0, 0, 0, 0);
 		final JToggleButton sessionsButton = new JToggleButton("Login (0)");
-		frame.add(sessionsButton, new GridBagConstraints(0, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets, 0, 0));
-		sessionsButton.addActionListener(new ActionListener() {
+		frame.add(sessionsButton, new GridBagConstraints(0, 0, 2, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets,
+				0, 0));
+		sessionsButton.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e)
+			{
 				sessions.set(sessionsButton.isSelected());
-				synchronized(sessions) {
+				synchronized (sessions)
+				{
 					sessions.notifyAll();
 				}
 			}
 		});
 		final JToggleButton joinsButton = new JToggleButton("Join (0)");
-		frame.add(joinsButton, new GridBagConstraints(0, 1, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets, 0, 0));
-		joinsButton.addActionListener(new ActionListener() {
+		frame.add(joinsButton, new GridBagConstraints(0, 1, 2, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets,
+				0, 0));
+		joinsButton.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e)
+			{
 				joins.set(joinsButton.isSelected());
-				synchronized(joins) {
+				synchronized (joins)
+				{
 					joins.notifyAll();
 				}
 			}
 		});
 		final JTextField field = new JTextField();
-		frame.add(field, new GridBagConstraints(0, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets, 0, 0));
+		frame.add(field, new GridBagConstraints(0, 2, 1, 1, 1, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets,
+				0, 0));
 		final JButton button = new JButton("Start");
-		frame.add(button, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets, 0, 0));
-		button.addActionListener(new ActionListener() {
+		frame.add(button, new GridBagConstraints(1, 2, 1, 1, 0, 0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, noInsets,
+				0, 0));
+		button.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(button.getText().startsWith("Start")) {
+			public void actionPerformed(ActionEvent e)
+			{
+				if (button.getText().startsWith("Start"))
+				{
 					field.setEnabled(false);
 					spamMessage = field.getText();
 					button.setText("Stop");
-				} else {
+				} else
+				{
 					spamMessage = null;
 					button.setText("Start");
 					field.setEnabled(true);
 				}
 			}
 		});
-		Timer timer = new Timer(500, new ActionListener() {
+		Timer timer = new Timer(500, new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				sessionsButton.setText(sessionsButton.getText().split(" ")[0] + " (" + Integer.toString(sessionCount.get()) + ")");
-				joinsButton.setText(joinsButton.getText().split(" ")[0] + " (" + Integer.toString(bots.size()) + ")");
+			public void actionPerformed(ActionEvent e)
+			{
+				sessionsButton.setText(sessionsButton.getText().split(" ")[0]
+						+ " (" + Integer.toString(sessionCount.get()) + ")");
+				joinsButton.setText(joinsButton.getText().split(" ")[0] + " ("
+						+ Integer.toString(bots.size()) + ")");
 			}
 		});
 		timer.setRepeats(true);
@@ -592,81 +849,103 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		frame.setVisible(true);
 	}
 
-	private static void printHelp(OptionParser parser) {
-		try {
+	private static void printHelp(OptionParser parser)
+	{
+		try
+		{
 			parser.printHelpOn(System.out);
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 		}
 	}
 
-	private static List<String> loadProxies(String fileName) {
+	private static List<String> loadProxies(String fileName)
+	{
 		List<String> proxies = new ArrayList<String>();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(new File(
+					fileName)));
 			String line;
-			while((line = reader.readLine()) != null) {
-				if(line.trim().isEmpty())
+			while ((line = reader.readLine()) != null)
+			{
+				if (line.trim().isEmpty())
 					continue;
 				String[] parts = line.split(" ")[0].trim().split(":");
-				proxies.add(parts[0].trim() + ":" + Integer.parseInt(parts[1].trim()));
+				proxies.add(parts[0].trim() + ":"
+						+ Integer.parseInt(parts[1].trim()));
 			}
 			reader.close();
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			throw new RuntimeException(exception);
 		}
 		System.out.println("Loaded " + proxies.size() + " proxies.");
 		return proxies;
 	}
 
-	private static List<String> loadLoginProxies(String fileName) {
+	private static List<String> loadLoginProxies(String fileName)
+	{
 		List<String> proxies = new ArrayList<String>();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(new File(
+					fileName)));
 			String line;
-			while((line = reader.readLine()) != null) {
-				if(line.trim().isEmpty())
+			while ((line = reader.readLine()) != null)
+			{
+				if (line.trim().isEmpty())
 					continue;
 				String[] parts = line.split(" ")[0].trim().split(":");
-				proxies.add(parts[0].trim() + ":" + Integer.parseInt(parts[1].trim()));
+				proxies.add(parts[0].trim() + ":"
+						+ Integer.parseInt(parts[1].trim()));
 			}
 			reader.close();
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			throw new RuntimeException(exception);
 		}
 		System.out.println("Loaded " + proxies.size() + " login proxies.");
 		return proxies;
 	}
 
-	private static List<String> loadAccounts(String fileName) {
+	private static List<String> loadAccounts(String fileName)
+	{
 		List<String> accounts = new ArrayList<String>();
-		try {
+		try
+		{
 			Pattern pattern = Pattern.compile("[\\w]{1,16}");
-			BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(
+					fileName)));
 			String line;
-			while((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null)
+			{
 				Matcher matcher = pattern.matcher(line);
-				if(!matcher.find())
+				if (!matcher.find())
 					continue;
 				String username = matcher.group();
-				if(!matcher.find())
+				if (!matcher.find())
 					continue;
 				String password = matcher.group();
 				accounts.add(username + ":" + password);
 			}
 			reader.close();
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			throw new RuntimeException(exception);
 		}
 		System.out.println("Loaded " + accounts.size() + " accounts.");
 		return accounts;
 	}
 
-	private static Proxy toProxy(String proxyData, Proxy.Type type) {
-		if(proxyData == null)
+	private static Proxy toProxy(String proxyData, Proxy.Type type)
+	{
+		if (proxyData == null)
 			return null;
 		int port = 80;
-		if(proxyData.contains(":")) {
+		if (proxyData.contains(":"))
+		{
 			String[] parts = proxyData.split(":");
 			proxyData = parts[0];
 			port = Integer.parseInt(parts[1]);
@@ -674,23 +953,30 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		return new Proxy(type, new InetSocketAddress(proxyData, port));
 	}
 
-	private static MinecraftBotData generateData(String server, String username, String password, AuthService service, Session session, int protocol, String loginProxy, String proxy) {
+	private static MinecraftBotData generateData(String server,
+			String username, String password, AuthService service,
+			Session session, int protocol, String loginProxy, String proxy)
+	{
 		MinecraftBotData.Builder builder = MinecraftBotData.builder();
-		if(proxy != null && !proxy.isEmpty()) {
+		if (proxy != null && !proxy.isEmpty())
+		{
 			int port = 80;
 			ProxyType type = ProxyType.SOCKS;
-			if(proxy.contains(":")) {
+			if (proxy.contains(":"))
+			{
 				String[] parts = proxy.split(":");
 				proxy = parts[0];
 				port = Integer.parseInt(parts[1]);
-				if(parts.length > 2)
+				if (parts.length > 2)
 					type = ProxyType.values()[Integer.parseInt(parts[2]) - 1];
 			}
 			builder.socksProxy(new ProxyData(proxy, port, type));
 		}
-		if(loginProxy != null && !loginProxy.isEmpty()) {
+		if (loginProxy != null && !loginProxy.isEmpty())
+		{
 			int port = 80;
-			if(loginProxy.contains(":")) {
+			if (loginProxy.contains(":"))
+			{
 				String[] parts = loginProxy.split(":");
 				loginProxy = parts[0];
 				port = Integer.parseInt(parts[1]);
@@ -698,13 +984,15 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 			builder.httpProxy(new ProxyData(loginProxy, port, ProxyType.HTTP));
 		}
 		builder.username(username).authService(service).protocol(protocol);
-		if(session != null)
+		if (session != null)
 			builder.session(session);
 		else
 			builder.password(password);
-		if(server != null && !server.isEmpty()) {
+		if (server != null && !server.isEmpty())
+		{
 			int port = 25565;
-			if(server.contains(":")) {
+			if (server.contains(":"))
+			{
 				String[] parts = server.split(":");
 				server = parts[0];
 				port = Integer.parseInt(parts[1]);
@@ -716,50 +1004,63 @@ public class DarkBotMCSpambot extends MinecraftBotWrapper {
 		return builder.build();
 	}
 
-	private static void readCaptchaFile(String fileName) {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+	private static void readCaptchaFile(String fileName)
+	{
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(new File(
+					fileName)));
 			String line;
-			while((line = reader.readLine()) != null)
+			while ((line = reader.readLine()) != null)
 				captchaList.add(line);
 			reader.close();
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			throw new RuntimeException(exception);
 		}
 	}
 
-	private static final class MessageFormatter {
-		private static final Pattern variablePattern = Pattern.compile("(?i)\\$(\\{[a-z0-9_]{1,}\\}|[a-z0-9_]{1,})");
-		private static final Pattern colorPattern = Pattern.compile("(?i)&[0-9A-FK-OR]");
+	private static final class MessageFormatter
+	{
+		private static final Pattern variablePattern = Pattern
+				.compile("(?i)\\$(\\{[a-z0-9_]{1,}\\}|[a-z0-9_]{1,})");
+		private static final Pattern colorPattern = Pattern
+				.compile("(?i)&[0-9A-FK-OR]");
 
 		private final Map<String, String> variables;
 
-		public MessageFormatter() {
+		public MessageFormatter()
+		{
 			variables = new HashMap<String, String>();
 		}
 
-		public synchronized void setVariable(String variable, String value) {
-			if(value == null)
+		public synchronized void setVariable(String variable, String value)
+		{
+			if (value == null)
 				variables.remove(value);
 			else
 				variables.put(variable, value);
 		}
 
-		public synchronized String format(String message) {
+		public synchronized String format(String message)
+		{
 			Matcher matcher = variablePattern.matcher(message);
-			while(matcher.find()) {
+			while (matcher.find())
+			{
 				String variable = matcher.group();
 				variable = variable.substring(1);
-				if(variable.startsWith("{") && variable.endsWith("}"))
+				if (variable.startsWith("{") && variable.endsWith("}"))
 					variable = variable.substring(1, variable.length() - 1);
 				String value = variables.get(variable);
-				if(value == null)
+				if (value == null)
 					value = "";
-				message = message.replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(value));
+				message = message.replaceFirst(Pattern.quote(matcher.group()),
+						Matcher.quoteReplacement(value));
 			}
 			matcher = colorPattern.matcher(message);
-			while(matcher.find())
-				message = message.substring(0, matcher.start()) + "\247" + message.substring(matcher.end() - 1);
+			while (matcher.find())
+				message = message.substring(0, matcher.start()) + "\247"
+						+ message.substring(matcher.end() - 1);
 			return message;
 		}
 	}

@@ -2,13 +2,16 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.client;
 
 import org.darkstorm.darkbot.minecraftbot.world.entity.MainPlayerEntity;
 
-public abstract class PlayerEvent extends EntityEvent {
-	public PlayerEvent(MainPlayerEntity entity) {
+public abstract class PlayerEvent extends EntityEvent
+{
+	public PlayerEvent(MainPlayerEntity entity)
+	{
 		super(entity);
 	}
 
 	@Override
-	public MainPlayerEntity getEntity() {
+	public MainPlayerEntity getEntity()
+	{
 		return (MainPlayerEntity) super.getEntity();
 	}
 }

@@ -21,7 +21,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package org.darkstorm.darkbot;
 
 import java.lang.reflect.Constructor;
@@ -33,34 +33,43 @@ import org.darkstorm.darkbot.bot.*;
 import org.darkstorm.darkbot.tools.*;
 import org.darkstorm.darkbot.tools.ClassRepository.BotInfo;
 
-public final class DarkBot {
+public final class DarkBot
+{
 	public static final double VERSION = 1.15;
 
 	private final List<Bot> bots = new ArrayList<Bot>();
 	private boolean debugging = false;
 
-	public DarkBot() {
+	public DarkBot()
+	{
 	}
 
-	public DarkBot(OptionSet options) {
+	public DarkBot(OptionSet options)
+	{
 		this();
 		handleOptions(options);
 	}
 
-	private void handleOptions(OptionSet options) {
-		if(options.has("debug"))
+	private void handleOptions(OptionSet options)
+	{
+		if (options.has("debug"))
 			debugging = true;
-		if(options.has("bot")) {
+		if (options.has("bot"))
+		{
 			String botName = (String) options.valueOf("bot");
-			for(BotInfo info : ClassRepository.getBots()) {
-				if(botName.equalsIgnoreCase(info.getName())) {
-					try {
+			for (BotInfo info : ClassRepository.getBots())
+			{
+				if (botName.equalsIgnoreCase(info.getName()))
+				{
+					try
+					{
 						Class<? extends BotData> botDataClass = info
 								.getBotDataClass();
 						BotData botData = botDataClass.newInstance();
 						botData.parse(options);
 						createBot(botData);
-					} catch(Throwable exception) {
+					} catch (Throwable exception)
+					{
 						exception.printStackTrace();
 					}
 					break;
@@ -69,51 +78,62 @@ public final class DarkBot {
 		}
 	}
 
-	public Bot createBot(BotData data) {
+	public Bot createBot(BotData data)
+	{
 		Bot bot = null;
 		Throwable reason = null;
-		for(BotInfo info : ClassRepository.getBots()) {
-			try {
+		for (BotInfo info : ClassRepository.getBots())
+		{
+			try
+			{
 				Class<?> botDataClass = info.getBotDataClass();
-				if(!botDataClass.isInstance(data))
+				if (!botDataClass.isInstance(data))
 					continue;
 				Class<? extends Bot> botClass = info.getBotClass();
 				Constructor<? extends Bot> botConstructor = botClass
 						.getConstructor(DarkBot.class, botDataClass);
-				if(!botConstructor.isAccessible())
+				if (!botConstructor.isAccessible())
 					botConstructor.setAccessible(true);
 				bot = botConstructor.newInstance(this, data);
-			} catch(Throwable exception) {
+			} catch (Throwable exception)
+			{
 				reason = exception;
 				break;
 			}
 		}
-		if(bot == null)
+		if (bot == null)
 			throw new IllegalArgumentException(
 					"param 0 (type BotData) is invalid", reason);
-		synchronized(bots) {
+		synchronized (bots)
+		{
 			bots.add(bot);
 		}
 		return bot;
 	}
 
-	public boolean removeBot(Bot bot) {
-		synchronized(bots) {
+	public boolean removeBot(Bot bot)
+	{
+		synchronized (bots)
+		{
 			return bots.remove(bot);
 		}
 	}
 
-	public Bot[] getBots() {
-		synchronized(bots) {
+	public Bot[] getBots()
+	{
+		synchronized (bots)
+		{
 			return bots.toArray(new Bot[bots.size()]);
 		}
 	}
 
-	public boolean isDebugging() {
+	public boolean isDebugging()
+	{
 		return debugging;
 	}
 
-	public void setDebugging(boolean debugging) {
+	public void setDebugging(boolean debugging)
+	{
 		this.debugging = debugging;
 	}
 

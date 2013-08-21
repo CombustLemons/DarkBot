@@ -5,26 +5,32 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet101CloseWindow extends AbstractPacket implements
-		ReadablePacket, WriteablePacket {
+		ReadablePacket, WriteablePacket
+{
 	public int windowId;
 
-	public Packet101CloseWindow() {
+	public Packet101CloseWindow()
+	{
 	}
 
-	public Packet101CloseWindow(int par1) {
+	public Packet101CloseWindow(int par1)
+	{
 		windowId = par1;
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		windowId = in.readByte();
 	}
 
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeByte(windowId);
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 101;
 	}
 }

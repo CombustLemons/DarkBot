@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet54PlayNoteBlock extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int xLocation;
 	public int yLocation;
 	public int zLocation;
@@ -14,10 +15,12 @@ public class Packet54PlayNoteBlock extends AbstractPacket implements
 	public int pitch;
 	public int blockId;
 
-	public Packet54PlayNoteBlock() {
+	public Packet54PlayNoteBlock()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		xLocation = in.readInt();
 		yLocation = in.readShort();
 		zLocation = in.readInt();
@@ -26,7 +29,8 @@ public class Packet54PlayNoteBlock extends AbstractPacket implements
 		blockId = in.readShort() & 0xfff;
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 54;
 	}
 }

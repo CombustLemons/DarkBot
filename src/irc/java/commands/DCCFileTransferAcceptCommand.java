@@ -9,23 +9,27 @@ import org.darkstorm.darkbot.ircbot.irc.messages.*;
 import org.darkstorm.darkbot.ircbot.irc.parsing.UserInfo;
 
 public class DCCFileTransferAcceptCommand extends IRCCommand implements
-		DCCListener {
+		DCCListener
+{
 
-	public DCCFileTransferAcceptCommand(CommandHandler commandHandler) {
+	public DCCFileTransferAcceptCommand(CommandHandler commandHandler)
+	{
 		super(commandHandler);
 		bot.getEventHandler().addDCCListener(this);
 	}
 
 	@Override
-	public void execute(Message message) {
-		if(!(message instanceof UserMessage)
+	public void execute(Message message)
+	{
+		if (!(message instanceof UserMessage)
 				|| !((UserMessage) message).isCTCP())
 			return;
 		UserMessage userMessage = (UserMessage) message;
 		String messageText = userMessage.getMessage();
-		if(messageText.startsWith("DCC ")) {
+		if (messageText.startsWith("DCC "))
+		{
 			UserInfo sender = userMessage.getSender();
-			if(bot.getPermissionsHandler().isPermitted(sender.getNickname(),
+			if (bot.getPermissionsHandler().isPermitted(sender.getNickname(),
 					Permissions.OWNER))
 				bot.getDCCHandler()
 						.processRequest(sender.getNickname(),
@@ -35,30 +39,35 @@ public class DCCFileTransferAcceptCommand extends IRCCommand implements
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "DCC File Transfer Accepter";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Accepts all DCC file transfers";
 	}
 
 	@Override
-	public void onIncomingFileTransfer(DCCEvent event) {
+	public void onIncomingFileTransfer(DCCEvent event)
+	{
 		DCCFileTransfer transfer = (DCCFileTransfer) event.getDCCTransfer();
 		transfer.receive(transfer.getFile(), false);
 	}
 
 	@Override
-	public void onIncomingChatRequest(DCCEvent event) {
+	public void onIncomingChatRequest(DCCEvent event)
+	{
 	}
 
 	@Override
-	public void onFileTransferFinished(DCCEvent event) {
+	public void onFileTransferFinished(DCCEvent event)
+	{
 		DCCFileTransfer transfer = (DCCFileTransfer) event.getDCCTransfer();
 		Exception exception = transfer.getException();
-		if(exception != null)
+		if (exception != null)
 			bot.getMessageHandler().sendMessage(transfer.getNick(),
 					"Transfer failed: " + exception);
 		else

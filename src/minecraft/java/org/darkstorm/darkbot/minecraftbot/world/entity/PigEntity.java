@@ -5,32 +5,38 @@ import org.darkstorm.darkbot.minecraftbot.events.protocol.client.EntityUseEvent;
 import org.darkstorm.darkbot.minecraftbot.util.IntHashMap;
 import org.darkstorm.darkbot.minecraftbot.world.World;
 
-public class PigEntity extends PassiveEntity {
+public class PigEntity extends PassiveEntity
+{
 	protected boolean saddled;
 
-	public PigEntity(World world, int id) {
+	public PigEntity(World world, int id)
+	{
 		super(world, id);
 	}
 
-	public boolean isSaddled() {
+	public boolean isSaddled()
+	{
 		return saddled;
 	}
 
-	public void setSaddled(boolean saddled) {
+	public void setSaddled(boolean saddled)
+	{
 		this.saddled = saddled;
 	}
 
-	public void ride() {
-		if(!saddled)
+	public void ride()
+	{
+		if (!saddled)
 			return;
 		MinecraftBot bot = world.getBot();
 		bot.getEventManager().sendEvent(new EntityUseEvent(this));
 	}
 
 	@Override
-	public void updateMetadata(IntHashMap<WatchableObject> metadata) {
+	public void updateMetadata(IntHashMap<WatchableObject> metadata)
+	{
 		super.updateMetadata(metadata);
-		if(metadata.containsKey(16))
+		if (metadata.containsKey(16))
 			setSaddled(((Byte) metadata.get(16).getObject()).byteValue() == 1);
 	}
 }

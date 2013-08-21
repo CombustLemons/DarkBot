@@ -11,11 +11,13 @@ import org.darkstorm.darkbot.darkbotmc.regular.RegularBotOptionsUI;
 import org.darkstorm.darkbot.darkbotmc.spam.SpamBotOptionsUI;
 
 @SuppressWarnings("serial")
-public class NewBotDialog extends JDialog {
+public class NewBotDialog extends JDialog
+{
 	private final DarkBotMCUI ui;
 	private final Map<String, BotOptionsUI> optionsUIs;
 
-	public NewBotDialog(DarkBotMCUI ui) {
+	public NewBotDialog(DarkBotMCUI ui)
+	{
 		super(ui);
 		this.ui = ui;
 		optionsUIs = new HashMap<String, BotOptionsUI>();
@@ -28,32 +30,37 @@ public class NewBotDialog extends JDialog {
 		setVisible(true);
 	}
 
-	private void typeComboBoxItemStateChanged(ItemEvent e) {
+	private void typeComboBoxItemStateChanged(ItemEvent e)
+	{
 		updateSelectedBotType();
 	}
 
-	private void okButtonActionPerformed(ActionEvent e) {
+	private void okButtonActionPerformed(ActionEvent e)
+	{
 		BotOptionsUI optionsUI = (BotOptionsUI) optionsPanel.getComponent(0);
-		if(!optionsUI.areOptionsValid())
+		if (!optionsUI.areOptionsValid())
 			return;
 		setVisible(false);
 		BotControlsUI controlsUI = optionsUI.createBot();
-		if(controlsUI != null)
+		if (controlsUI != null)
 			ui.addBotControls(controlsUI);
 	}
 
-	private void cancelButtonActionPerformed(ActionEvent e) {
+	private void cancelButtonActionPerformed(ActionEvent e)
+	{
 		setVisible(false);
 	}
 
-	private void updateSelectedBotType() {
+	private void updateSelectedBotType()
+	{
 		String selectedItem = (String) typeComboBox.getSelectedItem();
-		if(selectedItem == null) {
+		if (selectedItem == null)
+		{
 			typeComboBox.setSelectedIndex(0);
 			updateSelectedBotType();
 		}
 		BotOptionsUI optionsUI = optionsUIs.get(selectedItem);
-		if(optionsUI == null)
+		if (optionsUI == null)
 			return;
 		optionsPanel.removeAll();
 		optionsPanel.add(optionsUI, BorderLayout.CENTER);
@@ -61,7 +68,8 @@ public class NewBotDialog extends JDialog {
 		optionsPanel.repaint();
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		ResourceBundle bundle = ResourceBundle
@@ -108,8 +116,10 @@ public class NewBotDialog extends JDialog {
 				// ---- typeComboBox ----
 				typeComboBox.setModel(new DefaultComboBoxModel(new String[] {
 						"Regular", "Spambot" }));
-				typeComboBox.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e) {
+				typeComboBox.addItemListener(new ItemListener()
+				{
+					public void itemStateChanged(ItemEvent e)
+					{
 						typeComboBoxItemStateChanged(e);
 					}
 				});
@@ -141,8 +151,10 @@ public class NewBotDialog extends JDialog {
 
 				// ---- okButton ----
 				okButton.setText("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				okButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
 						okButtonActionPerformed(e);
 					}
 				});
@@ -152,8 +164,10 @@ public class NewBotDialog extends JDialog {
 
 				// ---- cancelButton ----
 				cancelButton.setText("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				cancelButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
 						cancelButtonActionPerformed(e);
 					}
 				});

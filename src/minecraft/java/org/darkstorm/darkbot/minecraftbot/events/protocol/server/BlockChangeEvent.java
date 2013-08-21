@@ -2,10 +2,12 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 
-public class BlockChangeEvent extends ProtocolEvent {
+public class BlockChangeEvent extends ProtocolEvent
+{
 	private final int id, metadata, x, y, z;
 
-	public BlockChangeEvent(int id, int metadata, int x, int y, int z) {
+	public BlockChangeEvent(int id, int metadata, int x, int y, int z)
+	{
 		this.id = id;
 		this.metadata = metadata;
 		this.x = x;
@@ -13,23 +15,28 @@ public class BlockChangeEvent extends ProtocolEvent {
 		this.z = z;
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return id;
 	}
 
-	public int getMetadata() {
+	public int getMetadata()
+	{
 		return metadata;
 	}
 
-	public int getX() {
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getZ() {
+	public int getZ()
+	{
 		return z;
 	}
 }

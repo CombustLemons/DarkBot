@@ -1,5 +1,6 @@
 package org.darkstorm.darkbot.events;
 
-public interface Event {
+public interface Event
+{
 
 }

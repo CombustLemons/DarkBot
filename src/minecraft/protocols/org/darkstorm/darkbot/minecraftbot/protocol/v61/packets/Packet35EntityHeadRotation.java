@@ -5,19 +5,23 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet35EntityHeadRotation extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 	public byte headRotationYaw;
 
-	public Packet35EntityHeadRotation() {
+	public Packet35EntityHeadRotation()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		headRotationYaw = in.readByte();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 35;
 	}
 }

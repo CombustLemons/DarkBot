@@ -8,21 +8,26 @@ package org.darkstorm.darkbot.tools;
  * @author DarkStorm
  */
 @SuppressWarnings("serial")
-public class InstanceAlreadyExistsException extends RuntimeException {
+public class InstanceAlreadyExistsException extends RuntimeException
+{
 
-	public InstanceAlreadyExistsException() {
+	public InstanceAlreadyExistsException()
+	{
 		super();
 	}
 
-	public InstanceAlreadyExistsException(String message) {
+	public InstanceAlreadyExistsException(String message)
+	{
 		super(message);
 	}
 
-	public InstanceAlreadyExistsException(Throwable cause) {
+	public InstanceAlreadyExistsException(Throwable cause)
+	{
 		super(cause);
 	}
 
-	public InstanceAlreadyExistsException(String message, Throwable cause) {
+	public InstanceAlreadyExistsException(String message, Throwable cause)
+	{
 		super(message, cause);
 	}
 

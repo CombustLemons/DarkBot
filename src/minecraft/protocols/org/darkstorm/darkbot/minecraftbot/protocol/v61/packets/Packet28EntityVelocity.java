@@ -5,23 +5,27 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet28EntityVelocity extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 	public int motionX;
 	public int motionY;
 	public int motionZ;
 
-	public Packet28EntityVelocity() {
+	public Packet28EntityVelocity()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		motionX = in.readShort();
 		motionY = in.readShort();
 		motionZ = in.readShort();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 28;
 	}
 }

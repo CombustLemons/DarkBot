@@ -2,11 +2,14 @@ package org.darkstorm.darkbot.minecraftbot.events.protocol.server;
 
 import org.darkstorm.darkbot.minecraftbot.events.protocol.ProtocolEvent;
 
-public class ChunkLoadEvent extends ProtocolEvent {
+public class ChunkLoadEvent extends ProtocolEvent
+{
 	private final int x, y, z;
 	private final byte[] blocks, metadata, light, skylight, biomes;
 
-	public ChunkLoadEvent(int x, int y, int z, byte[] blocks, byte[] metadata, byte[] light, byte[] skylight, byte[] biomes) {
+	public ChunkLoadEvent(int x, int y, int z, byte[] blocks, byte[] metadata,
+			byte[] light, byte[] skylight, byte[] biomes)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -17,35 +20,43 @@ public class ChunkLoadEvent extends ProtocolEvent {
 		this.biomes = biomes;
 	}
 
-	public int getX() {
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getZ() {
+	public int getZ()
+	{
 		return z;
 	}
 
-	public byte[] getBlocks() {
+	public byte[] getBlocks()
+	{
 		return blocks;
 	}
 
-	public byte[] getMetadata() {
+	public byte[] getMetadata()
+	{
 		return metadata;
 	}
 
-	public byte[] getLight() {
+	public byte[] getLight()
+	{
 		return light;
 	}
 
-	public byte[] getSkylight() {
+	public byte[] getSkylight()
+	{
 		return skylight;
 	}
 
-	public byte[] getBiomes() {
+	public byte[] getBiomes()
+	{
 		return biomes;
 	}
 }

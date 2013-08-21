@@ -7,12 +7,14 @@ import org.darkstorm.darkbot.ircbot.events.*;
 import org.darkstorm.darkbot.ircbot.logging.IRCLogger.IRCLogType;
 
 public class EventHandler extends IRCHandler implements MessageListener,
-		NickServListener, DCCListener {
+		NickServListener, DCCListener
+{
 	private final List<MessageListener> messageListeners;
 	private final List<NickServListener> nickServListeners;
 	private final List<DCCListener> dccListeners;
 
-	public EventHandler(IRCBot bot) {
+	public EventHandler(IRCBot bot)
+	{
 		super(bot);
 		messageListeners = new ArrayList<MessageListener>();
 		nickServListeners = new ArrayList<NickServListener>();
@@ -20,17 +22,23 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "EventHandler";
 	}
 
 	@Override
-	public void onMessageSent(MessageEvent event) {
-		synchronized(messageListeners) {
-			for(MessageListener listener : messageListeners) {
-				try {
+	public void onMessageSent(MessageEvent event)
+	{
+		synchronized (messageListeners)
+		{
+			for (MessageListener listener : messageListeners)
+			{
+				try
+				{
 					listener.onMessageSent(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -38,12 +46,17 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onRawSent(MessageEvent event) {
-		synchronized(messageListeners) {
-			for(MessageListener listener : messageListeners) {
-				try {
+	public void onRawSent(MessageEvent event)
+	{
+		synchronized (messageListeners)
+		{
+			for (MessageListener listener : messageListeners)
+			{
+				try
+				{
 					listener.onRawSent(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -51,12 +64,17 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onMessageReceived(MessageEvent event) {
-		synchronized(messageListeners) {
-			for(MessageListener listener : messageListeners) {
-				try {
+	public void onMessageReceived(MessageEvent event)
+	{
+		synchronized (messageListeners)
+		{
+			for (MessageListener listener : messageListeners)
+			{
+				try
+				{
 					listener.onMessageReceived(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -64,12 +82,17 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onNoticeSent(MessageEvent event) {
-		synchronized(messageListeners) {
-			for(MessageListener listener : messageListeners) {
-				try {
+	public void onNoticeSent(MessageEvent event)
+	{
+		synchronized (messageListeners)
+		{
+			for (MessageListener listener : messageListeners)
+			{
+				try
+				{
 					listener.onNoticeSent(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -77,12 +100,17 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onIdentified(NickServEvent event) {
-		synchronized(nickServListeners) {
-			for(NickServListener listener : nickServListeners) {
-				try {
+	public void onIdentified(NickServEvent event)
+	{
+		synchronized (nickServListeners)
+		{
+			for (NickServListener listener : nickServListeners)
+			{
+				try
+				{
 					listener.onIdentified(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -90,57 +118,75 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onNicknameChanged(NickServEvent event) {
-		synchronized(nickServListeners) {
-			for(NickServListener listener : nickServListeners) {
-				try {
+	public void onNicknameChanged(NickServEvent event)
+	{
+		synchronized (nickServListeners)
+		{
+			for (NickServListener listener : nickServListeners)
+			{
+				try
+				{
 					listener.onNicknameChanged(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
 		}
 	}
 
-	public void addMessageListener(MessageListener listener) {
-		if(listener == null)
+	public void addMessageListener(MessageListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(messageListeners) {
+		synchronized (messageListeners)
+		{
 			messageListeners.add(listener);
 		}
 	}
 
-	public boolean removeMessageListener(MessageListener listener) {
-		if(listener == null)
+	public boolean removeMessageListener(MessageListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(messageListeners) {
+		synchronized (messageListeners)
+		{
 			return messageListeners.remove(listener);
 		}
 	}
 
-	public void addNickServListener(NickServListener listener) {
-		if(listener == null)
+	public void addNickServListener(NickServListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(nickServListeners) {
+		synchronized (nickServListeners)
+		{
 			nickServListeners.add(listener);
 		}
 	}
 
-	public boolean removeNickServListener(NickServListener listener) {
-		if(listener == null)
+	public boolean removeNickServListener(NickServListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(nickServListeners) {
+		synchronized (nickServListeners)
+		{
 			return nickServListeners.remove(listener);
 		}
 	}
 
 	@Override
-	public void onIncomingFileTransfer(DCCEvent event) {
-		synchronized(dccListeners) {
-			for(DCCListener listener : dccListeners) {
-				try {
+	public void onIncomingFileTransfer(DCCEvent event)
+	{
+		synchronized (dccListeners)
+		{
+			for (DCCListener listener : dccListeners)
+			{
+				try
+				{
 					listener.onIncomingFileTransfer(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -148,12 +194,17 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onIncomingChatRequest(DCCEvent event) {
-		synchronized(dccListeners) {
-			for(DCCListener listener : dccListeners) {
-				try {
+	public void onIncomingChatRequest(DCCEvent event)
+	{
+		synchronized (dccListeners)
+		{
+			for (DCCListener listener : dccListeners)
+			{
+				try
+				{
 					listener.onIncomingChatRequest(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
@@ -161,30 +212,39 @@ public class EventHandler extends IRCHandler implements MessageListener,
 	}
 
 	@Override
-	public void onFileTransferFinished(DCCEvent event) {
-		synchronized(dccListeners) {
-			for(DCCListener listener : dccListeners) {
-				try {
+	public void onFileTransferFinished(DCCEvent event)
+	{
+		synchronized (dccListeners)
+		{
+			for (DCCListener listener : dccListeners)
+			{
+				try
+				{
 					listener.onFileTransferFinished(event);
-				} catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					logger.logException(this, IRCLogType.DEBUG_ERROR, exception);
 				}
 			}
 		}
 	}
 
-	public void addDCCListener(DCCListener listener) {
-		if(listener == null)
+	public void addDCCListener(DCCListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(dccListeners) {
+		synchronized (dccListeners)
+		{
 			dccListeners.add(listener);
 		}
 	}
 
-	public boolean removeDCCListener(DCCListener listener) {
-		if(listener == null)
+	public boolean removeDCCListener(DCCListener listener)
+	{
+		if (listener == null)
 			throw new NullPointerException();
-		synchronized(dccListeners) {
+		synchronized (dccListeners)
+		{
 			return dccListeners.remove(listener);
 		}
 	}

@@ -19,7 +19,8 @@ import org.darkstorm.darkbot.minecraftbot.MinecraftBot;
 import org.darkstorm.darkbot.minecraftbot.world.entity.MainPlayerEntity;
 
 @SuppressWarnings("serial")
-public class RegularBotControlsUI extends BotControlsUI {
+public class RegularBotControlsUI extends BotControlsUI
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	private JPanel statusPanel;
@@ -42,7 +43,8 @@ public class RegularBotControlsUI extends BotControlsUI {
 
 	private Canvas healthBar, hungerBar, expBar;
 
-	public RegularBotControlsUI(RegularBotData data) {
+	public RegularBotControlsUI(RegularBotData data)
+	{
 		initComponents();
 		initStatus();
 		log = new Vector<String>(MAX_LOG_SIZE);
@@ -59,87 +61,99 @@ public class RegularBotControlsUI extends BotControlsUI {
 		bot = new RegularBot(this, data);
 	}
 
-	private void initStatus() {
+	private void initStatus()
+	{
 		final BufferedImage image;
-		try {
+		try
+		{
 			image = ImageIO.read(getClass().getResourceAsStream(
 					"/icons/icons.png"));
-		} catch(Exception exception) {
+		} catch (Exception exception)
+		{
 			exception.printStackTrace();
 			return;
 		}
-		healthBar = new Canvas() {
+		healthBar = new Canvas()
+		{
 			private Image full = image.getSubimage(52, 0, 9, 9)
 					.getScaledInstance(18, 18, 0), half = image.getSubimage(61,
 					0, 9, 9).getScaledInstance(18, 18, 0), empty = image
 					.getSubimage(16, 0, 9, 9).getScaledInstance(18, 18, 0);
 
 			@Override
-			public void paint(Graphics g) {
+			public void paint(Graphics g)
+			{
 				update(g);
 			}
 
 			@Override
-			public void update(Graphics g) {
+			public void update(Graphics g)
+			{
 				g.clearRect(0, 0, getWidth(), getHeight());
 				MinecraftBot mcbot = bot.getBot();
-				if(mcbot == null)
+				if (mcbot == null)
 					return;
 				MainPlayerEntity player = mcbot.getPlayer();
-				if(player == null)
+				if (player == null)
 					return;
 				int health = player.getHealth();
 				int width = ((empty.getWidth(null) + 2) * 10) - 2, height = empty
 						.getHeight(null);
 				int x = (getWidth() / 2) - (width / 2), y = (getHeight() / 2)
 						- (height / 2);
-				for(int i = 0; i < 10; i++) {
+				for (int i = 0; i < 10; i++)
+				{
 					g.drawImage(empty, x, y, null);
-					if(health > (i * 2) + 1)
+					if (health > (i * 2) + 1)
 						g.drawImage(full, x, y, null);
-					else if(health > i * 2)
+					else if (health > i * 2)
 						g.drawImage(half, x, y, null);
 					x += empty.getWidth(null) + 2;
 				}
 			}
 		};
-		hungerBar = new Canvas() {
+		hungerBar = new Canvas()
+		{
 			private Image full = image.getSubimage(52, 27, 9, 9)
 					.getScaledInstance(18, 18, 0), half = image.getSubimage(61,
 					27, 9, 9).getScaledInstance(18, 18, 0), empty = image
 					.getSubimage(16, 27, 9, 9).getScaledInstance(18, 18, 0);
 
 			@Override
-			public void paint(Graphics g) {
+			public void paint(Graphics g)
+			{
 				update(g);
 			}
 
 			@Override
-			public void update(Graphics g) {
+			public void update(Graphics g)
+			{
 				g.clearRect(0, 0, getWidth(), getHeight());
 				MinecraftBot mcbot = bot.getBot();
-				if(mcbot == null)
+				if (mcbot == null)
 					return;
 				MainPlayerEntity player = mcbot.getPlayer();
-				if(player == null)
+				if (player == null)
 					return;
 				int hunger = player.getHunger();
 				int width = ((empty.getWidth(null) + 2) * 10) - 2, height = empty
 						.getHeight(null);
 				int x = (getWidth() / 2) - (width / 2), y = (getHeight() / 2)
 						- (height / 2);
-				for(int i = 0; i < 10; i++) {
+				for (int i = 0; i < 10; i++)
+				{
 					g.drawImage(empty, x, y, null);
-					if(hunger > (i * 2) + 1)
+					if (hunger > (i * 2) + 1)
 						g.drawImage(full, x, y, null);
-					else if(hunger > i * 2)
+					else if (hunger > i * 2)
 						g.drawImage(half, x, y, null);
 					x += empty.getWidth(null) + 2;
 				}
 			}
 		};
 
-		expBar = new Canvas() {
+		expBar = new Canvas()
+		{
 			private Image start = image.getSubimage(0, 64, 10, 5)
 					.getScaledInstance(20, 10, 0), middle = image.getSubimage(
 					11, 64, 10, 5).getScaledInstance(20, 10, 0), end = image
@@ -151,18 +165,20 @@ public class RegularBotControlsUI extends BotControlsUI {
 							.getScaledInstance(20, 10, 0);
 
 			@Override
-			public void paint(Graphics g) {
+			public void paint(Graphics g)
+			{
 				update(g);
 			}
 
 			@Override
-			public void update(Graphics g) {
+			public void update(Graphics g)
+			{
 				g.clearRect(0, 0, getWidth(), getHeight());
 				MinecraftBot mcbot = bot.getBot();
-				if(mcbot == null)
+				if (mcbot == null)
 					return;
 				MainPlayerEntity player = mcbot.getPlayer();
-				if(player == null)
+				if (player == null)
 					return;
 				int exp = player.getExperience();
 				int bars = (int) (((double) exp)
@@ -175,10 +191,11 @@ public class RegularBotControlsUI extends BotControlsUI {
 						.getHeight(null);
 				int x = (getWidth() / 2) - (width / 2), y = (getHeight() / 2)
 						- (height / 2);
-				for(int i = 0; i < 18; i++) {
-					if(i == 0)
+				for (int i = 0; i < 18; i++)
+				{
+					if (i == 0)
 						g.drawImage(i <= bars ? startFull : start, x, y, null);
-					else if(i == 18 - 1)
+					else if (i == 18 - 1)
 						g.drawImage(i <= bars ? endFull : end, x, y, null);
 					else
 						g.drawImage(i <= bars ? middleFull : middle, x, y, null);
@@ -191,84 +208,104 @@ public class RegularBotControlsUI extends BotControlsUI {
 		experiencePanel.add(expBar);
 	}
 
-	public void updateStatus() {
+	public void updateStatus()
+	{
 		healthBar.repaint();
 		hungerBar.repaint();
 		expBar.repaint();
 	}
 
 	@Override
-	public void onClose() {
+	public void onClose()
+	{
 		bot.disconnect();
 	}
 
 	@Override
-	public String getBotName() {
+	public String getBotName()
+	{
 		return "Bot[" + bot.getData().getUsername() + "]";
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatus()
+	{
 		return status;
 	}
 
-	public synchronized void setStatus(final String status) {
+	public synchronized void setStatus(final String status)
+	{
 		this.status = status;
-		SwingUtilities.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				progressBar.setString(status);
 			}
 		});
 		DarkBotMC.getInstance().getUI().updateStatus(this);
 	}
 
-	public synchronized void setProgress(int percentage) {
+	public synchronized void setProgress(int percentage)
+	{
 		setProgress(percentage, false);
 	}
 
-	public synchronized void setProgress(boolean indeterminate) {
+	public synchronized void setProgress(boolean indeterminate)
+	{
 		setProgress(0, indeterminate);
 	}
 
 	public synchronized void setProgress(final int percentage,
-			final boolean indeterminate) {
-		SwingUtilities.invokeLater(new Runnable() {
+			final boolean indeterminate)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
 			@Override
-			public void run() {
-				if(percentage != progressBar.getValue())
+			public void run()
+			{
+				if (percentage != progressBar.getValue())
 					progressBar.setValue(percentage);
-				if(indeterminate != progressBar.isIndeterminate())
+				if (indeterminate != progressBar.isIndeterminate())
 					progressBar.setIndeterminate(indeterminate);
 			}
 		});
 	}
 
-	public synchronized void clearLog() {
-		SwingUtilities.invokeLater(new Runnable() {
+	public synchronized void clearLog()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				logTextArea.setText("");
-				synchronized(log) {
+				synchronized (log)
+				{
 					log.clear();
 				}
 			}
 		});
 	}
 
-	public synchronized void log(final String message) {
-		if(message == null)
+	public synchronized void log(final String message)
+	{
+		if (message == null)
 			return;
-		SwingUtilities.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable()
+		{
 			@Override
-			public void run() {
-				synchronized(log) {
-					if(log.size() > MAX_LOG_SIZE)
+			public void run()
+			{
+				synchronized (log)
+				{
+					if (log.size() > MAX_LOG_SIZE)
 						log.remove(0);
 					log.add(convertToHTMLColors(StringEscapeUtils.escapeHtml4(
 							message).replace("&sect;", "§")));
 					String text = "<html><body>";
-					for(String line : log)
+					for (String line : log)
 						text += "<font face=\"Monospaced\" color=\"#ffffff\">"
 								+ line + "<br /></font>";
 					text += "</body></html>";
@@ -278,26 +315,30 @@ public class RegularBotControlsUI extends BotControlsUI {
 		});
 	}
 
-	private String convertToHTMLColors(String message) {
+	private String convertToHTMLColors(String message)
+	{
 		Pattern pattern = Pattern.compile("(?i)§[0-9a-fk-or]");
 		Matcher matcher = pattern.matcher(message);
 		boolean first = true;
-		while(matcher.find()) {
+		while (matcher.find())
+		{
 			String color = convertMCColor(matcher.group());
-			if(color.isEmpty())
+			if (color.isEmpty())
 				continue;
 			message = message.replace(matcher.group(), (first ? "" : "</font>")
 					+ "<font color=\"#" + color + "\">");
 			first = false;
 		}
-		if(!first)
+		if (!first)
 			message += "</font>";
 		return message;
 	}
 
-	private String convertMCColor(String color) {
+	private String convertMCColor(String color)
+	{
 		char value = color.charAt(1);
-		switch(value) {
+		switch (value)
+		{
 		case '0':
 			return "FFFFFF";
 		case '1':
@@ -347,25 +388,29 @@ public class RegularBotControlsUI extends BotControlsUI {
 		}
 	}
 
-	private void sendButtonActionPerformed(ActionEvent e) {
+	private void sendButtonActionPerformed(ActionEvent e)
+	{
 		String text = commandField.getText();
-		if(text.isEmpty() || bot == null || bot.getBot() == null)
+		if (text.isEmpty() || bot == null || bot.getBot() == null)
 			return;
 		commandField.setText("");
 		bot.executeCommand(text);
 	}
 
-	private void commandFieldKeyPressed(KeyEvent e) {
-		if(e.getModifiers() == 0 && e.getKeyCode() == KeyEvent.VK_ENTER) {
+	private void commandFieldKeyPressed(KeyEvent e)
+	{
+		if (e.getModifiers() == 0 && e.getKeyCode() == KeyEvent.VK_ENTER)
+		{
 			String text = commandField.getText();
-			if(text.isEmpty() || bot == null || bot.getBot() == null)
+			if (text.isEmpty() || bot == null || bot.getBot() == null)
 				return;
 			commandField.setText("");
 			bot.executeCommand(text);
 		}
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		ResourceBundle bundle = ResourceBundle
@@ -454,9 +499,11 @@ public class RegularBotControlsUI extends BotControlsUI {
 					1.0, 1.0E-4 };
 
 			// ---- commandField ----
-			commandField.addKeyListener(new KeyAdapter() {
+			commandField.addKeyListener(new KeyAdapter()
+			{
 				@Override
-				public void keyPressed(KeyEvent e) {
+				public void keyPressed(KeyEvent e)
+				{
 					commandFieldKeyPressed(e);
 				}
 			});
@@ -467,9 +514,11 @@ public class RegularBotControlsUI extends BotControlsUI {
 			// ---- sendButton ----
 			sendButton.setText(bundle
 					.getString("regularbotcontrols.sendButton.text"));
-			sendButton.addActionListener(new ActionListener() {
+			sendButton.addActionListener(new ActionListener()
+			{
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(ActionEvent e)
+				{
 					sendButtonActionPerformed(e);
 				}
 			});
@@ -489,32 +538,42 @@ public class RegularBotControlsUI extends BotControlsUI {
 		// //GEN-END:initComponents
 	}
 
-	class ScrollingDocumentListener implements DocumentListener {
+	class ScrollingDocumentListener implements DocumentListener
+	{
 		@Override
-		public void changedUpdate(DocumentEvent e) {
+		public void changedUpdate(DocumentEvent e)
+		{
 			maybeScrollToBottom();
 		}
 
 		@Override
-		public void insertUpdate(DocumentEvent e) {
+		public void insertUpdate(DocumentEvent e)
+		{
 			maybeScrollToBottom();
 		}
 
 		@Override
-		public void removeUpdate(DocumentEvent e) {
+		public void removeUpdate(DocumentEvent e)
+		{
 			maybeScrollToBottom();
 		}
 
-		private void maybeScrollToBottom() {
+		private void maybeScrollToBottom()
+		{
 			JScrollBar scrollBar = logScrollPane.getVerticalScrollBar();
 			boolean scrollBarAtBottom = isScrollBarFullyExtended(scrollBar);
-			if(scrollBarAtBottom) {
-				EventQueue.invokeLater(new Runnable() {
+			if (scrollBarAtBottom)
+			{
+				EventQueue.invokeLater(new Runnable()
+				{
 					@Override
-					public void run() {
-						EventQueue.invokeLater(new Runnable() {
+					public void run()
+					{
+						EventQueue.invokeLater(new Runnable()
+						{
 							@Override
-							public void run() {
+							public void run()
+							{
 								scrollToBottom(logTextArea);
 							}
 						});
@@ -523,12 +582,14 @@ public class RegularBotControlsUI extends BotControlsUI {
 			}
 		}
 
-		private boolean isScrollBarFullyExtended(JScrollBar vScrollBar) {
+		private boolean isScrollBarFullyExtended(JScrollBar vScrollBar)
+		{
 			BoundedRangeModel model = vScrollBar.getModel();
 			return (model.getExtent() + model.getValue()) == model.getMaximum();
 		}
 
-		private void scrollToBottom(JComponent component) {
+		private void scrollToBottom(JComponent component)
+		{
 			Rectangle visibleRect = component.getVisibleRect();
 			visibleRect.y = component.getHeight() - visibleRect.height;
 			component.scrollRectToVisible(visibleRect);

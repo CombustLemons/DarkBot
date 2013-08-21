@@ -5,21 +5,25 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet43Experience extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public float experience;
 	public int experienceTotal;
 	public int experienceLevel;
 
-	public Packet43Experience() {
+	public Packet43Experience()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		experience = in.readFloat();
 		experienceLevel = in.readShort();
 		experienceTotal = in.readShort();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 43;
 	}
 }

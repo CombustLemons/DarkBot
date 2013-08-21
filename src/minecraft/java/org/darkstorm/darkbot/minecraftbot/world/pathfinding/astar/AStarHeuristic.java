@@ -5,7 +5,8 @@ import java.util.List;
 import org.darkstorm.darkbot.minecraftbot.world.WorldLocation;
 import org.darkstorm.darkbot.minecraftbot.world.pathfinding.*;
 
-public interface AStarHeuristic extends Heuristic {
+public interface AStarHeuristic extends Heuristic
+{
 	public WorldLocation[] getSurrounding(AStarPathSearch search,
 			WorldLocation location);
 

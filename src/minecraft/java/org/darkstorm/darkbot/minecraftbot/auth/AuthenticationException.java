@@ -1,24 +1,31 @@
 package org.darkstorm.darkbot.minecraftbot.auth;
 
 @SuppressWarnings("serial")
-public class AuthenticationException extends Exception {
+public class AuthenticationException extends Exception
+{
 
-	public AuthenticationException() {
+	public AuthenticationException()
+	{
 	}
 
-	public AuthenticationException(String message) {
+	public AuthenticationException(String message)
+	{
 		super(message);
 	}
 
-	public AuthenticationException(Throwable cause) {
+	public AuthenticationException(Throwable cause)
+	{
 		super(cause);
 	}
 
-	public AuthenticationException(String message, Throwable cause) {
+	public AuthenticationException(String message, Throwable cause)
+	{
 		super(message, cause);
 	}
 
-	public AuthenticationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public AuthenticationException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace)
+	{
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 

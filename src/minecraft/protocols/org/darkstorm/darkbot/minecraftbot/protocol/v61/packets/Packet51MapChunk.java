@@ -5,7 +5,8 @@ import java.util.zip.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
-public class Packet51MapChunk extends AbstractPacket implements ReadablePacket {
+public class Packet51MapChunk extends AbstractPacket implements ReadablePacket
+{
 	public int x;
 	public int z;
 	public int bitmask;
@@ -13,11 +14,13 @@ public class Packet51MapChunk extends AbstractPacket implements ReadablePacket {
 	public boolean biomes;
 	public byte[] chunkData;
 
-	public Packet51MapChunk() {
+	public Packet51MapChunk()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		x = in.readInt();
 		z = in.readInt();
 		biomes = in.readBoolean();
@@ -29,43 +32,51 @@ public class Packet51MapChunk extends AbstractPacket implements ReadablePacket {
 		in.readFully(compressedChunkData, 0, tempLength);
 		int i = 0;
 
-		for(int j = 0; j < 16; j++)
+		for (int j = 0; j < 16; j++)
 			i += bitmask >> j & 1;
 
 		int k = 12288 * i;
 
-		if(biomes)
+		if (biomes)
 			k += 256;
 
 		chunkData = new byte[k];
 		Inflater inflater = new Inflater();
 		inflater.setInput(compressedChunkData, 0, tempLength);
 
-		try {
+		try
+		{
 			inflater.inflate(chunkData);
-		} catch(DataFormatException dataformatexception) {
+		} catch (DataFormatException dataformatexception)
+		{
 			chunkData = null;
-		} catch(OutOfMemoryError error) {
+		} catch (OutOfMemoryError error)
+		{
 			System.gc();
-			try {
+			try
+			{
 				inflater.end();
 
 				inflater = new Inflater();
 				inflater.setInput(compressedChunkData, 0, tempLength);
 
 				inflater.inflate(chunkData);
-			} catch(DataFormatException dataformatexception) {
+			} catch (DataFormatException dataformatexception)
+			{
 				chunkData = null;
-			} catch(OutOfMemoryError error2) {
+			} catch (OutOfMemoryError error2)
+			{
 				chunkData = null;
 			}
-		} finally {
+		} finally
+		{
 			inflater.end();
 		}
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 51;
 	}
 }

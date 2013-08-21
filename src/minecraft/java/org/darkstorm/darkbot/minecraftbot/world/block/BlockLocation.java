@@ -2,11 +2,13 @@ package org.darkstorm.darkbot.minecraftbot.world.block;
 
 import org.darkstorm.darkbot.minecraftbot.world.WorldLocation;
 
-public final class BlockLocation {
+public final class BlockLocation
+{
 	private final int x, y, z, hashcode;
 	private final String string;
 
-	public BlockLocation(int x, int y, int z) {
+	public BlockLocation(int x, int y, int z)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -14,7 +16,8 @@ public final class BlockLocation {
 		hashcode = string.hashCode();
 	}
 
-	public BlockLocation(WorldLocation worldLocation) {
+	public BlockLocation(WorldLocation worldLocation)
+	{
 		x = (int) Math.floor(worldLocation.getX());
 		y = (int) Math.floor(worldLocation.getY());
 		z = (int) Math.floor(worldLocation.getZ());
@@ -22,7 +25,8 @@ public final class BlockLocation {
 		hashcode = string.hashCode();
 	}
 
-	public BlockLocation(ChunkLocation location) {
+	public BlockLocation(ChunkLocation location)
+	{
 		x = location.getX() << 4;
 		y = location.getY() << 4;
 		z = location.getZ() << 4;
@@ -30,52 +34,62 @@ public final class BlockLocation {
 		hashcode = string.hashCode();
 	}
 
-	public int getX() {
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY() {
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getZ() {
+	public int getZ()
+	{
 		return z;
 	}
 
-	public double getDistanceTo(BlockLocation other) {
+	public double getDistanceTo(BlockLocation other)
+	{
 		return Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2)
 				+ Math.pow(z - other.z, 2));
 	}
 
-	public int getDistanceToSquared(BlockLocation other) {
+	public int getDistanceToSquared(BlockLocation other)
+	{
 		return (int) (Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2) + Math
 				.pow(z - other.z, 2));
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if(!(obj instanceof BlockLocation))
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof BlockLocation))
 			return false;
 		BlockLocation location = (BlockLocation) obj;
 		return location.getX() == x && location.getY() == y
 				&& location.getZ() == z;
 	}
 
-	public BlockLocation offset(BlockLocation location) {
+	public BlockLocation offset(BlockLocation location)
+	{
 		return offset(location.x, location.y, location.z);
 	}
 
-	public BlockLocation offset(int x, int y, int z) {
+	public BlockLocation offset(int x, int y, int z)
+	{
 		return new BlockLocation(this.x + x, this.y + y, this.z + z);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return string;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return hashcode;
 	}
 }

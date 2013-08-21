@@ -15,7 +15,8 @@ import org.darkstorm.darkbot.darkbotmc.*;
 import org.darkstorm.darkbot.darkbotmc.spam.SpamBot.SpamBotData;
 
 @SuppressWarnings({ "serial", "rawtypes" })
-public class SpamBotControlsUI extends BotControlsUI {
+public class SpamBotControlsUI extends BotControlsUI
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	private JProgressBar progressBar;
@@ -44,7 +45,8 @@ public class SpamBotControlsUI extends BotControlsUI {
 	private BotTask task = null;
 
 	public SpamBotControlsUI(String server, int botAmount, int loginDelay,
-			List<String> accounts, List<String> proxies) {
+			List<String> accounts, List<String> proxies)
+	{
 		this.server = server;
 		this.botAmount = botAmount;
 		this.loginDelay = loginDelay;
@@ -59,7 +61,8 @@ public class SpamBotControlsUI extends BotControlsUI {
 		spamActionsList.setModel(new DefaultListModel());
 	}
 
-	private List<ActionProvider> loadActionProviders() {
+	private List<ActionProvider> loadActionProviders()
+	{
 		List<ActionProvider> actionProviders = new ArrayList<ActionProvider>();
 		actionProviders.add(new SayActionProvider());
 		actionProviders.add(new DelayActionProvider());
@@ -68,32 +71,40 @@ public class SpamBotControlsUI extends BotControlsUI {
 	}
 
 	@Override
-	public String getBotName() {
+	public String getBotName()
+	{
 		return "Spambot[" + server + "]";
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatus()
+	{
 		return status;
 	}
 
-	private void loginButtonItemStateChanged(ItemEvent e) {
-		if(loginButton.isSelected()) {
+	private void loginButtonItemStateChanged(ItemEvent e)
+	{
+		if (loginButton.isSelected())
+		{
 			connectButton.setEnabled(true);
 			task = BotTask.LOGIN;
-			for(int i = 0; i < botAmount; i++) {
+			for (int i = 0; i < botAmount; i++)
+			{
 				SpamBotData data = new SpamBotData();
-				synchronized(usedAccounts) {
-					if(usedAccounts.size() >= accounts.size())
+				synchronized (usedAccounts)
+				{
+					if (usedAccounts.size() >= accounts.size())
 						break;
 					String account;
-					do {
+					do
+					{
 						account = accounts.get(random.nextInt(accounts.size()));
-					} while(usedAccounts.contains(account));
+					} while (usedAccounts.contains(account));
 					data.setUsername(account);
 				}
 			}
-		} else {
+		} else
+		{
 			spamButton.setEnabled(false);
 			spamButton.setSelected(false);
 			connectButton.setEnabled(false);
@@ -103,31 +114,38 @@ public class SpamBotControlsUI extends BotControlsUI {
 	}
 
 	@Override
-	public void onClose() {
+	public void onClose()
+	{
 	}
 
-	private void connectButtonItemStateChanged(ItemEvent e) {
-		if(connectButton.isSelected()) {
+	private void connectButtonItemStateChanged(ItemEvent e)
+	{
+		if (connectButton.isSelected())
+		{
 			spamButton.setEnabled(true);
 			task = BotTask.CONNECT;
-		} else {
+		} else
+		{
 			spamButton.setEnabled(false);
 			spamButton.setSelected(false);
 			task = BotTask.LOGIN;
 		}
 	}
 
-	private void spamButtonItemStateChanged(ItemEvent e) {
-		if(loginButton.isSelected()) {
+	private void spamButtonItemStateChanged(ItemEvent e)
+	{
+		if (loginButton.isSelected())
+		{
 			task = BotTask.SPAM;
 		} else
 			task = BotTask.CONNECT;
 	}
 
-	private void joinActionsAddButtonActionPerformed(ActionEvent e) {
+	private void joinActionsAddButtonActionPerformed(ActionEvent e)
+	{
 		ActionDialog dialog = new ActionDialog();
 		ActionProvider actionProvider = dialog.getResult();
-		if(actionProvider == null)
+		if (actionProvider == null)
 			return;
 		ActionListValue value = new ActionListValue();
 		value.provider = actionProvider;
@@ -135,22 +153,25 @@ public class SpamBotControlsUI extends BotControlsUI {
 		((DefaultListModel) joinActionsList.getModel()).addElement(value);
 	}
 
-	private void joinActionsRemoveButtonActionPerformed(ActionEvent e) {
-		if(joinActionsList.getSelectedIndex() == -1)
+	private void joinActionsRemoveButtonActionPerformed(ActionEvent e)
+	{
+		if (joinActionsList.getSelectedIndex() == -1)
 			return;
 		((DefaultListModel) joinActionsList.getModel()).remove(joinActionsList
 				.getSelectedIndex());
 	}
 
-	private void joinActionsListValueChanged(ListSelectionEvent e) {
+	private void joinActionsListValueChanged(ListSelectionEvent e)
+	{
 		joinActionsRemoveButton
 				.setEnabled(joinActionsList.getSelectedIndex() != -1);
 	}
 
-	private void spamActionsAddButtonActionPerformed(ActionEvent e) {
+	private void spamActionsAddButtonActionPerformed(ActionEvent e)
+	{
 		ActionDialog dialog = new ActionDialog();
 		ActionProvider actionProvider = dialog.getResult();
-		if(actionProvider == null)
+		if (actionProvider == null)
 			return;
 		ActionListValue value = new ActionListValue();
 		value.provider = actionProvider;
@@ -158,19 +179,22 @@ public class SpamBotControlsUI extends BotControlsUI {
 		((DefaultListModel) spamActionsList.getModel()).addElement(value);
 	}
 
-	private void spamActionsRemoveButtonActionPerformed(ActionEvent e) {
-		if(spamActionsList.getSelectedIndex() == -1)
+	private void spamActionsRemoveButtonActionPerformed(ActionEvent e)
+	{
+		if (spamActionsList.getSelectedIndex() == -1)
 			return;
 		((DefaultListModel) spamActionsList.getModel()).remove(spamActionsList
 				.getSelectedIndex());
 	}
 
-	private void spamActionsListValueChanged(ListSelectionEvent e) {
+	private void spamActionsListValueChanged(ListSelectionEvent e)
+	{
 		spamActionsRemoveButton
 				.setEnabled(spamActionsList.getSelectedIndex() != -1);
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		ResourceBundle bundle = ResourceBundle
@@ -224,8 +248,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 			// ---- loginButton ----
 			loginButton.setText(bundle
 					.getString("spambotcontrols.loginButton.text"));
-			loginButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+			loginButton.addItemListener(new ItemListener()
+			{
+				public void itemStateChanged(ItemEvent e)
+				{
 					loginButtonItemStateChanged(e);
 				}
 			});
@@ -237,8 +263,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 			connectButton.setText(bundle
 					.getString("spambotcontrols.connectButton.text"));
 			connectButton.setEnabled(false);
-			connectButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+			connectButton.addItemListener(new ItemListener()
+			{
+				public void itemStateChanged(ItemEvent e)
+				{
 					connectButtonItemStateChanged(e);
 				}
 			});
@@ -250,8 +278,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 			spamButton.setText(bundle
 					.getString("spambotcontrols.spamButton.text"));
 			spamButton.setEnabled(false);
-			spamButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+			spamButton.addItemListener(new ItemListener()
+			{
+				public void itemStateChanged(ItemEvent e)
+				{
 					spamButtonItemStateChanged(e);
 				}
 			});
@@ -287,12 +317,13 @@ public class SpamBotControlsUI extends BotControlsUI {
 					// ---- joinActionsAddButton ----
 					joinActionsAddButton.setIcon(new ImageIcon(getClass()
 							.getResource("/icons/add.png")));
-					joinActionsAddButton
-							.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									joinActionsAddButtonActionPerformed(e);
-								}
-							});
+					joinActionsAddButton.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							joinActionsAddButtonActionPerformed(e);
+						}
+					});
 					joinActionsControlPanel.add(joinActionsAddButton,
 							new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER,
@@ -304,8 +335,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 							.getResource("/icons/remove.png")));
 					joinActionsRemoveButton.setEnabled(false);
 					joinActionsRemoveButton
-							.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
+							.addActionListener(new ActionListener()
+							{
+								public void actionPerformed(ActionEvent e)
+								{
 									joinActionsRemoveButtonActionPerformed(e);
 								}
 							});
@@ -325,8 +358,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 					joinActionsList
 							.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					joinActionsList
-							.addListSelectionListener(new ListSelectionListener() {
-								public void valueChanged(ListSelectionEvent e) {
+							.addListSelectionListener(new ListSelectionListener()
+							{
+								public void valueChanged(ListSelectionEvent e)
+								{
 									joinActionsListValueChanged(e);
 								}
 							});
@@ -357,12 +392,13 @@ public class SpamBotControlsUI extends BotControlsUI {
 					// ---- spamActionsAddButton ----
 					spamActionsAddButton.setIcon(new ImageIcon(getClass()
 							.getResource("/icons/add.png")));
-					spamActionsAddButton
-							.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									spamActionsAddButtonActionPerformed(e);
-								}
-							});
+					spamActionsAddButton.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							spamActionsAddButtonActionPerformed(e);
+						}
+					});
 					spamActionsControlPanel.add(spamActionsAddButton,
 							new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER,
@@ -374,8 +410,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 							.getResource("/icons/remove.png")));
 					spamActionsRemoveButton.setEnabled(false);
 					spamActionsRemoveButton
-							.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
+							.addActionListener(new ActionListener()
+							{
+								public void actionPerformed(ActionEvent e)
+								{
 									spamActionsRemoveButtonActionPerformed(e);
 								}
 							});
@@ -395,8 +433,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 					spamActionsList
 							.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					spamActionsList
-							.addListSelectionListener(new ListSelectionListener() {
-								public void valueChanged(ListSelectionEvent e) {
+							.addListSelectionListener(new ListSelectionListener()
+							{
+								public void valueChanged(ListSelectionEvent e)
+								{
 									spamActionsListValueChanged(e);
 								}
 							});
@@ -416,17 +456,20 @@ public class SpamBotControlsUI extends BotControlsUI {
 
 			// ---- botTable ----
 			botTable.setModel(new DefaultTableModel(new Object[][] {},
-					new String[] { "Username", "Status" }) {
+					new String[] { "Username", "Status" })
+			{
 				Class[] columnTypes = new Class[] { String.class, Object.class };
 				boolean[] columnEditable = new boolean[] { false, false };
 
 				@Override
-				public Class<?> getColumnClass(int columnIndex) {
+				public Class<?> getColumnClass(int columnIndex)
+				{
 					return columnTypes[columnIndex];
 				}
 
 				@Override
-				public boolean isCellEditable(int rowIndex, int columnIndex) {
+				public boolean isCellEditable(int rowIndex, int columnIndex)
+				{
 					return columnEditable[columnIndex];
 				}
 			});
@@ -444,23 +487,25 @@ public class SpamBotControlsUI extends BotControlsUI {
 		// //GEN-END:initComponents
 	}
 
-	private enum BotTask {
-		LOGIN,
-		CONNECT,
-		SPAM
+	private enum BotTask
+	{
+		LOGIN, CONNECT, SPAM
 	}
 
-	private class ActionDialog extends JDialog {
+	private class ActionDialog extends JDialog
+	{
 		private ActionProvider actionProvider;
 		private Map<ActionProvider, ActionProvider.Action> actions = new HashMap<ActionProvider, ActionProvider.Action>();
 
-		private ActionDialog() {
+		private ActionDialog()
+		{
 			super(DarkBotMC.getInstance().getUI());
 			setVisible(false);
 			initComponents();
 			actionComboBox.setModel(new DefaultComboBoxModel(actionProviders
 					.toArray()));
-			for(ActionProvider actionProvider : actionProviders) {
+			for (ActionProvider actionProvider : actionProviders)
+			{
 				ActionProvider.Action action = actionProvider.provideAction();
 				actions.put(actionProvider, action);
 				actionOptionsPanel.add(action.getOptions(),
@@ -468,33 +513,39 @@ public class SpamBotControlsUI extends BotControlsUI {
 			}
 		}
 
-		public ActionProvider getResult() {
+		public ActionProvider getResult()
+		{
 			setVisible(true);
 			setVisible(false);
 			return actionProvider;
 		}
 
-		private void okButtonActionPerformed(ActionEvent e) {
+		private void okButtonActionPerformed(ActionEvent e)
+		{
 			actionProvider = (ActionProvider) ((DefaultComboBoxModel) actionComboBox
 					.getModel()).getSelectedItem();
 			setVisible(false);
 		}
 
-		private void cancelButtonActionPerformed(ActionEvent e) {
+		private void cancelButtonActionPerformed(ActionEvent e)
+		{
 			setVisible(false);
 		}
 
-		private void actionComboBoxItemStateChanged(ItemEvent e) {
+		private void actionComboBoxItemStateChanged(ItemEvent e)
+		{
 			((CardLayout) actionOptionsPanel.getLayout()).show(
 					actionOptionsPanel, actionComboBox.getSelectedItem()
 							.toString());
 		}
 
-		private void actionDialogWindowClosed(WindowEvent e) {
+		private void actionDialogWindowClosed(WindowEvent e)
+		{
 			setVisible(false);
 		}
 
-		private void initComponents() {
+		private void initComponents()
+		{
 			// JFormDesigner - Component initialization - DO NOT MODIFY
 			// //GEN-BEGIN:initComponents
 			ResourceBundle bundle = ResourceBundle
@@ -512,9 +563,11 @@ public class SpamBotControlsUI extends BotControlsUI {
 			setTitle(bundle.getString("spambotcontrols.actionDialog.title"));
 			setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
 			setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-			addWindowListener(new WindowAdapter() {
+			addWindowListener(new WindowAdapter()
+			{
 				@Override
-				public void windowClosed(WindowEvent e) {
+				public void windowClosed(WindowEvent e)
+				{
 					actionDialogWindowClosed(e);
 				}
 			});
@@ -545,8 +598,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 						// ---- okButton ----
 						okButton.setText(bundle
 								.getString("spambotcontrols.okButton.text"));
-						okButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+						okButton.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
 								okButtonActionPerformed(e);
 							}
 						});
@@ -556,8 +611,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 						cancelButton
 								.setText(bundle
 										.getString("spambotcontrols.cancelButton.text"));
-						cancelButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+						cancelButton.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
 								cancelButtonActionPerformed(e);
 							}
 						});
@@ -570,8 +627,10 @@ public class SpamBotControlsUI extends BotControlsUI {
 						GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
 				// ---- actionComboBox ----
-				actionComboBox.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e) {
+				actionComboBox.addItemListener(new ItemListener()
+				{
+					public void itemStateChanged(ItemEvent e)
+					{
 						actionComboBoxItemStateChanged(e);
 					}
 				});
@@ -611,25 +670,31 @@ public class SpamBotControlsUI extends BotControlsUI {
 		// JFormDesigner - End of variables declaration //GEN-END:variables
 	}
 
-	public void setStatus(SpamBot spamBot, String status2) {
+	public void setStatus(SpamBot spamBot, String status2)
+	{
 	}
 
-	public void setProgress(SpamBot spamBot, boolean indeterminate) {
+	public void setProgress(SpamBot spamBot, boolean indeterminate)
+	{
 	}
 
 	public void setProgress(SpamBot spamBot, int percentage,
-			boolean indeterminate) {
+			boolean indeterminate)
+	{
 	}
 
-	public void setProgress(SpamBot spamBot, int percentage) {
+	public void setProgress(SpamBot spamBot, int percentage)
+	{
 	}
 
-	private class ActionListValue {
+	private class ActionListValue
+	{
 		private ActionProvider provider;
 		private ActionProvider.Action action;
 
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "<html><body>" + provider.toString()
 					+ " <font color=\"gray\" size=\"2\">"
 					+ action.getDescription() + "</font></body></html>";
@@ -637,11 +702,13 @@ public class SpamBotControlsUI extends BotControlsUI {
 	}
 
 	private class ColorfulCellRenderer extends JLabel implements
-			ListCellRenderer {
+			ListCellRenderer
+	{
 
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
+				int index, boolean isSelected, boolean cellHasFocus)
+		{
 			setText(value.toString());
 			return this;
 		}

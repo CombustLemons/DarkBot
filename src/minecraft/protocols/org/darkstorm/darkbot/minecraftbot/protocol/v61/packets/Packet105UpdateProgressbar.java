@@ -5,21 +5,25 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet105UpdateProgressbar extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int windowId;
 	public int progressBar;
 	public int progressBarValue;
 
-	public Packet105UpdateProgressbar() {
+	public Packet105UpdateProgressbar()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		windowId = in.readByte();
 		progressBar = in.readShort();
 		progressBarValue = in.readShort();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 105;
 	}
 }

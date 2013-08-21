@@ -3,14 +3,16 @@ package org.darkstorm.darkbot.ircbot.irc.messages;
 import org.darkstorm.darkbot.ircbot.irc.constants.ServerResponseCodes;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class ServerResponseMessage extends Message {
+public class ServerResponseMessage extends Message
+{
 	private String serverName;
 	private int responseCode;
 	private String target;
 	private String[] extraInfo;
 
 	public ServerResponseMessage(String raw, String serverName,
-			int responseCode, String target, String[] extraInfo) {
+			int responseCode, String target, String[] extraInfo)
+	{
 		super(MessageType.SERVER, raw);
 		this.serverName = serverName;
 		this.responseCode = responseCode;
@@ -18,18 +20,21 @@ public class ServerResponseMessage extends Message {
 		this.extraInfo = extraInfo;
 	}
 
-	public String getServerName() {
+	public String getServerName()
+	{
 		return serverName;
 	}
 
 	/**
 	 * @see ServerResponseCodes
 	 */
-	public int getResponseCode() {
+	public int getResponseCode()
+	{
 		return responseCode;
 	}
 
-	public String getTarget() {
+	public String getTarget()
+	{
 		return target;
 	}
 
@@ -42,7 +47,8 @@ public class ServerResponseMessage extends Message {
 	 * <code>"2421", "channels formed"</code> for the raw message
 	 * <code>":irc.example.net 254 ExampleUser 2421 :channels formed"</code>
 	 */
-	public String[] getExtraInfo() {
+	public String[] getExtraInfo()
+	{
 		return extraInfo;
 	}
 }

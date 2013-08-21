@@ -17,7 +17,8 @@ package org.darkstorm.darkbot.ircbot.irc.constants;
  * All replies specified in RFC 1459 section 6 are contained here. Refer to RFC
  * 1459 for more info.
  */
-public interface ServerResponseCodes {
+public interface ServerResponseCodes
+{
 	public static final int ERR_NOSUCHNICK = 401;
 	public static final int ERR_NOSUCHSERVER = 402;
 	public static final int ERR_NOSUCHCHANNEL = 403;

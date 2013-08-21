@@ -7,7 +7,8 @@ import org.darkstorm.darkbot.minecraftbot.util.IntHashMap;
 import org.darkstorm.darkbot.minecraftbot.world.entity.*;
 
 public class Packet20NamedEntitySpawn extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 	public String name;
 
@@ -21,10 +22,12 @@ public class Packet20NamedEntitySpawn extends AbstractPacket implements
 	public DataWatcher metadata;
 	public IntHashMap<WatchableObject> data;
 
-	public Packet20NamedEntitySpawn() {
+	public Packet20NamedEntitySpawn()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		name = readString(in, 16);
 		xPosition = in.readInt();
@@ -36,7 +39,8 @@ public class Packet20NamedEntitySpawn extends AbstractPacket implements
 		data = DataWatcher.readWatchableObjects(in);
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 20;
 	}
 }

@@ -3,13 +3,15 @@ package org.darkstorm.darkbot.ircbot.irc.messages;
 import org.darkstorm.darkbot.ircbot.irc.parsing.UserInfo;
 import org.darkstorm.darkbot.ircbot.irc.parsing.LineParser.MessageType;
 
-public class NickMessage extends Message {
+public class NickMessage extends Message
+{
 	private String originalNickname;
 	private String newNickname;
 	private String userUsername;
 	private String userHostname;
 
-	public NickMessage(String raw, UserInfo user, String newNickname) {
+	public NickMessage(String raw, UserInfo user, String newNickname)
+	{
 		super(MessageType.NICK, raw);
 		originalNickname = user.getNickname();
 		this.newNickname = newNickname;
@@ -17,19 +19,23 @@ public class NickMessage extends Message {
 		userHostname = user.getHostname();
 	}
 
-	public String getOriginalNickname() {
+	public String getOriginalNickname()
+	{
 		return originalNickname;
 	}
 
-	public String getNewNickname() {
+	public String getNewNickname()
+	{
 		return newNickname;
 	}
 
-	public String getUserUsername() {
+	public String getUserUsername()
+	{
 		return userUsername;
 	}
 
-	public String getUserHostname() {
+	public String getUserHostname()
+	{
 		return userHostname;
 	}
 }

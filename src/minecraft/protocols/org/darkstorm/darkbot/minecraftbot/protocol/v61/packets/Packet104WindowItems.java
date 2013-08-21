@@ -5,25 +5,30 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.item.ItemStack;
 
-public class Packet104WindowItems extends AbstractPacket implements ReadablePacket {
+public class Packet104WindowItems extends AbstractPacket implements
+		ReadablePacket
+{
 	public int windowId;
 	public ItemStack[] itemStack;
 
-	public Packet104WindowItems() {
+	public Packet104WindowItems()
+	{
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		windowId = in.readByte();
 		short count = in.readShort();
 		itemStack = new ItemStack[count];
 
-		for(int i = 0; i < count; i++)
+		for (int i = 0; i < count; i++)
 			itemStack[i] = readItemStack(in);
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 104;
 	}
 }

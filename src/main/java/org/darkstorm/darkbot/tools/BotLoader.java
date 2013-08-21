@@ -6,22 +6,27 @@ import java.util.jar.*;
 
 import org.darkstorm.darkbot.bot.Bot;
 
-public class BotLoader {
+public class BotLoader
+{
 	private Class<?>[] botClasses;
 
-	public BotLoader() {
+	public BotLoader()
+	{
 	}
 
-	public void loadBots() {
+	public void loadBots()
+	{
 		botClasses = loadBotsFromClasspath();
 	}
 
-	private Class<?>[] loadBotsFromClasspath() {
+	private Class<?>[] loadBotsFromClasspath()
+	{
 		File location = new File(BotLoader.class.getProtectionDomain()
 				.getCodeSource().getLocation().getFile());
-		if(location.isFile()) {
+		if (location.isFile())
+		{
 			String fileName = location.getName();
-			if(fileName.endsWith(".jar"))
+			if (fileName.endsWith(".jar"))
 				return loadBotsFromClasspathJar(location);
 		} else
 			return loadBotsFromClasspathDirectory(location);
@@ -29,57 +34,71 @@ public class BotLoader {
 	}
 
 	@SuppressWarnings("resource")
-	private Class<?>[] loadBotsFromClasspathJar(File location) {
+	private Class<?>[] loadBotsFromClasspathJar(File location)
+	{
 		ArrayList<Class<?>> botClasses = new ArrayList<Class<?>>();
 		JarFile jarFile;
-		try {
+		try
+		{
 			jarFile = new JarFile(location);
-		} catch(Throwable exception) {
+		} catch (Throwable exception)
+		{
 			exception.printStackTrace();
 			System.err.println("Failed to load bots from classpath");
 			return null;
 		}
 		Enumeration<JarEntry> entries = jarFile.entries();
-		while(entries.hasMoreElements()) {
-			try {
+		while (entries.hasMoreElements())
+		{
+			try
+			{
 				JarEntry entry = entries.nextElement();
 				String entryName = entry.getName();
-				if(!entryName.endsWith(".class"))
+				if (!entryName.endsWith(".class"))
 					continue;
 				String entryClassName = entryName.replace('/', '.');
 				entryClassName = entryClassName.substring(0,
 						entryClassName.length() - 6);
 				Class<?> entryClass = Class.forName(entryClassName);
-				if(Bot.class.isAssignableFrom(entryClass)
+				if (Bot.class.isAssignableFrom(entryClass)
 						&& !Bot.class.equals(entryClass))
 					botClasses.add(entryClass);
-			} catch(Throwable exception) {
+			} catch (Throwable exception)
+			{
 				exception.printStackTrace();
 			}
 		}
 		return botClasses.toArray(new Class<?>[botClasses.size()]);
 	}
 
-	private Class<?>[] loadBotsFromClasspathDirectory(File directory) {
+	private Class<?>[] loadBotsFromClasspathDirectory(File directory)
+	{
 		ArrayList<Class<?>> botClasses = new ArrayList<Class<?>>();
 		loadBotsInDirectory(botClasses, directory);
 		return botClasses.toArray(new Class<?>[botClasses.size()]);
 	}
 
 	private void loadBotsInDirectory(ArrayList<Class<?>> botClasses,
-			File directory) {
-		for(File file : directory.listFiles()) {
-			if(file.isFile()) {
+			File directory)
+	{
+		for (File file : directory.listFiles())
+		{
+			if (file.isFile())
+			{
 				String filePath = file.getAbsolutePath();
-				if(!filePath.endsWith(".class"))
+				if (!filePath.endsWith(".class"))
 					continue;
-				try {
+				try
+				{
 					File currentDirectory = new File(
 							System.getProperty("user.dir"));
-					for(File fileInCurrentDir : currentDirectory.listFiles()) {
-						if(fileInCurrentDir.isDirectory()) {
+					for (File fileInCurrentDir : currentDirectory.listFiles())
+					{
+						if (fileInCurrentDir.isDirectory())
+						{
 							String fileName = fileInCurrentDir.getName();
-							if(fileName.equals("bin")) {
+							if (fileName.equals("bin"))
+							{
 								currentDirectory = fileInCurrentDir;
 								break;
 							}
@@ -91,18 +110,20 @@ public class BotLoader {
 							.replace(File.separatorChar, '.');
 					className = className.substring(0, className.length() - 6);
 					Class<?> entryClass = Class.forName(className);
-					if(Bot.class.isAssignableFrom(entryClass)
+					if (Bot.class.isAssignableFrom(entryClass)
 							&& !Bot.class.equals(entryClass))
 						botClasses.add(entryClass);
-				} catch(Throwable exception) {
+				} catch (Throwable exception)
+				{
 					exception.printStackTrace();
 				}
-			} else if(file.isDirectory())
+			} else if (file.isDirectory())
 				loadBotsInDirectory(botClasses, file);
 		}
 	}
 
-	public Class<?>[] getBotClasses() {
+	public Class<?>[] getBotClasses()
+	{
 		return botClasses;
 	}
 }

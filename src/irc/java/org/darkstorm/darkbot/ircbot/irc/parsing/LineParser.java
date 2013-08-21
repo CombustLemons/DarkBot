@@ -10,45 +10,38 @@ import org.darkstorm.darkbot.tools.StringTools;
  * @Created Mar 7, 2010 at 8:46:10 AM
  * @author DarkStorm
  */
-public class LineParser {
+public class LineParser
+{
 
-	public static enum MessageType {
-		CHANNEL_USER_MODE,
-		CHANNEL_MODE,
-		USER_MODE,
-		MESSAGE,
-		NOTICE,
-		INVITE,
-		SERVER,
-		PING,
-		PONG,
-		NICK,
-		JOIN,
-		PART,
-		KICK,
-		QUIT,
-		OTHER
+	public static enum MessageType
+	{
+		CHANNEL_USER_MODE, CHANNEL_MODE, USER_MODE, MESSAGE, NOTICE, INVITE, SERVER, PING, PONG, NICK, JOIN, PART, KICK, QUIT, OTHER
 	}
 
 	private MessageHandler messageHandler;
 
-	public LineParser(MessageHandler messageHandler) {
+	public LineParser(MessageHandler messageHandler)
+	{
 		this.messageHandler = messageHandler;
 	}
 
-	public Message parse(String raw) {
+	public Message parse(String raw)
+	{
 		String[] components = getComponents(raw);
 		MessageType type = parseType(components);
 		return parseMessage(type, raw, components);
 	}
 
-	private String[] getComponents(String inputLine) {
+	private String[] getComponents(String inputLine)
+	{
 		String[] components = StringTools.split(inputLine, ":");
-		if(components.length > 2) {
+		if (components.length > 2)
+		{
 			String message = "";
-			for(int i = 2; i < components.length; i++) {
+			for (int i = 2; i < components.length; i++)
+			{
 				message += components[i];
-				if(i < components.length - 1)
+				if (i < components.length - 1)
 					message += ":";
 			}
 			return new String[] { components[0], components[1], message };
@@ -56,30 +49,39 @@ public class LineParser {
 		return components;
 	}
 
-	private MessageType parseType(String[] components) {
+	private MessageType parseType(String[] components)
+	{
 		String[] senderInfo = components[1].split(" ");
 		int exclamationIndex = senderInfo[0].indexOf('!');
 		int atIndex = senderInfo[0].indexOf('@');
-		if(components[0].startsWith("PING ")) {
+		if (components[0].startsWith("PING "))
+		{
 			return MessageType.PING;
-		} else if(components[1].contains(" PRIVMSG ")) {
+		} else if (components[1].contains(" PRIVMSG "))
+		{
 			return MessageType.MESSAGE;
-		} else if((exclamationIndex == -1 || atIndex == -1 || exclamationIndex >= atIndex)
-				&& StringTools.isInteger(senderInfo[1])) {
+		} else if ((exclamationIndex == -1 || atIndex == -1 || exclamationIndex >= atIndex)
+				&& StringTools.isInteger(senderInfo[1]))
+		{
 			return MessageType.SERVER;
-		} else if((exclamationIndex == -1 || atIndex == -1 || exclamationIndex >= atIndex)
-				&& senderInfo[1].equals("MODE")) {
+		} else if ((exclamationIndex == -1 || atIndex == -1 || exclamationIndex >= atIndex)
+				&& senderInfo[1].equals("MODE"))
+		{
 			return MessageType.USER_MODE;
-		} else if(components[1].contains(" MODE ") && exclamationIndex != -1
-				&& Channel.isChannel(senderInfo[2])) {
-			if(senderInfo.length > 4)
+		} else if (components[1].contains(" MODE ") && exclamationIndex != -1
+				&& Channel.isChannel(senderInfo[2]))
+		{
+			if (senderInfo.length > 4)
 				return MessageType.CHANNEL_USER_MODE;
 			else
 				return MessageType.CHANNEL_MODE;
-		} else {
-			for(MessageType messageType : MessageType.values()) {
+		} else
+		{
+			for (MessageType messageType : MessageType.values())
+			{
 				String type = messageType.toString();
-				if(components[1].contains(type)) {
+				if (components[1].contains(type))
+				{
 					return messageType;
 				}
 			}
@@ -88,8 +90,10 @@ public class LineParser {
 	}
 
 	private Message parseMessage(MessageType type, String raw,
-			String[] components) {
-		switch(type) {
+			String[] components)
+	{
+		switch (type)
+		{
 		case MESSAGE:
 		case NOTICE:
 			return parseUserMessage(type, raw, components);
@@ -121,15 +125,17 @@ public class LineParser {
 	}
 
 	private UserMessage parseUserMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		UserInfo sender;
 		String receiver;
 		String senderInfo = components[1];
 		String[] senderInfoParts = components[1].split(" ");
 		int exclamationIndex = senderInfoParts[0].indexOf('!');
 		int atIndex = senderInfoParts[0].indexOf('@');
-		if(exclamationIndex != -1 && atIndex != -1
-				&& exclamationIndex < atIndex) {
+		if (exclamationIndex != -1 && atIndex != -1
+				&& exclamationIndex < atIndex)
+		{
 			String[] exclamationParts = StringTools.split(senderInfo, "!");
 			String[] atParts = StringTools.split(exclamationParts[1], "@");
 			String senderNickname = exclamationParts[0];
@@ -140,13 +146,15 @@ public class LineParser {
 		} else
 			sender = new UserInfo(senderInfoParts[0], null, null);
 
-		if(type == MessageType.MESSAGE) {
+		if (type == MessageType.MESSAGE)
+		{
 			int lastIndex = senderInfo.lastIndexOf(" PRIVMSG ");
 			int length = (" PRIVMSG ").length();
 			String nameTrailingSpace = senderInfo.substring(lastIndex + length);
 			receiver = nameTrailingSpace.trim();
 
-		} else if(type == MessageType.NOTICE) {
+		} else if (type == MessageType.NOTICE)
+		{
 			String unreplacedSpace = components[1].substring(components[1]
 					.lastIndexOf(" NOTICE ") + (" NOTICE ").length());
 			receiver = unreplacedSpace.substring(0,
@@ -156,7 +164,8 @@ public class LineParser {
 					"UserMessage parsed with wrong type (how!?)");
 
 		String message = components[2];
-		if(message.startsWith("\u0001") && message.endsWith("\u0001")) {
+		if (message.startsWith("\u0001") && message.endsWith("\u0001"))
+		{
 			message = message.substring(1, message.length() - 1);
 			return new UserMessage(type, raw, sender, receiver, message, true);
 		}
@@ -164,7 +173,8 @@ public class LineParser {
 	}
 
 	private Message parseJoinPartMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] exclamationParts = StringTools.split(senderInfo, "!");
 		String[] atParts = StringTools.split(exclamationParts[1], "@");
@@ -178,20 +188,20 @@ public class LineParser {
 		IRCBot bot = messageHandler.getBot();
 		ChannelHandler channelHandler = bot.getChannelHandler();
 		String channelName;
-		if(senderInfoAfterAt.length >= 3)
+		if (senderInfoAfterAt.length >= 3)
 			channelName = senderInfoAfterAt[2];
 		else
 			channelName = components[2];
 		Channel channel = channelHandler.getChannel(channelName);
-		if(channel == null)
+		if (channel == null)
 			channel = new Channel(channelHandler, channelName, "");
 		String message = null;
-		if(type == MessageType.PART && components.length > 2)
+		if (type == MessageType.PART && components.length > 2)
 			message = components[2];
 
-		if(type == MessageType.JOIN)
+		if (type == MessageType.JOIN)
 			return new JoinMessage(raw, user, channel);
-		else if(type == MessageType.PART)
+		else if (type == MessageType.PART)
 			return new PartMessage(raw, user, channel, message);
 		else
 			throw new RuntimeException(
@@ -199,7 +209,8 @@ public class LineParser {
 	}
 
 	private Message parseKickMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] senderInfoParts = senderInfo.split(" ");
 		String[] exclamationParts = StringTools.split(senderInfo, "!");
@@ -215,19 +226,20 @@ public class LineParser {
 		ChannelHandler channelHandler = bot.getChannelHandler();
 		String channelName = senderInfoParts[2];
 		Channel channel = channelHandler.getChannel(channelName);
-		if(channel == null)
+		if (channel == null)
 			channel = new Channel(channelHandler, channelName, "");
 
 		String target = senderInfoParts[3];
 
 		String message = null;
-		if(components.length > 2)
+		if (components.length > 2)
 			message = components[2];
 		return new KickMessage(raw, sender, channel, target, message);
 	}
 
 	private Message parseInviteMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] exclamationParts = StringTools.split(senderInfo, "!");
 		String[] atParts = StringTools.split(exclamationParts[1], "@");
@@ -248,11 +260,13 @@ public class LineParser {
 	}
 
 	private Message parseModeMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] senderInfoParts = senderInfo.split(" ");
-		if(type == MessageType.CHANNEL_MODE
-				|| type == MessageType.CHANNEL_USER_MODE) {
+		if (type == MessageType.CHANNEL_MODE
+				|| type == MessageType.CHANNEL_USER_MODE)
+		{
 			String[] exclamationParts = StringTools.split(senderInfo, "!");
 			String[] atParts = StringTools.split(exclamationParts[1], "@");
 			String senderNickname = exclamationParts[0];
@@ -265,14 +279,16 @@ public class LineParser {
 			String channel = senderInfoParts[2];
 			String mode = senderInfoParts[3];
 			String[] target;
-			if(senderInfoParts.length > 4) {
+			if (senderInfoParts.length > 4)
+			{
 				target = new String[senderInfoParts.length - 4];
-				for(int i = 4; i < senderInfoParts.length; i++)
+				for (int i = 4; i < senderInfoParts.length; i++)
 					target[i - 4] = senderInfoParts[i];
 			} else
 				target = new String[0];
 			return new ModeMessage(type, raw, sender, channel, target, mode);
-		} else if(type == MessageType.USER_MODE) {
+		} else if (type == MessageType.USER_MODE)
+		{
 			UserInfo sender = new UserInfo(senderInfoParts[0], null, null);
 			String receiver = senderInfoParts[2];
 			String mode = components[2];
@@ -283,7 +299,8 @@ public class LineParser {
 	}
 
 	private Message parseNickMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] exclamationParts = StringTools.split(senderInfo, "!");
 		String[] atParts = StringTools.split(exclamationParts[1], "@");
@@ -297,33 +314,36 @@ public class LineParser {
 	}
 
 	private Message parseServerResponseMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String[] senderInfoParts = components[1].split(" ");
 		String serverName = senderInfoParts[0];
 		int responseCode = Integer.parseInt(senderInfoParts[1]);
 		String target = senderInfoParts[2];
 		int extraInfoAmount = senderInfoParts.length - 3;
-		if(components.length > 2)
+		if (components.length > 2)
 			extraInfoAmount += 1;
 		String[] extraInfo = new String[extraInfoAmount];
-		for(int i = 3; i < senderInfoParts.length; i++)
+		for (int i = 3; i < senderInfoParts.length; i++)
 			extraInfo[i - 3] = senderInfoParts[i];
-		if(components.length > 2)
+		if (components.length > 2)
 			extraInfo[extraInfo.length - 1] = components[2];
 		return new ServerResponseMessage(raw, serverName, responseCode, target,
 				extraInfo);
 	}
 
 	private Message parsePingPongMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String message = null;
-		if(components.length > 1)
+		if (components.length > 1)
 			message = components[1];
 		return new PingMessage(type, raw, message);
 	}
 
 	private Message parseQuitMessage(MessageType type, String raw,
-			String[] components) {
+			String[] components)
+	{
 		String senderInfo = components[1];
 		String[] exclamationParts = StringTools.split(senderInfo, "!");
 		String[] atParts = StringTools.split(exclamationParts[1], "@");
@@ -334,12 +354,13 @@ public class LineParser {
 		UserInfo user = new UserInfo(senderNickname, senderUsername,
 				senderHostname);
 		String message = null;
-		if(components.length > 2)
+		if (components.length > 2)
 			message = components[2];
 		return new QuitMessage(raw, user, message);
 	}
 
-	public MessageHandler getMessageHandler() {
+	public MessageHandler getMessageHandler()
+	{
 		return messageHandler;
 	}
 }

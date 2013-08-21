@@ -5,17 +5,20 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet55BlockDestroy extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int entityId;
 	public int x;
 	public int y;
 	public int z;
 	public int destroyStage;
 
-	public Packet55BlockDestroy() {
+	public Packet55BlockDestroy()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		entityId = in.readInt();
 		x = in.readInt();
 		y = in.readInt();
@@ -24,7 +27,8 @@ public class Packet55BlockDestroy extends AbstractPacket implements
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 55;
 	}
 }

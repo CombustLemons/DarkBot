@@ -11,7 +11,8 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 
 @SuppressWarnings("serial")
-public class DarkBotMCUI extends JFrame {
+public class DarkBotMCUI extends JFrame
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	private JMenuBar menuBar;
@@ -33,7 +34,8 @@ public class DarkBotMCUI extends JFrame {
 
 	private int lastSelectedIndex = 0;
 
-	public DarkBotMCUI() {
+	public DarkBotMCUI()
+	{
 		initComponents();
 		whatsNewScrollPane.setBorder(null);
 		aboutScrollPane.setBorder(null);
@@ -42,48 +44,60 @@ public class DarkBotMCUI extends JFrame {
 		setVisible(true);
 	}
 
-	private void tabbedPaneStateChanged(ChangeEvent e) {
-		if(tabbedPane.getSelectedComponent() != null
-				&& tabbedPane.getSelectedComponent().equals(newTabPanel)) {
+	private void tabbedPaneStateChanged(ChangeEvent e)
+	{
+		if (tabbedPane.getSelectedComponent() != null
+				&& tabbedPane.getSelectedComponent().equals(newTabPanel))
+		{
 			tabbedPane.setSelectedIndex(lastSelectedIndex);
 			new NewBotDialog(this);
 		}
 		lastSelectedIndex = tabbedPane.getSelectedIndex();
-		if(tabbedPane.getSelectedComponent() instanceof BotControlsUI) {
+		if (tabbedPane.getSelectedComponent() instanceof BotControlsUI)
+		{
 			String text = ((BotControlsUI) tabbedPane.getSelectedComponent())
 					.getStatus();
 			statusLabel.setText(text != null ? text : titleLabel.getText());
 			closeMenuItem.setEnabled(true);
-		} else {
+		} else
+		{
 			statusLabel.setText(titleLabel.getText());
 			closeMenuItem.setEnabled(false);
 		}
 	}
 
-	private void newMenuItemActionPerformed(ActionEvent e) {
+	private void newMenuItemActionPerformed(ActionEvent e)
+	{
 		new NewBotDialog(this);
 	}
 
-	private void closeMenuItemActionPerformed(ActionEvent e) {
-		if(tabbedPane.getSelectedComponent() instanceof BotControlsUI) {
+	private void closeMenuItemActionPerformed(ActionEvent e)
+	{
+		if (tabbedPane.getSelectedComponent() instanceof BotControlsUI)
+		{
 			tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex() - 1);
 			tabbedPane.removeTabAt(tabbedPane.getSelectedIndex() + 1);
 			((BotControlsUI) tabbedPane.getSelectedComponent()).onClose();
 		}
 	}
 
-	private void exitMenuItemActionPerformed(ActionEvent e) {
+	private void exitMenuItemActionPerformed(ActionEvent e)
+	{
 		System.exit(0);
 	}
 
-	public void addBotControls(final BotControlsUI controls) {
+	public void addBotControls(final BotControlsUI controls)
+	{
 		int index = tabbedPane.getTabCount() - 1;
 		controls.addPropertyChangeListener("TAB_REMOVE",
-				new PropertyChangeListener() {
+				new PropertyChangeListener()
+				{
 
 					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if(tabbedPane.indexOfComponent(controls) == -1) {
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						if (tabbedPane.indexOfComponent(controls) == -1)
+						{
 							controls.onClose();
 							controls.removePropertyChangeListener(this);
 						}
@@ -94,11 +108,15 @@ public class DarkBotMCUI extends JFrame {
 		tabbedPane.setSelectedIndex(index);
 	}
 
-	public synchronized void updateStatus(final BotControlsUI controls) {
-		SwingUtilities.invokeLater(new Runnable() {
+	public synchronized void updateStatus(final BotControlsUI controls)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
 			@Override
-			public void run() {
-				if(tabbedPane.getSelectedComponent().equals(controls)) {
+			public void run()
+			{
+				if (tabbedPane.getSelectedComponent().equals(controls))
+				{
 					String text = controls.getStatus();
 					statusLabel.setText(text != null ? text : titleLabel
 							.getText());
@@ -107,7 +125,8 @@ public class DarkBotMCUI extends JFrame {
 		});
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
 		ResourceBundle bundle = ResourceBundle
@@ -149,8 +168,10 @@ public class DarkBotMCUI extends JFrame {
 				newMenuItem.setText(bundle.getString("dbmc.newMenuItem.text"));
 				newMenuItem.setIcon(new ImageIcon(getClass().getResource(
 						"/icons/add.png")));
-				newMenuItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				newMenuItem.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
 						newMenuItemActionPerformed(e);
 					}
 				});
@@ -161,8 +182,10 @@ public class DarkBotMCUI extends JFrame {
 						.getString("dbmc.closeMenuItem.text"));
 				closeMenuItem.setIcon(new ImageIcon(getClass().getResource(
 						"/icons/cancel.png")));
-				closeMenuItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				closeMenuItem.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
 						closeMenuItemActionPerformed(e);
 					}
 				});
@@ -174,8 +197,10 @@ public class DarkBotMCUI extends JFrame {
 						.setText(bundle.getString("dbmc.exitMenuItem.text"));
 				exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
 						"/icons/exit.png")));
-				exitMenuItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				exitMenuItem.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
 						exitMenuItemActionPerformed(e);
 					}
 				});
@@ -208,8 +233,10 @@ public class DarkBotMCUI extends JFrame {
 		// ======== tabbedPane ========
 		{
 			tabbedPane.setBorder(new EmptyBorder(3, 0, 0, 0));
-			tabbedPane.addChangeListener(new ChangeListener() {
-				public void stateChanged(ChangeEvent e) {
+			tabbedPane.addChangeListener(new ChangeListener()
+			{
+				public void stateChanged(ChangeEvent e)
+				{
 					tabbedPaneStateChanged(e);
 				}
 			});

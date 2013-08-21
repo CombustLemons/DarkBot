@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 
 public class Packet61DoorChange extends AbstractPacket implements
-		ReadablePacket {
+		ReadablePacket
+{
 	public int sfxID;
 	public int auxData;
 	public int posX;
@@ -13,10 +14,12 @@ public class Packet61DoorChange extends AbstractPacket implements
 	public int posZ;
 	public boolean bool;
 
-	public Packet61DoorChange() {
+	public Packet61DoorChange()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		sfxID = in.readInt();
 		posX = in.readInt();
 		posY = in.readByte() & 0xff;
@@ -25,7 +28,8 @@ public class Packet61DoorChange extends AbstractPacket implements
 		bool = in.readBoolean();
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 61;
 	}
 }

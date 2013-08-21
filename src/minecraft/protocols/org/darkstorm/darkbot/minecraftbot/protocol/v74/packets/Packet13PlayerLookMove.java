@@ -4,7 +4,9 @@ import java.io.*;
 
 import org.darkstorm.darkbot.minecraftbot.protocol.ReadablePacket;
 
-public class Packet13PlayerLookMove extends Packet10Flying implements ReadablePacket {
+public class Packet13PlayerLookMove extends Packet10Flying implements
+		ReadablePacket
+{
 	public double x;
 	public double y;
 	public double z;
@@ -12,11 +14,14 @@ public class Packet13PlayerLookMove extends Packet10Flying implements ReadablePa
 	public float yaw;
 	public float pitch;
 
-	public Packet13PlayerLookMove() {
+	public Packet13PlayerLookMove()
+	{
 		super(false);
 	}
 
-	public Packet13PlayerLookMove(double x, double y, double stance, double z, float yaw, float pitch, boolean onGround) {
+	public Packet13PlayerLookMove(double x, double y, double stance, double z,
+			float yaw, float pitch, boolean onGround)
+	{
 		super(onGround);
 		this.x = x;
 		this.y = y;
@@ -27,7 +32,8 @@ public class Packet13PlayerLookMove extends Packet10Flying implements ReadablePa
 	}
 
 	@Override
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		x = in.readDouble();
 		stance = in.readDouble();
 		y = in.readDouble();
@@ -38,7 +44,8 @@ public class Packet13PlayerLookMove extends Packet10Flying implements ReadablePa
 	}
 
 	@Override
-	public void writeData(DataOutputStream out) throws IOException {
+	public void writeData(DataOutputStream out) throws IOException
+	{
 		out.writeDouble(x);
 		out.writeDouble(y);
 		out.writeDouble(stance);
@@ -49,7 +56,8 @@ public class Packet13PlayerLookMove extends Packet10Flying implements ReadablePa
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 13;
 	}
 }

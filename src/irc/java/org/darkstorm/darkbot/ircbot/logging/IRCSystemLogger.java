@@ -7,8 +7,10 @@ import org.darkstorm.darkbot.DarkBot;
 import org.darkstorm.darkbot.bot.Nameable;
 import org.darkstorm.darkbot.ircbot.*;
 
-public class IRCSystemLogger extends IRCLogger {
-	public IRCSystemLogger(IRCBot bot) {
+public class IRCSystemLogger extends IRCLogger
+{
+	public IRCSystemLogger(IRCBot bot)
+	{
 		super(bot);
 	}
 
@@ -17,7 +19,8 @@ public class IRCSystemLogger extends IRCLogger {
 	private Date date = new Date();
 
 	@Override
-	public void log(IRCLogType logType, String message) {
+	public void log(IRCLogType logType, String message)
+	{
 		String dateBlock = createDateBlock();
 		String threadNameBlock = createThreadNameBlock();
 		String fullMessage = dateBlock + " " + logType + " " + threadNameBlock
@@ -25,14 +28,16 @@ public class IRCSystemLogger extends IRCLogger {
 		printMessage(logType, fullMessage);
 	}
 
-	private String createThreadNameBlock() {
+	private String createThreadNameBlock()
+	{
 		Thread currentThread = Thread.currentThread();
 		String threadName = currentThread.getName();
 		return "[" + threadName + "]";
 	}
 
 	@Override
-	public void log(Object source, IRCLogType logType, String message) {
+	public void log(Object source, IRCLogType logType, String message)
+	{
 		String dateBlock = createDateBlock();
 		String sourceBlock = createSourceBlock(source);
 		String fullMessage = dateBlock + " " + logType + " " + sourceBlock
@@ -40,33 +45,38 @@ public class IRCSystemLogger extends IRCLogger {
 		printMessage(logType, fullMessage);
 	}
 
-	private String createSourceBlock(Object source) {
+	private String createSourceBlock(Object source)
+	{
 		StringBuilder messageStart = new StringBuilder();
 		messageStart.append("[");
-		if(source instanceof IRCBot)
+		if (source instanceof IRCBot)
 			messageStart.append("Bot:");
-		if(source instanceof IRCBotAccessor) {
+		if (source instanceof IRCBotAccessor)
+		{
 			IRCBot bot = ((IRCBotAccessor) source).getBot();
 			messageStart.append(bot.getName());
-			if(source instanceof Nameable)
+			if (source instanceof Nameable)
 				messageStart.append(":" + ((Nameable) source).getName());
 			else
 				messageStart.append(":(Unknown Source)");
-		} else if(source instanceof Nameable)
+		} else if (source instanceof Nameable)
 			messageStart.append(((Nameable) source).getName());
 		messageStart.append("]");
 		return messageStart.toString();
 	}
 
-	private String createDateBlock() {
+	private String createDateBlock()
+	{
 		date.setTime(System.currentTimeMillis());
 		String formattedDate = dateFormat.format(date);
 		return "[" + formattedDate + "]";
 	}
 
-	private void printMessage(IRCLogType logType, String message) {
+	private void printMessage(IRCLogType logType, String message)
+	{
 		DarkBot darkBot = bot.getDarkBot();
-		switch(logType) {
+		switch (logType)
+		{
 		case MESSAGE:
 		case WARNING:
 		case OTHER:
@@ -74,11 +84,11 @@ public class IRCSystemLogger extends IRCLogger {
 			System.out.println(message);
 			break;
 		case DEBUG:
-			if(darkBot.isDebugging())
+			if (darkBot.isDebugging())
 				System.out.println(message);
 			break;
 		case DEBUG_ERROR:
-			if(!darkBot.isDebugging())
+			if (!darkBot.isDebugging())
 				break;
 		case ERROR:
 			System.err.println(message);

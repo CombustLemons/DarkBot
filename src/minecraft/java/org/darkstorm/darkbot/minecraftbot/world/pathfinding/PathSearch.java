@@ -2,7 +2,8 @@ package org.darkstorm.darkbot.minecraftbot.world.pathfinding;
 
 import org.darkstorm.darkbot.minecraftbot.world.WorldLocation;
 
-public interface PathSearch {
+public interface PathSearch
+{
 	public void step();
 
 	public boolean isDone();

@@ -4,25 +4,32 @@ import org.darkstorm.darkbot.ircbot.commands.IRCCommand;
 import org.darkstorm.darkbot.ircbot.handlers.*;
 import org.darkstorm.darkbot.ircbot.irc.messages.*;
 
-public class HelpCommand extends IRCCommand {
+public class HelpCommand extends IRCCommand
+{
 
-	public HelpCommand(CommandHandler commandHandler) {
+	public HelpCommand(CommandHandler commandHandler)
+	{
 		super(commandHandler);
 	}
 
 	@Override
-	public void execute(Message message) {
-		if(!(message instanceof UserMessage))
+	public void execute(Message message)
+	{
+		if (!(message instanceof UserMessage))
 			return;
 		UserMessage userMessage = (UserMessage) message;
 		String messageText = userMessage.getMessage();
-		if(messageText.startsWith(" ") && messageText.length() > 1) {
+		if (messageText.startsWith(" ") && messageText.length() > 1)
+		{
 			String commandName = messageText.substring(1);
-			for(IRCCommand command : commandHandler.getCommands()) {
+			for (IRCCommand command : commandHandler.getCommands())
+			{
 				String nameForCommand = command.getCommandName();
-				if(nameForCommand != null) {
+				if (nameForCommand != null)
+				{
 					nameForCommand = nameForCommand.trim();
-					if(commandName.equalsIgnoreCase(nameForCommand)) {
+					if (commandName.equalsIgnoreCase(nameForCommand))
+					{
 						MessageHandler messageHandler = bot.getMessageHandler();
 						messageHandler.setFloodControlEnabled(false);
 						String sender = userMessage.getSender().getNickname();
@@ -49,8 +56,9 @@ public class HelpCommand extends IRCCommand {
 		messageHandler.setFloodControlEnabled(false);
 		messageHandler.sendNotice(sender, "Commands Available: ");
 		PermissionsHandler permissionsHandler = bot.getPermissionsHandler();
-		for(IRCCommand command : commandHandler.getCommands()) {
-			if(command.getCommandName() != null
+		for (IRCCommand command : commandHandler.getCommands())
+		{
+			if (command.getCommandName() != null
 					&& permissionsHandler.isPermitted(sender,
 							command.getPermissions()))
 				messageHandler.sendNotice(sender, " - "
@@ -65,22 +73,26 @@ public class HelpCommand extends IRCCommand {
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Help Command";
 	}
 
 	@Override
-	public String getCommandName() {
+	public String getCommandName()
+	{
 		return "HELP";
 	}
 
 	@Override
-	public String getUsage() {
+	public String getUsage()
+	{
 		return "HELP [command]";
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return "Shows help";
 	}
 

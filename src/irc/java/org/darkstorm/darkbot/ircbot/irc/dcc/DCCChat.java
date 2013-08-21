@@ -27,7 +27,8 @@ import org.darkstorm.darkbot.ircbot.util.Tools;
  *         href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version 1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
  */
-public class DCCChat implements DCCTransfer {
+public class DCCChat implements DCCTransfer
+{
 	private IRCBot bot;
 	private String nick;
 	private String login = null;
@@ -55,7 +56,8 @@ public class DCCChat implements DCCTransfer {
 	 *             If the connection cannot be made.
 	 */
 	DCCChat(IRCBot bot, String nick, String login, String hostname,
-			long address, int port) {
+			long address, int port)
+	{
 		this.bot = bot;
 		this.address = address;
 		this.port = port;
@@ -79,7 +81,8 @@ public class DCCChat implements DCCTransfer {
 	 * @throws IOException
 	 *             If the socket cannot be read from.
 	 */
-	DCCChat(IRCBot bot, String nick, Socket socket) throws IOException {
+	DCCChat(IRCBot bot, String nick, Socket socket) throws IOException
+	{
 		this.bot = bot;
 		this.nick = nick;
 		this.socket = socket;
@@ -95,8 +98,10 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @since 1.2.0
 	 */
-	public synchronized void accept() throws IOException {
-		if(acceptable) {
+	public synchronized void accept() throws IOException
+	{
+		if (acceptable)
+		{
 			acceptable = false;
 			int[] ip = Tools.longToIp(address);
 			String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
@@ -118,8 +123,10 @@ public class DCCChat implements DCCTransfer {
 	 * @throws IOException
 	 *             If an I/O error occurs.
 	 */
-	public String readLine() throws IOException {
-		if(acceptable) {
+	public String readLine() throws IOException
+	{
+		if (acceptable)
+		{
 			throw new IOException(
 					"You must call the accept() method of the DccChat request before you can use it.");
 		}
@@ -136,8 +143,10 @@ public class DCCChat implements DCCTransfer {
 	 * @throws IOException
 	 *             If an I/O error occurs.
 	 */
-	public void sendLine(String line) throws IOException {
-		if(acceptable) {
+	public void sendLine(String line) throws IOException
+	{
+		if (acceptable)
+		{
 			throw new IOException(
 					"You must call the accept() method of the DccChat request before you can use it.");
 		}
@@ -152,8 +161,10 @@ public class DCCChat implements DCCTransfer {
 	 * @throws IOException
 	 *             If an I/O error occurs.
 	 */
-	public void close() throws IOException {
-		if(acceptable) {
+	public void close() throws IOException
+	{
+		if (acceptable)
+		{
 			throw new IOException(
 					"You must call the accept() method of the DccChat request before you can use it.");
 		}
@@ -165,7 +176,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the nick of the other user.
 	 */
-	public String getNick() {
+	public String getNick()
+	{
 		return nick;
 	}
 
@@ -174,7 +186,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the login of the DCC Chat initiator. null if we sent it.
 	 */
-	public String getLogin() {
+	public String getLogin()
+	{
 		return login;
 	}
 
@@ -183,7 +196,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the hostname of the DCC Chat initiator. null if we sent it.
 	 */
-	public String getHostname() {
+	public String getHostname()
+	{
 		return hostname;
 	}
 
@@ -192,7 +206,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the BufferedReader used by this DCC Chat.
 	 */
-	public BufferedReader getBufferedReader() {
+	public BufferedReader getBufferedReader()
+	{
 		return reader;
 	}
 
@@ -201,7 +216,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the BufferedReader used by this DCC Chat.
 	 */
-	public BufferedWriter getBufferedWriter() {
+	public BufferedWriter getBufferedWriter()
+	{
 		return writer;
 	}
 
@@ -210,7 +226,8 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the raw Socket used by this DCC Chat.
 	 */
-	public Socket getSocket() {
+	public Socket getSocket()
+	{
 		return socket;
 	}
 
@@ -219,11 +236,13 @@ public class DCCChat implements DCCTransfer {
 	 * 
 	 * @return the address of the sender as a long.
 	 */
-	public long getNumericalAddress() {
+	public long getNumericalAddress()
+	{
 		return address;
 	}
 
-	public IRCBot getBot() {
+	public IRCBot getBot()
+	{
 		return bot;
 	}
 }

@@ -15,7 +15,8 @@ import javax.swing.filechooser.FileFilter;
 import org.darkstorm.darkbot.darkbotmc.*;
 
 @SuppressWarnings("serial")
-public class SpamBotOptionsUI extends BotOptionsUI {
+public class SpamBotOptionsUI extends BotOptionsUI
+{
 	// JFormDesigner - Variables declaration - DO NOT MODIFY
 	// //GEN-BEGIN:variables
 	private JTextField serverField;
@@ -46,17 +47,21 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 					.compile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:[0-9]{1,5}");
 	private final JFileChooser fileChooser;
 
-	public SpamBotOptionsUI() {
+	public SpamBotOptionsUI()
+	{
 		fileChooser = new JFileChooser();
-		fileChooser.setFileFilter(new FileFilter() {
+		fileChooser.setFileFilter(new FileFilter()
+		{
 
 			@Override
-			public String getDescription() {
+			public String getDescription()
+			{
 				return "Text files";
 			}
 
 			@Override
-			public boolean accept(File f) {
+			public boolean accept(File f)
+			{
 				String[] parts = f.getName().split("\\.");
 				return f.isDirectory()
 						|| (parts.length > 1 && parts[parts.length - 1]
@@ -75,17 +80,22 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 	}
 
 	@Override
-	public boolean areOptionsValid() {
+	public boolean areOptionsValid()
+	{
 		boolean valid = true;
-		if(serverField.getText().length() == 0) {
+		if (serverField.getText().length() == 0)
+		{
 			Util.flashRed(serverField);
 			valid = false;
 		}
-		if(accountsCheckBox.isSelected()) {
-			if(accountList.getModel().getSize() == 0) {
+		if (accountsCheckBox.isSelected())
+		{
+			if (accountList.getModel().getSize() == 0)
+			{
 				Util.flashRed(accountList);
-			} else if(accountList.getModel().getSize() < (Integer) botAmountSpinner
-					.getValue()) {
+			} else if (accountList.getModel().getSize() < (Integer) botAmountSpinner
+					.getValue())
+			{
 				Util.flashRed(((JSpinner.DefaultEditor) botAmountSpinner
 						.getEditor()).getTextField());
 				Util.flashRed(accountList);
@@ -96,7 +106,8 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 	}
 
 	@Override
-	public BotControlsUI createBot() {
+	public BotControlsUI createBot()
+	{
 		String server = serverField.getText();
 		int botAmount = (Integer) botAmountSpinner.getValue();
 		int loginDelay = (Integer) loginDelaySpinner.getValue();
@@ -104,15 +115,17 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		List<String> proxies = new ArrayList<String>();
 
 		DefaultListModel model = ((DefaultListModel) accountList.getModel());
-		for(int i = 0; i < model.getSize(); i++) {
+		for (int i = 0; i < model.getSize(); i++)
+		{
 			String account = (String) model.get(i);
-			if(accountPattern.matcher(account).matches())
+			if (accountPattern.matcher(account).matches())
 				accounts.add(account);
 		}
 		model = ((DefaultListModel) proxyList.getModel());
-		for(int i = 0; i < model.getSize(); i++) {
+		for (int i = 0; i < model.getSize(); i++)
+		{
 			String proxy = (String) model.get(i);
-			if(proxyPattern.matcher(proxy).matches())
+			if (proxyPattern.matcher(proxy).matches())
 				proxies.add(proxy);
 		}
 
@@ -120,13 +133,15 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 				proxies);
 	}
 
-	private void accountFieldCaretUpdate(CaretEvent e) {
+	private void accountFieldCaretUpdate(CaretEvent e)
+	{
 		accountAddButton.setEnabled(accountField.getText().length() > 0
 				&& accountPattern.matcher(accountField.getText()).matches());
 	}
 
-	private void accountAddButtonActionPerformed(ActionEvent e) {
-		if(accountField.getText().length() == 0
+	private void accountAddButtonActionPerformed(ActionEvent e)
+	{
+		if (accountField.getText().length() == 0
 				|| !accountField.getText().contains(":"))
 			return;
 		((DefaultListModel) accountList.getModel()).addElement(accountField
@@ -134,24 +149,28 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		accountField.setText("");
 	}
 
-	private void accountRemoveButtonActionPerformed(ActionEvent e) {
-		if(accountList.getSelectedIndex() == -1)
+	private void accountRemoveButtonActionPerformed(ActionEvent e)
+	{
+		if (accountList.getSelectedIndex() == -1)
 			return;
 		((DefaultListModel) accountList.getModel()).remove(accountList
 				.getSelectedIndex());
 	}
 
-	private void accountListValueChanged(ListSelectionEvent e) {
+	private void accountListValueChanged(ListSelectionEvent e)
+	{
 		accountRemoveButton.setEnabled(accountList.getSelectedIndex() != -1);
 	}
 
-	private void proxyFieldCaretUpdate(CaretEvent e) {
+	private void proxyFieldCaretUpdate(CaretEvent e)
+	{
 		proxyAddButton.setEnabled(proxyField.getText().length() > 0
 				&& proxyPattern.matcher(proxyField.getText()).matches());
 	}
 
-	private void proxyAddButtonActionPerformed(ActionEvent e) {
-		if(proxyField.getText().length() == 0
+	private void proxyAddButtonActionPerformed(ActionEvent e)
+	{
+		if (proxyField.getText().length() == 0
 				|| !proxyField.getText().contains(":"))
 			return;
 		((DefaultListModel) proxyList.getModel()).addElement(proxyField
@@ -159,21 +178,25 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		proxyField.setText("");
 	}
 
-	private void proxyRemoveButtonActionPerformed(ActionEvent e) {
-		if(proxyList.getSelectedIndex() == -1)
+	private void proxyRemoveButtonActionPerformed(ActionEvent e)
+	{
+		if (proxyList.getSelectedIndex() == -1)
 			return;
 		((DefaultListModel) proxyList.getModel()).remove(proxyList
 				.getSelectedIndex());
 	}
 
-	private void proxyListValueChanged(ListSelectionEvent e) {
+	private void proxyListValueChanged(ListSelectionEvent e)
+	{
 		proxyRemoveButton.setEnabled(proxyList.getSelectedIndex() != -1);
 	}
 
-	private void accountsCheckBoxItemStateChanged(ItemEvent e) {
+	private void accountsCheckBoxItemStateChanged(ItemEvent e)
+	{
 		boolean value = accountsCheckBox.isSelected();
 		toggleComponentStates(accountsPanel, value);
-		if(value) {
+		if (value)
+		{
 			accountAddButton.setEnabled(accountField.getText().length() > 0
 					&& accountField.getText().contains(":"));
 			accountRemoveButton
@@ -182,10 +205,12 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		accountsCheckBox.setEnabled(true);
 	}
 
-	private void proxiesCheckBoxItemStateChanged(ItemEvent e) {
+	private void proxiesCheckBoxItemStateChanged(ItemEvent e)
+	{
 		boolean value = proxiesCheckBox.isSelected();
 		toggleComponentStates(proxiesPanel, value);
-		if(value) {
+		if (value)
+		{
 			proxyAddButton.setEnabled(proxyField.getText().length() > 0
 					&& proxyField.getText().contains(":"));
 			proxyRemoveButton.setEnabled(proxyList.getSelectedIndex() != -1);
@@ -193,34 +218,41 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		proxiesCheckBox.setEnabled(true);
 	}
 
-	private void toggleComponentStates(Container container, boolean value) {
+	private void toggleComponentStates(Container container, boolean value)
+	{
 		container.setEnabled(value);
-		for(Component component : container.getComponents()) {
+		for (Component component : container.getComponents())
+		{
 			component.setEnabled(value);
-			if(component instanceof Container)
+			if (component instanceof Container)
 				toggleComponentStates((Container) component, value);
 		}
 	}
 
-	private void accountLoadButtonActionPerformed(ActionEvent e) {
+	private void accountLoadButtonActionPerformed(ActionEvent e)
+	{
 		int returnValue = fileChooser.showOpenDialog(this);
-		if(returnValue == JFileChooser.APPROVE_OPTION) {
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
 			File file = fileChooser.getSelectedFile();
 			List<String> accounts;
-			try {
+			try
+			{
 				accounts = loadLines(file, accountPattern);
-			} catch(IOException exception) {
+			} catch (IOException exception)
+			{
 				JOptionPane.showMessageDialog(this,
 						"Error loading accounts from " + file.getName());
 				return;
 			}
-			if(accounts.size() == 0) {
+			if (accounts.size() == 0)
+			{
 				JOptionPane.showMessageDialog(this, "No accounts found in "
 						+ file.getName());
 				return;
 			}
 			DefaultListModel model = (DefaultListModel) accountList.getModel();
-			for(String account : accounts)
+			for (String account : accounts)
 				model.addElement(account);
 			JOptionPane.showMessageDialog(this, "Loaded " + accounts.size()
 					+ " accounts from " + file.getName());
@@ -228,25 +260,30 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 			return;
 	}
 
-	private void proxyLoadButtonActionPerformed(ActionEvent e) {
+	private void proxyLoadButtonActionPerformed(ActionEvent e)
+	{
 		int returnValue = fileChooser.showOpenDialog(this);
-		if(returnValue == JFileChooser.APPROVE_OPTION) {
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
 			File file = fileChooser.getSelectedFile();
 			List<String> proxies;
-			try {
+			try
+			{
 				proxies = loadLines(file, proxyPattern);
-			} catch(IOException exception) {
+			} catch (IOException exception)
+			{
 				JOptionPane.showMessageDialog(this,
 						"Error loading proxies from " + file.getName());
 				return;
 			}
-			if(proxies.size() == 0) {
+			if (proxies.size() == 0)
+			{
 				JOptionPane.showMessageDialog(this, "No proxies found in "
 						+ file.getName());
 				return;
 			}
 			DefaultListModel model = (DefaultListModel) proxyList.getModel();
-			for(String proxy : proxies)
+			for (String proxy : proxies)
 				model.addElement(proxy);
 			JOptionPane.showMessageDialog(this, "Loaded " + proxies.size()
 					+ " proxies from " + file.getName());
@@ -255,22 +292,26 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 	}
 
 	private List<String> loadLines(File file, Pattern pattern)
-			throws IOException {
+			throws IOException
+	{
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		List<String> matches = new ArrayList<String>();
 		String line;
-		while((line = reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null)
+		{
 			Matcher matcher = pattern.matcher(line);
-			if(matcher.find())
+			if (matcher.find())
 				matches.add(matcher.group());
 		}
 		return matches;
 	}
 
-	private void initComponents() {
+	private void initComponents()
+	{
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
-		ResourceBundle bundle = ResourceBundle.getBundle("org.darkstorm.darkbot.darkbotmc.enUS");
+		ResourceBundle bundle = ResourceBundle
+				.getBundle("org.darkstorm.darkbot.darkbotmc.enUS");
 		JLabel serverLabel = new JLabel();
 		serverField = new JTextField();
 		JLabel botAmountLabel = new JLabel();
@@ -299,191 +340,239 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 		accountsCheckBox = new JCheckBox();
 		proxiesCheckBox = new JCheckBox();
 
-		//======== this ========
+		// ======== this ========
 		setLayout(new GridBagLayout());
-		((GridBagLayout)getLayout()).columnWidths = new int[] {0, 0, 0};
-		((GridBagLayout)getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0};
-		((GridBagLayout)getLayout()).columnWeights = new double[] {0.0, 1.0, 1.0E-4};
-		((GridBagLayout)getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 1.0E-4};
+		((GridBagLayout) getLayout()).columnWidths = new int[] { 0, 0, 0 };
+		((GridBagLayout) getLayout()).rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		((GridBagLayout) getLayout()).columnWeights = new double[] { 0.0, 1.0,
+				1.0E-4 };
+		((GridBagLayout) getLayout()).rowWeights = new double[] { 0.0, 0.0,
+				0.0, 1.0, 1.0E-4 };
 
-		//---- serverLabel ----
-		serverLabel.setText(bundle.getString("spambotoptions.serverLabel.text"));
+		// ---- serverLabel ----
+		serverLabel
+				.setText(bundle.getString("spambotoptions.serverLabel.text"));
 		add(serverLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 5), 0, 0));
 
-		//---- serverField ----
-		serverField.setToolTipText(bundle.getString("spambotoptions.serverField.toolTipText"));
+		// ---- serverField ----
+		serverField.setToolTipText(bundle
+				.getString("spambotoptions.serverField.toolTipText"));
 		add(serverField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 0), 0, 0));
 
-		//---- botAmountLabel ----
-		botAmountLabel.setText(bundle.getString("spambotoptions.botAmountLabel.text"));
+		// ---- botAmountLabel ----
+		botAmountLabel.setText(bundle
+				.getString("spambotoptions.botAmountLabel.text"));
 		add(botAmountLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 5), 0, 0));
 
-		//---- botAmountSpinner ----
+		// ---- botAmountSpinner ----
 		botAmountSpinner.setModel(new SpinnerNumberModel(1, 1, null, 1));
-		botAmountSpinner.setToolTipText(bundle.getString("spambotoptions.botAmountSpinner.toolTipText"));
+		botAmountSpinner.setToolTipText(bundle
+				.getString("spambotoptions.botAmountSpinner.toolTipText"));
 		add(botAmountSpinner, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 0), 0, 0));
 
-		//---- loginDelayLabel ----
-		loginDelayLabel.setText(bundle.getString("spambotoptions.loginDelayLabel.text"));
+		// ---- loginDelayLabel ----
+		loginDelayLabel.setText(bundle
+				.getString("spambotoptions.loginDelayLabel.text"));
 		add(loginDelayLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 5), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 5), 0, 0));
 
-		//---- loginDelaySpinner ----
+		// ---- loginDelaySpinner ----
 		loginDelaySpinner.setModel(new SpinnerNumberModel(0, 0, null, 50));
-		loginDelaySpinner.setToolTipText(bundle.getString("spambotoptions.loginDelaySpinner.toolTipText"));
+		loginDelaySpinner.setToolTipText(bundle
+				.getString("spambotoptions.loginDelaySpinner.toolTipText"));
 		add(loginDelaySpinner, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 5, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 5, 0), 0, 0));
 
-		//======== panel1 ========
+		// ======== panel1 ========
 		{
 			panel1.setLayout(new GridLayout(2, 0));
 
-			//======== accountsPanel ========
+			// ======== accountsPanel ========
 			{
 				accountsPanel.setBorder(new TitledBorder(""));
 				accountsPanel.setLayout(new BorderLayout());
 
-				//======== accountControlPanel ========
+				// ======== accountControlPanel ========
 				{
 					accountControlPanel.setLayout(new BorderLayout());
 
-					//---- accountField ----
-					accountField.setToolTipText(bundle.getString("spambotoptions.accountField.toolTipText"));
-					accountField.addCaretListener(new CaretListener() {
-						public void caretUpdate(CaretEvent e) {
+					// ---- accountField ----
+					accountField
+							.setToolTipText(bundle
+									.getString("spambotoptions.accountField.toolTipText"));
+					accountField.addCaretListener(new CaretListener()
+					{
+						public void caretUpdate(CaretEvent e)
+						{
 							accountFieldCaretUpdate(e);
 						}
 					});
 					accountControlPanel.add(accountField, BorderLayout.CENTER);
 
-					//======== accountButtonPanel ========
+					// ======== accountButtonPanel ========
 					{
 						accountButtonPanel.setLayout(new GridLayout());
 
-						//---- accountLoadButton ----
-						accountLoadButton.setText(bundle.getString("spambotoptions.accountLoadButton.text"));
-						accountLoadButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								accountLoadButtonActionPerformed(e);
-							}
-						});
+						// ---- accountLoadButton ----
+						accountLoadButton
+								.setText(bundle
+										.getString("spambotoptions.accountLoadButton.text"));
+						accountLoadButton
+								.addActionListener(new ActionListener()
+								{
+									public void actionPerformed(ActionEvent e)
+									{
+										accountLoadButtonActionPerformed(e);
+									}
+								});
 						accountButtonPanel.add(accountLoadButton);
 
-						//---- accountAddButton ----
-						accountAddButton.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
+						// ---- accountAddButton ----
+						accountAddButton.setIcon(new ImageIcon(getClass()
+								.getResource("/icons/add.png")));
 						accountAddButton.setEnabled(false);
-						accountAddButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+						accountAddButton.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
 								accountAddButtonActionPerformed(e);
 							}
 						});
 						accountButtonPanel.add(accountAddButton);
 
-						//---- accountRemoveButton ----
-						accountRemoveButton.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
+						// ---- accountRemoveButton ----
+						accountRemoveButton.setIcon(new ImageIcon(getClass()
+								.getResource("/icons/remove.png")));
 						accountRemoveButton.setEnabled(false);
-						accountRemoveButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								accountRemoveButtonActionPerformed(e);
-							}
-						});
+						accountRemoveButton
+								.addActionListener(new ActionListener()
+								{
+									public void actionPerformed(ActionEvent e)
+									{
+										accountRemoveButtonActionPerformed(e);
+									}
+								});
 						accountButtonPanel.add(accountRemoveButton);
 					}
-					accountControlPanel.add(accountButtonPanel, BorderLayout.EAST);
+					accountControlPanel.add(accountButtonPanel,
+							BorderLayout.EAST);
 				}
 				accountsPanel.add(accountControlPanel, BorderLayout.NORTH);
 
-				//======== accountScrollPane ========
+				// ======== accountScrollPane ========
 				{
 
-					//---- accountList ----
-					accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					accountList.addListSelectionListener(new ListSelectionListener() {
-						public void valueChanged(ListSelectionEvent e) {
-							accountListValueChanged(e);
-						}
-					});
+					// ---- accountList ----
+					accountList
+							.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					accountList
+							.addListSelectionListener(new ListSelectionListener()
+							{
+								public void valueChanged(ListSelectionEvent e)
+								{
+									accountListValueChanged(e);
+								}
+							});
 					accountScrollPane.setViewportView(accountList);
 				}
 				accountsPanel.add(accountScrollPane, BorderLayout.CENTER);
 			}
 			panel1.add(accountsPanel);
 
-			//======== proxiesPanel ========
+			// ======== proxiesPanel ========
 			{
 				proxiesPanel.setBorder(new TitledBorder(""));
 				proxiesPanel.setLayout(new BorderLayout());
 
-				//======== proxyControlPanel ========
+				// ======== proxyControlPanel ========
 				{
 					proxyControlPanel.setLayout(new BorderLayout());
 
-					//---- proxyField ----
-					proxyField.setToolTipText(bundle.getString("spambotoptions.proxyField.toolTipText"));
-					proxyField.addCaretListener(new CaretListener() {
-						public void caretUpdate(CaretEvent e) {
+					// ---- proxyField ----
+					proxyField
+							.setToolTipText(bundle
+									.getString("spambotoptions.proxyField.toolTipText"));
+					proxyField.addCaretListener(new CaretListener()
+					{
+						public void caretUpdate(CaretEvent e)
+						{
 							proxyFieldCaretUpdate(e);
 						}
 					});
 					proxyControlPanel.add(proxyField, BorderLayout.CENTER);
 
-					//======== proxyButtonPanel ========
+					// ======== proxyButtonPanel ========
 					{
 						proxyButtonPanel.setLayout(new GridLayout());
 
-						//---- proxyLoadButton ----
-						proxyLoadButton.setText(bundle.getString("spambotoptions.proxyLoadButton.text"));
-						proxyLoadButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+						// ---- proxyLoadButton ----
+						proxyLoadButton
+								.setText(bundle
+										.getString("spambotoptions.proxyLoadButton.text"));
+						proxyLoadButton.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
 								proxyLoadButtonActionPerformed(e);
 							}
 						});
 						proxyButtonPanel.add(proxyLoadButton);
 
-						//---- proxyAddButton ----
-						proxyAddButton.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
+						// ---- proxyAddButton ----
+						proxyAddButton.setIcon(new ImageIcon(getClass()
+								.getResource("/icons/add.png")));
 						proxyAddButton.setEnabled(false);
-						proxyAddButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+						proxyAddButton.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
 								proxyAddButtonActionPerformed(e);
 							}
 						});
 						proxyButtonPanel.add(proxyAddButton);
 
-						//---- proxyRemoveButton ----
-						proxyRemoveButton.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
+						// ---- proxyRemoveButton ----
+						proxyRemoveButton.setIcon(new ImageIcon(getClass()
+								.getResource("/icons/remove.png")));
 						proxyRemoveButton.setEnabled(false);
-						proxyRemoveButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								proxyRemoveButtonActionPerformed(e);
-							}
-						});
+						proxyRemoveButton
+								.addActionListener(new ActionListener()
+								{
+									public void actionPerformed(ActionEvent e)
+									{
+										proxyRemoveButtonActionPerformed(e);
+									}
+								});
 						proxyButtonPanel.add(proxyRemoveButton);
 					}
 					proxyControlPanel.add(proxyButtonPanel, BorderLayout.EAST);
 				}
 				proxiesPanel.add(proxyControlPanel, BorderLayout.NORTH);
 
-				//======== proxyScrollPane ========
+				// ======== proxyScrollPane ========
 				{
 
-					//---- proxyList ----
-					proxyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					proxyList.addListSelectionListener(new ListSelectionListener() {
-						public void valueChanged(ListSelectionEvent e) {
-							proxyListValueChanged(e);
-						}
-					});
+					// ---- proxyList ----
+					proxyList
+							.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					proxyList
+							.addListSelectionListener(new ListSelectionListener()
+							{
+								public void valueChanged(ListSelectionEvent e)
+								{
+									proxyListValueChanged(e);
+								}
+							});
 					proxyScrollPane.setViewportView(proxyList);
 				}
 				proxiesPanel.add(proxyScrollPane, BorderLayout.CENTER);
@@ -491,23 +580,29 @@ public class SpamBotOptionsUI extends BotOptionsUI {
 			panel1.add(proxiesPanel);
 		}
 		add(panel1, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-			new Insets(0, 0, 0, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 0, 0), 0, 0));
 
-		//---- accountsCheckBox ----
-		accountsCheckBox.setText(bundle.getString("spambotoptions.accountsCheckBox.text"));
+		// ---- accountsCheckBox ----
+		accountsCheckBox.setText(bundle
+				.getString("spambotoptions.accountsCheckBox.text"));
 		accountsCheckBox.setSelected(true);
-		accountsCheckBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+		accountsCheckBox.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e)
+			{
 				accountsCheckBoxItemStateChanged(e);
 			}
 		});
 
-		//---- proxiesCheckBox ----
-		proxiesCheckBox.setText(bundle.getString("spambotoptions.proxiesCheckBox.text"));
+		// ---- proxiesCheckBox ----
+		proxiesCheckBox.setText(bundle
+				.getString("spambotoptions.proxiesCheckBox.text"));
 		proxiesCheckBox.setSelected(true);
-		proxiesCheckBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+		proxiesCheckBox.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e)
+			{
 				proxiesCheckBoxItemStateChanged(e);
 			}
 		});

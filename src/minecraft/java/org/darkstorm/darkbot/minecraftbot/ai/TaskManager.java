@@ -2,7 +2,8 @@ package org.darkstorm.darkbot.minecraftbot.ai;
 
 import java.util.List;
 
-public interface TaskManager {
+public interface TaskManager
+{
 	public boolean registerTask(Task task);
 
 	public boolean unregisterTask(Task task);

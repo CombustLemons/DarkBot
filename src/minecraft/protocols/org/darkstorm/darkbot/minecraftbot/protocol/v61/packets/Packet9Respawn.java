@@ -5,7 +5,8 @@ import java.io.*;
 import org.darkstorm.darkbot.minecraftbot.protocol.*;
 import org.darkstorm.darkbot.minecraftbot.world.*;
 
-public class Packet9Respawn extends AbstractPacket implements ReadablePacket {
+public class Packet9Respawn extends AbstractPacket implements ReadablePacket
+{
 	public Dimension respawnDimension;
 	public Difficulty difficulty;
 	public GameMode gameMode;
@@ -13,10 +14,12 @@ public class Packet9Respawn extends AbstractPacket implements ReadablePacket {
 
 	public int worldHeight;
 
-	public Packet9Respawn() {
+	public Packet9Respawn()
+	{
 	}
 
-	public void readData(DataInputStream in) throws IOException {
+	public void readData(DataInputStream in) throws IOException
+	{
 		respawnDimension = Dimension.getDimensionById(in.readInt());
 		difficulty = Difficulty.getDifficultyById(in.readByte());
 		gameMode = GameMode.getGameModeById(in.readByte());
@@ -24,11 +27,12 @@ public class Packet9Respawn extends AbstractPacket implements ReadablePacket {
 		String s = readString(in, 16);
 		worldType = WorldType.parseWorldType(s);
 
-		if(worldType == null)
+		if (worldType == null)
 			worldType = WorldType.DEFAULT;
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return 9;
 	}
 }

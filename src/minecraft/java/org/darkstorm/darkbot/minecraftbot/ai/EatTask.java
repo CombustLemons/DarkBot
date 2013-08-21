@@ -7,11 +7,14 @@ import org.darkstorm.darkbot.minecraftbot.events.protocol.server.EntityStopEatin
 import org.darkstorm.darkbot.minecraftbot.world.entity.MainPlayerEntity;
 import org.darkstorm.darkbot.minecraftbot.world.item.*;
 
-public class EatTask implements Task {
+public class EatTask implements Task
+{
 	private static final int[] FOOD_LIST;
 
-	static {
-		FOOD_LIST = new int[] { 260, 282, 297, 319, 320, 322, 349, 350, 357, 360, 363, 364, 365, 366, 367 };
+	static
+	{
+		FOOD_LIST = new int[] { 260, 282, 297, 319, 320, 322, 349, 350, 357,
+				360, 363, 364, 365, 366, 367 };
 	}
 
 	private final MinecraftBot bot;
@@ -20,30 +23,35 @@ public class EatTask implements Task {
 
 	private int lastHealth = -1, lastHunger = -1, eatingTicks, lastSlot;
 
-	public EatTask(MinecraftBot bot) {
+	public EatTask(MinecraftBot bot)
+	{
 		this.bot = bot;
 	}
 
 	@Override
-	public boolean isPreconditionMet() {
+	public boolean isPreconditionMet()
+	{
 		MainPlayerEntity player = bot.getPlayer();
-		if(player == null)
+		if (player == null)
 			return false;
 		PlayerInventory inventory = player.getInventory();
-		if(lastHealth != player.getHealth() && player.getHealth() == 20)
+		if (lastHealth != player.getHealth() && player.getHealth() == 20)
 			lastHealth = 20;
-		if(lastHunger != player.getHunger() && player.getHunger() == 20)
+		if (lastHunger != player.getHunger() && player.getHunger() == 20)
 			lastHunger = 20;
-		if(player != null && (player.getHunger() < 20 && player.getHunger() != lastHunger))
-			for(int i = 0; i < FOOD_LIST.length; i++)
-				if(inventory.contains(FOOD_LIST[i]))
+		if (player != null
+				&& (player.getHunger() < 20 && player.getHunger() != lastHunger))
+			for (int i = 0; i < FOOD_LIST.length; i++)
+				if (inventory.contains(FOOD_LIST[i]))
 					return true;
 		return false;
 	}
 
 	@Override
-	public boolean start(String... options) {
-		if(isPreconditionMet()) {
+	public boolean start(String... options)
+	{
+		if (isPreconditionMet())
+		{
 			active = true;
 			return true;
 		} else
@@ -51,90 +59,106 @@ public class EatTask implements Task {
 	}
 
 	@Override
-	public void stop() {
+	public void stop()
+	{
 		active = false;
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		MainPlayerEntity player = bot.getPlayer();
 		PlayerInventory inventory = player.getInventory();
-		if(eatingTicks > 0) {
+		if (eatingTicks > 0)
+		{
 			eatingTicks--;
-			if(eatingTicks == 0) {
-				if(inventory.getCurrentHeldSlot() != lastSlot)
+			if (eatingTicks == 0)
+			{
+				if (inventory.getCurrentHeldSlot() != lastSlot)
 					inventory.setCurrentHeldSlot(lastSlot);
 				stop();
 			}
 			return;
 		}
 		int foodIndex = -1;
-		for(int i = 0; i < 36; i++) {
+		for (int i = 0; i < 36; i++)
+		{
 			ItemStack item = inventory.getItemAt(i);
-			if(item == null || !isFood(item.getId()))
+			if (item == null || !isFood(item.getId()))
 				continue;
 			foodIndex = i;
 			break;
 		}
-		if(foodIndex == -1 || !player.switchHeldItems(foodIndex)) {
+		if (foodIndex == -1 || !player.switchHeldItems(foodIndex))
+		{
 			stop();
 			return;
 		}
-		bot.getEventManager().sendEvent(new ItemUseEvent(inventory.getItemAt(foodIndex)));
+		bot.getEventManager().sendEvent(
+				new ItemUseEvent(inventory.getItemAt(foodIndex)));
 		eatingTicks = 32;
 		lastHealth = player.getHealth();
 		lastHunger = player.getHunger();
 	}
 
 	@EventHandler
-	public void onEntityStopEating(EntityStopEatingEvent event) {
-		if(event.getEntityId() != bot.getPlayer().getId())
+	public void onEntityStopEating(EntityStopEatingEvent event)
+	{
+		if (event.getEntityId() != bot.getPlayer().getId())
 			return;
-		if(eatingTicks > 0) {
+		if (eatingTicks > 0)
+		{
 			MainPlayerEntity player = bot.getPlayer();
 			PlayerInventory inventory = player.getInventory();
-			if(inventory.getCurrentHeldSlot() != lastSlot)
+			if (inventory.getCurrentHeldSlot() != lastSlot)
 				inventory.setCurrentHeldSlot(lastSlot);
 			eatingTicks = 0;
 		}
-		if(active)
+		if (active)
 			stop();
 	}
 
-	private boolean isFood(int id) {
-		for(int i = 0; i < FOOD_LIST.length; i++)
-			if(FOOD_LIST[i] == id)
+	private boolean isFood(int id)
+	{
+		for (int i = 0; i < FOOD_LIST.length; i++)
+			if (FOOD_LIST[i] == id)
 				return true;
 		return false;
 	}
 
 	@Override
-	public boolean isActive() {
+	public boolean isActive()
+	{
 		return active;
 	}
 
 	@Override
-	public TaskPriority getPriority() {
+	public TaskPriority getPriority()
+	{
 		return TaskPriority.NORMAL;
 	}
 
 	@Override
-	public boolean isExclusive() {
+	public boolean isExclusive()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean ignoresExclusive() {
+	public boolean ignoresExclusive()
+	{
 		return true;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return "Eat";
 	}
 
 	@Override
-	public String getOptionDescription() {
+	public String getOptionDescription()
+	{
 		return "";
 	}
 }

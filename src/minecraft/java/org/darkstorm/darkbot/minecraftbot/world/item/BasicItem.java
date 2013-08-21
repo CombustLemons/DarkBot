@@ -1,17 +1,21 @@
 package org.darkstorm.darkbot.minecraftbot.world.item;
 
-public class BasicItem implements Item {
+public class BasicItem implements Item
+{
 
-	public BasicItem() {
+	public BasicItem()
+	{
 	}
 
 	@Override
-	public int getId() {
+	public int getId()
+	{
 		return 0;
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return null;
 	}
 

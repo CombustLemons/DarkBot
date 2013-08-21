@@ -5,7 +5,8 @@ import org.darkstorm.darkbot.minecraftbot.world.block.*;
 import org.darkstorm.darkbot.minecraftbot.world.entity.Entity;
 import org.darkstorm.darkbot.minecraftbot.world.pathfinding.PathSearchProvider;
 
-public interface World {
+public interface World
+{
 	public MinecraftBot getBot();
 
 	public Block getBlockAt(int x, int y, int z);
